@@ -1,0 +1,7 @@
+train: F:/GameHelper2/yolov5/data/mydata/images/train
+val: F:/GameHelper2/yolov5/data/mydata/images/val
+
+# Classes
+nc: 1  # number of classes
+#names: ['ct_body', 'ct_head', 't_body', 't_head']  # class names
+names: ['t']
