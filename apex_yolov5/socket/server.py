@@ -10,6 +10,7 @@ from apex_yolov5.auxiliary import get_lock_mode
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import *
 from apex_yolov5.socket.yolov5_handler import get_aims
+import pickle
 
 start_img = "send image".encode()
 end_img = "send image end".encode()
@@ -61,13 +62,17 @@ while True:
             img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             # 在这里可以对图像进行进一步处理
 
-
-
             aims = get_aims(img0)
+            aims_data = pickle.dumps(aims)
+            client_socket.sendall(str(len(aims_data)).encode('utf-8'))
+            client_ready = client_socket.recv(batch_size)
+            if client_ready == b'ready':
+                client_socket.sendall(aims_data)
+
             if len(aims):
-                if get_lock_mode():
-                    lock(aims, mouse, screen_width, screen_height, shot_width=shot_Width,
-                         shot_height=shot_Height)  # x y 是分辨率
+                # if get_lock_mode():
+                #     lock(aims, mouse, screen_width, screen_height, shot_width=shot_Width,
+                #          shot_height=shot_Height)  # x y 是分辨率
                 for i, det in enumerate(aims):
                     tag, x_center, y_center, width, height = det
                     x_center, width = shot_Width * float(x_center), shot_Width * float(width)
@@ -95,7 +100,8 @@ while True:
                 t0 = time.time()
                 hwnd = win32gui.FindWindow(None, window_Name)
                 CVRECT = cv2.getWindowImageRect(window_Name)
-                win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+                win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
+                                      win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
                     break
