@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
+import win32api
+import win32con
 import win32gui
 import win32ui
-import win32con
-import win32api
 
 
 def grab_screen(region=None):
@@ -28,7 +28,7 @@ def grab_screen(region=None):
     memdc.BitBlt((0, 0), (width, height), srcdc, (left, top), win32con.SRCCOPY)
 
     signedIntsArray = bmp.GetBitmapBits(True)
-    img = np.fromstring(signedIntsArray, dtype='uint8')
+    img = np.frombuffer(signedIntsArray, dtype='uint8')
     img.shape = (height, width, 4)
 
     srcdc.DeleteDC()
@@ -37,3 +37,20 @@ def grab_screen(region=None):
     win32gui.DeleteObject(bmp.GetHandle())
 
     return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+
+
+screen_image = None
+
+
+def loop_screen(region=None, shot_width=416, shot_height=416):
+    global screen_image
+    while True:
+        screen_image = grab_screen(region=region)
+        screen_image = cv2.resize(screen_image, (shot_width, shot_height))
+
+
+def get_img():
+    global screen_image
+    temp = screen_image
+    screen_image = None
+    return temp

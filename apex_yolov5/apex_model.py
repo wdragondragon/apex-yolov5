@@ -16,9 +16,9 @@ from models.common import DetectMultiBackend
 # weights = 'best.pt' #这个模型最好
 
 # weights = 'apex-yolov5/apex.pt'
-weights = 'apex_yolov5/apex2.pt'
+weights = 'apex_yolov5/apex2.engine'
 # imgsz = 640
-device = '0'  # cuda,cpu
+device = ''  # cuda,cpu
 dnn = False
 data = 'models/mydata.yaml'
 half = False
