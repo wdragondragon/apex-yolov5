@@ -2,11 +2,13 @@ import time
 
 import cv2
 import numpy as np
-
+from apex_yolov5.apex_model import load_model
 from apex_yolov5.socket.config import *
 from utils.augmentations import letterbox
 from utils.general import non_max_suppression, scale_boxes, xyxy2xywh
 
+model = load_model()
+names = model.module.names if hasattr(model, 'module') else model.names
 
 def get_aims(img0):
     img0 = cv2.resize(img0, (shot_Width, shot_Height))
