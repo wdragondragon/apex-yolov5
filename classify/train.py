@@ -56,7 +56,7 @@ GIT_INFO = check_git_info()
 def train(opt, device):
     init_seeds(opt.seed + 1 + RANK, deterministic=True)
     save_dir, data, bs, epochs, nw, imgsz, pretrained = \
-        opt.save_dir, Path(opt.data), opt.batch_size, opt.epochs, min(os.cpu_count() - 1, opt.workers), \
+        opt.save_dir, Path(opt.data), opt.buffer_size, opt.epochs, min(os.cpu_count() - 1, opt.workers), \
         opt.imgsz, str(opt.pretrained).lower() == 'true'
     cuda = device.type != 'cpu'
 
@@ -303,10 +303,10 @@ def main(opt):
         check_requirements(ROOT / 'requirements.txt')
 
     # DDP mode
-    device = select_device(opt.device, batch_size=opt.batch_size)
+    device = select_device(opt.device, batch_size=opt.buffer_size)
     if LOCAL_RANK != -1:
-        assert opt.batch_size != -1, 'AutoBatch is coming soon for classification, please pass a valid --batch-size'
-        assert opt.batch_size % WORLD_SIZE == 0, f'--batch-size {opt.batch_size} must be multiple of WORLD_SIZE'
+        assert opt.buffer_size != -1, 'AutoBatch is coming soon for classification, please pass a valid --batch-size'
+        assert opt.buffer_size % WORLD_SIZE == 0, f'--batch-size {opt.buffer_size} must be multiple of WORLD_SIZE'
         assert torch.cuda.device_count() > LOCAL_RANK, 'insufficient CUDA devices for DDP command'
         torch.cuda.set_device(LOCAL_RANK)
         device = torch.device('cuda', LOCAL_RANK)

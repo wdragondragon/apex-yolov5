@@ -1,7 +1,11 @@
 import pynput
 import torch
 
-from apex_yolov5.auxiliary import on_click, on_move, on_press
+
+# listener_ip = '192.168.10.3'
+listener_ip = 'localhost'
+listener_port = 8888
+buffer_size = 4096
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # device = 'cpu'
@@ -19,16 +23,13 @@ left_top_x = screen_width // 2 - offet_Shot_Screen * 16
 left_top_y = screen_height // 2 - offet_Shot_Screen * 9
 right_bottom_x = screen_width // 2 + offet_Shot_Screen * 16
 right_bottom_y = screen_height // 2 + offet_Shot_Screen * 9
-shot_Width = 2 * offet_Shot_Screen * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
-shot_Height = 2 * offet_Shot_Screen * 9
+shot_width = 2 * offet_Shot_Screen * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
+shot_height = 2 * offet_Shot_Screen * 9
 region = (left_top_x, left_top_y, right_bottom_x, right_bottom_y)
 
-
-window_Name = "test"
+window_name = "test"
 auto = True
 
 mouse = pynput.mouse.Controller()  # 鼠标对象
 lock_button = "left"  # 无用，apex为按住鼠标左或者右其中一个为就为lock模式，建议在游戏设置按住开镜
-isShowDebugWindow = True  # 可修改为True，会出现调试窗口
-
-
+is_show_debug_window = True  # 可修改为True，会出现调试窗口

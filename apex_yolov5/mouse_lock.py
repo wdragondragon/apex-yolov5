@@ -1,8 +1,5 @@
-# import pydirectinput
-# import pydirectinput
 import win32api
 import win32con
-from apex_yolov5.auxiliary import set_intention
 
 lock_tag = '0'
 
@@ -12,7 +9,7 @@ def mouse_To1(des_X, des_Y, current_mouse_x=0, current_mouse_y=0):
     down = des_Y - current_mouse_y
     up = int(up)
     down = int(down)
-    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, up, down)
+    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, up*3, down*3)
 
 
 def mouse_To(des_X, des_Y, current_mouse_x=0, current_mouse_y=0):
@@ -76,5 +73,6 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     # set_intention(targetRealX, targetRealY)
 
     # if(dist < 100000):
-    if(dist < 20000):
-        mouse_To1(des_X=targetRealX,des_Y=targetRealY,current_mouse_x=current_mouse_x,current_mouse_y=current_mouse_y)
+    if (dist < 20000):
+        mouse_To1(des_X=targetRealX, des_Y=targetRealY, current_mouse_x=current_mouse_x,
+                  current_mouse_y=current_mouse_y)

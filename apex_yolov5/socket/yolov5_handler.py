@@ -11,10 +11,7 @@ model = load_model()
 names = model.module.names if hasattr(model, 'module') else model.names
 
 def get_aims(img0):
-    img0 = cv2.resize(img0, (shot_Width, shot_Height))
-    # img0 = get_img()
-    # if img0 is None:
-    #     continue
+    img0 = cv2.resize(img0, (shot_width, shot_height))
     stride = model.stride
     img = letterbox(img0, imgsz, stride=stride, auto=model.pt)[0]
     img = img.transpose((2, 0, 1))[::-1]

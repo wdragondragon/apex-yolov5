@@ -99,8 +99,8 @@ class WandbLogger():
             if model_dir:
                 self.weights = Path(model_dir) / 'last.pt'
                 config = self.wandb_run.config
-                opt.weights, opt.save_period, opt.batch_size, opt.bbox_interval, opt.epochs, opt.hyp, opt.imgsz = str(
-                    self.weights), config.save_period, config.batch_size, config.bbox_interval, config.epochs, \
+                opt.weights, opt.save_period, opt.buffer_size, opt.bbox_interval, opt.epochs, opt.hyp, opt.imgsz = str(
+                    self.weights), config.save_period, config.buffer_size, config.bbox_interval, config.epochs, \
                     config.hyp, config.imgsz
 
         if opt.bbox_interval == -1:
