@@ -7,9 +7,12 @@ import numpy as np
 import win32con
 import win32gui
 
+from apex_yolov5.apex_model import load_model
 from apex_yolov5.socket.config import *
 from apex_yolov5.socket.yolov5_handler import get_aims
 
+model = load_model()
+names = model.module.names if hasattr(model, 'module') else model.names
 start_img = "send image".encode()
 end_img = "send image end".encode()
 # 创建一个TCP/IP套接字
@@ -26,13 +29,12 @@ while True:
     # 等待客户端连接
     client_socket, client_address = server_socket.accept()
     print('客户端已连接:', client_address)
-
     try:
         start_time = time.time()
         while True:
             t0 = time.time()
             # 接收客户端发送的图像数据
-            length = client_socket.recv(1024)
+            length = client_socket.recv(batch_size)
             if not length:
                 continue
             client_socket.send(b'ready')

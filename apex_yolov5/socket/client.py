@@ -1,5 +1,6 @@
 import pickle
 import socket
+import time
 
 import pynput
 
@@ -21,20 +22,25 @@ key_listener.start()
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # 服务器地址和端口
-server_address = ('localhost', 8888)
+server_address = ('192.168.10.3', 8888)
 
 # 连接服务器
 client_socket.connect(server_address)
-buffer_size = 1024
+buffer_size = 4096
 try:
     while True:
         # 截取屏幕并发送图像给服务器
+        t0 = time.time()
         img = grab_screen_int_array(region=region)
         client_socket.sendall(str(len(img)).encode('utf-8'))
         server_ready = client_socket.recv(buffer_size)
+        # print("截图时间:{}\n".format(time.time() - t0) * 1000)
+        t0 = time.time()
         if server_ready == b'ready':  # 如果服务端返回一个二进制的'ready'，则标明服务端收到了长度
             client_socket.send(img)
+        # print("发送时间:{}\n".format(time.time() - t0) * 1000)
 
+        t0 = time.time()
         length = client_socket.recv(buffer_size)
         if not length:
             continue
@@ -54,6 +60,7 @@ try:
             if get_lock_mode():
                 lock(aims, mouse, screen_width, screen_height, shot_width=shot_Width,
                      shot_height=shot_Height)  # x y 是分辨率
+        # print("鼠标移动时间:{}\n".format(time.time() - t0) * 1000)
 finally:
     # 关闭连接
     client_socket.close()
