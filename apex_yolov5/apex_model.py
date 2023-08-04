@@ -16,11 +16,11 @@ from models.common import DetectMultiBackend
 # weights = 'best.pt' #这个模型最好
 
 # weights = 'apex-yolov5/apex.pt'
-weights = 'C:/Users/Administrator/PycharmProjects/yolov5/apex_yolov5/apex2.engine'
+weights = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/apex_yolov5/apex-1050.engine'
 # imgsz = 640
 device = ''  # cuda,cpu
 dnn = False
-data = 'C:/Users/Administrator/PycharmProjects/yolov5/models/mydata.yaml'
+data = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/models/mydata.yaml'
 half = False
 imgsz1 = (640, 640)
 device = select_device(device)

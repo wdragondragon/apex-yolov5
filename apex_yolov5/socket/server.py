@@ -1,3 +1,4 @@
+import pickle
 import socket
 import time
 
@@ -6,18 +7,15 @@ import numpy as np
 import win32con
 import win32gui
 
-from apex_yolov5.auxiliary import get_lock_mode
-from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import *
 from apex_yolov5.socket.yolov5_handler import get_aims
-import pickle
 
 start_img = "send image".encode()
 end_img = "send image end".encode()
 # 创建一个TCP/IP套接字
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # 绑定服务器地址和端口
-server_address = ('localhost', 8888)
+server_address = ('192.168.10.3', 8888)
 server_socket.bind(server_address)
 # 监听客户端连接
 server_socket.listen(1)
@@ -40,7 +38,7 @@ while True:
             client_socket.send(b'ready')
 
             length = int(length.decode('utf-8'))  # 将长度解码，并转成数字型
-            print("图片大小:{:.1f}M".format((1.0 * length) / 1024 / 1024))
+            # print("图片大小:{:.1f}M".format((1.0 * length) / 1024 / 1024))
             total_size += length
             recv_size = 0  # 记录长度
             img_data = bytearray()
@@ -105,6 +103,7 @@ while True:
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
                     break
+            print("服务端处理时间：{}\n".format((time.time() - t0)) * 1000)
     finally:
         # 关闭连接
         client_socket.close()
