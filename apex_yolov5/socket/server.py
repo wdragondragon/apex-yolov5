@@ -48,9 +48,14 @@ def main():
                 if config.is_show_debug_window:
                     log_ui.show(aims, img0, start_time, t0, total_size)
                 print("服务端处理时间：{}\n".format((time.time() - t0)) * 1000)
+        except:
+            pass
         finally:
             # 关闭连接
-            client_socket.close()
+            try:
+                client_socket.close()
+            except:
+                pass
             log_ui.destroy()
 
 

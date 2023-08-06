@@ -18,7 +18,7 @@ def show(aims, img0, start_time, t0, total_size):
             cv2.rectangle(img0, top_left, bottom_right, color, thickness=3)
     # 发送响应给客户端
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-    cv2.resizeWindow(window_name, shot_width // 2, shot_height // 2)
+    cv2.resizeWindow(window_name, shot_width, shot_height)
     cv2.putText(img0, "FPS:{:.1f},{:.1f}M/s".format(1.0 / (time.time() - t0),
                                                     (1.0 * total_size / 1024 / 1024) / (
                                                             time.time() - start_time)),
