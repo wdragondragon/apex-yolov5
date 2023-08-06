@@ -1,5 +1,9 @@
+import time
+
 import win32api
 import win32con
+
+from apex_yolov5.auxiliary import set_intention
 
 lock_tag = '0'
 
@@ -9,7 +13,24 @@ def mouse_To1(des_X, des_Y, current_mouse_x=0, current_mouse_y=0):
     down = des_Y - current_mouse_y
     up = int(up)
     down = int(down)
-    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, up*3, down*3)
+
+    # win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, up, down)
+    # 计算移动的单位数
+    move_up = min(1, abs(up)) * (1 if up > 0 else -1)
+    move_down = min(1, abs(down)) * (1 if down > 0 else -1)
+    t0 = time.time()
+    while up != 0 or down != 0:
+        time.sleep(0.00001)
+        if up == 0:
+            move_up = 0
+        elif down == 0:
+            move_down = 0
+        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, move_up, move_down)
+        up -= move_up
+        down -= move_down
+        # print("up: {}, down: {}".format(up, down))
+    print("完成移动时间：{}ms".format((time.time() - t0) * 1000))
+    # pyautogui.moveRel(up, down, duration=0.1)
 
 
 def mouse_To(des_X, des_Y, current_mouse_x=0, current_mouse_y=0):
@@ -69,10 +90,10 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     targetRealX = left_top_x + targetShotX  # 目标在屏幕的坐标
     targetRealY = left_top_y + targetShotY
 
-    dist = (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2
-    # set_intention(targetRealX, targetRealY)
+    # dist = (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2
+    set_intention(targetRealX, targetRealY)
 
     # if(dist < 100000):
-    if (dist < 20000):
-        mouse_To1(des_X=targetRealX, des_Y=targetRealY, current_mouse_x=current_mouse_x,
-                  current_mouse_y=current_mouse_y)
+    # if (dist < 20000):
+    #     mouse_To1(des_X=targetRealX, des_Y=targetRealY, current_mouse_x=current_mouse_x,
+    #               current_mouse_y=current_mouse_y)
