@@ -25,16 +25,16 @@ left_top_x = screen_width // 2 - offet_Shot_Screen * 16
 left_top_y = screen_height // 2 - offet_Shot_Screen * 9
 right_bottom_x = screen_width // 2 + offet_Shot_Screen * 16
 right_bottom_y = screen_height // 2 + offet_Shot_Screen * 9
-shot_Width = 2 * offet_Shot_Screen * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
-shot_Height = 2 * offet_Shot_Screen * 9
+shot_width = 2 * offet_Shot_Screen * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
+shot_height = 2 * offet_Shot_Screen * 9
 
-window_Name = "apex-tang"
+window_name = "apex-tang"
 auto = True
 model = load_model()
 lock_mode = False  # don's edit this
 mouse = pynput.mouse.Controller()  # 鼠标对象
 lock_button = "left"  # 无用，apex为按住鼠标左或者右其中一个为就为lock模式，建议在游戏设置按住开镜
-isShowDebugWindow = False  # 可修改为True，会出现调试窗口
+is_show_debug_window = False  # 可修改为True，会出现调试窗口
 isRightKeyDown = False
 isLeftKeyDown = False
 mouseFlag = 0  # 0, 1 2 3
@@ -70,12 +70,12 @@ names = model.module.names if hasattr(model, 'module') else model.names
 def main():
     while True:
         t0 = time.time()
-        monitor = {'top': left_top_x, 'left': left_top_y, 'width': shot_Width, 'height': shot_Height}
+        monitor = {'top': left_top_x, 'left': left_top_y, 'width': shot_width, 'height': shot_height}
         # monitor = {'top': left_top_x, 'left': left_top_y, 'width': left_top_x - right_bottom_x,
         #            'height': left_top_y - right_bottom_y}
         # img0 = grab_screen(region=(left_top_x, left_top_y, right_bottom_x, right_bottom_y))
         img0 = grab_screen(monitor=monitor)
-        img0 = cv2.resize(img0, (shot_Width, shot_Height))
+        img0 = cv2.resize(img0, (shot_width, shot_height))
         stride = model.stride
         img = letterbox(img0, imgsz, stride=stride, auto=model.pt)[0]
         img = img.transpose((2, 0, 1))[::-1]
@@ -117,8 +117,8 @@ def main():
             if len(aims):
                 if lock_mode:
                     print("todo...")
-                    lock(aims, mouse, screen_width, screen_height, shot_width=shot_Width,
-                         shot_height=shot_Height)  # x y 是分辨率
+                    lock(aims, mouse, screen_width, screen_height, shot_width=shot_width,
+                         shot_height=shot_height)  # x y 是分辨率
                 # lock(aims, mouse, screen_width, screen_height, shot_width=shot_Width,shot_height=shot_Height) #x y 是分辨率
                 # for i, det in enumerate(aims):
                 #     tag, x_center, y_center, width, height = det

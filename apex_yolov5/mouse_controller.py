@@ -24,7 +24,7 @@ def get_mouse_position():
 
 
 def set_mouse_position(x, y):
-    user32.mouse_event(MOUSEEVENTF_MOVE, x, y, 0, 0)
+    user32.mouse_event(MOUSEEVENTF_MOVE, x, y)
 
 
 def is_numlock_locked():

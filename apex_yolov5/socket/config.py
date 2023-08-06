@@ -2,8 +2,8 @@ import pynput
 import torch
 
 
-# listener_ip = '192.168.10.3'
-listener_ip = 'localhost'
+listener_ip = '192.168.10.3'
+# listener_ip = 'localhost'
 listener_port = 8888
 buffer_size = 4096
 
