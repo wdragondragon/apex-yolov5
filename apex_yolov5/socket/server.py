@@ -57,6 +57,4 @@ def main():
             except:
                 pass
             log_ui.destroy()
-
-
 main()

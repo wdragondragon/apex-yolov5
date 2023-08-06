@@ -1,15 +1,18 @@
 import pickle
 import socket
+import sys
 import threading
 import time
 
 import pynput
+from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
+from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, on_click, on_move, on_press, start
 from apex_yolov5.grabscreen import grab_screen_int_array
 from apex_yolov5.mouse_lock import lock
-import config
+from apex_yolov5.socket import config
 
 
 def main():
@@ -46,13 +49,19 @@ def main():
             if len(aims) and get_lock_mode():
                 lock(aims, config.mouse, config.screen_width, config.screen_height,
                      shot_width=config.shot_width, shot_height=config.shot_height)  # x y 是分辨率
-            if print_count % 10 == 0:
-                print("十次识别平均时间: {}ms".format((time.time() - compute_time) * 100))
+            now = time.time()
+            if now - compute_time > 1:
+                LogWindow().print_log("一秒识别[{}]次:".format(print_count))
                 print_count = 0
-                compute_time = time.time()
+                compute_time = now
     finally:
         # 关闭连接
         client_socket.close()
 
 
-main()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    log_window = LogWindow()
+    log_window.show()
+    threading.Thread(target=main).start()
+    sys.exit(app.exec_())

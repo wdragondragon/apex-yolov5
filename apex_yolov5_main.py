@@ -1,3 +1,4 @@
+import sys
 import threading
 
 import cv2
@@ -7,6 +8,9 @@ import time
 import torch
 import win32con
 import win32gui
+from PyQt5.QtWidgets import QApplication
+
+from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import on_click, get_lock_mode, on_move, on_press, start
 from apex_yolov5.grabscreen import grab_screen
 from apex_yolov5.mouse_lock import lock
@@ -107,4 +111,8 @@ def main():
 
 # main()
 if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    log_window = LogWindow()
+    log_window.show()
     main()
+    sys.exit(app.exec_())

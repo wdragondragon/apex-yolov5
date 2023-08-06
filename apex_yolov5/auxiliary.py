@@ -1,6 +1,9 @@
 import time
+
+from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.mouse_controller import *
 from pynput.keyboard import Controller as KeyController, Key
+from apex_yolov5.socket.config import lock_move_speed
 
 intention = None
 intention_handler = False
@@ -13,12 +16,16 @@ num_lock_pressed = True
 keyboard = KeyController()
 middle_toggle = False
 
+change_coordinates_num = 0
+
 
 def set_intention(x, y):
-    global intention
+    global intention, change_coordinates_num
     # print("set_intention: {}".format((x, y)))
     (current_x, current_y) = get_mouse_position()
-    intention = (x - current_x, y - current_y)
+    # intention = ((x - current_x) * lock_move_speed, (y - current_y) * lock_move_speed)
+    intention = ((x - current_x), (y - current_y))
+    change_coordinates_num += 1
 
 
 def get_lock_mode():
@@ -32,9 +39,10 @@ def set_lock_mode(lock):
 
 
 def start():
-    global intention, intention_handler
+    global intention, intention_handler, change_coordinates_num
     while True:
         if get_lock_mode() and intention is not None:
+            t0 = time.time()
             (x, y) = intention
             while x != 0 or y != 0:
                 (x, y) = intention
@@ -48,12 +56,16 @@ def start():
                 x -= move_up
                 y -= move_down
                 intention = (x, y)
-                set_mouse_position(int(move_up), int(move_down))
+                # set_mouse_position(int(move_up), int(move_down))
+                set_mouse_position(int(move_up * lock_move_speed), int(move_down * lock_move_speed))
             # set_mouse_position(int(x), int(y))
             intention = None
+            LogWindow().print_log(
+                "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
         elif not lock_mode:
             intention = None
         time.sleep(0.01)
+        change_coordinates_num = 0
 
 
 def on_press(key):
