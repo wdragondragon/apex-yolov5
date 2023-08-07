@@ -4,7 +4,7 @@ import time
 
 import cv2
 import numpy as np
-import config
+from config import global_config
 import yolov5_handler
 import socket_util
 import log_ui
@@ -14,11 +14,11 @@ def main():
     # 创建一个TCP/IP套接字
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # 绑定服务器地址和端口
-    server_address = (config.listener_ip, config.listener_port)
+    server_address = (global_config.listener_ip, global_config.listener_port)
     server_socket.bind(server_address)
     # 监听客户端连接
     server_socket.listen(1)
-    buffer_size = config.buffer_size
+    buffer_size = global_config.buffer_size
     while True:
         total_size = 0
         print('等待客户端连接...')
@@ -34,7 +34,7 @@ def main():
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
                 img = np.frombuffer(bytes(img_data), dtype='uint8')
-                left, top, x2, y2 = config.region
+                left, top, x2, y2 = global_config.region
                 width = x2 - left + 1
                 height = y2 - top + 1
                 img = img.reshape((height, width, 4))
@@ -45,7 +45,7 @@ def main():
                 aims_data = pickle.dumps(aims)
                 socket_util.send(client_socket, aims_data, buffer_size=buffer_size)
 
-                if config.is_show_debug_window:
+                if global_config.is_show_debug_window:
                     log_ui.show(aims, img0, start_time, t0, total_size)
                 print("服务端处理时间：{}\n".format((time.time() - t0)) * 1000)
         except:
@@ -57,4 +57,6 @@ def main():
             except:
                 pass
             log_ui.destroy()
+
+
 main()
