@@ -28,39 +28,50 @@ threading.Thread(target=start).start()
 
 
 def main():
-    # ...or, in a non-blocking fashion:
-    # 创建一个TCP/IP套接字
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while True:
+        try:
+            # ...or, in a non-blocking fashion:
+            # 创建一个TCP/IP套接字
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # 服务器地址和端口
-    server_address = (global_config.listener_ip, global_config.listener_port)
+            # 服务器地址和端口
+            server_address = (global_config.listener_ip, global_config.listener_port)
 
-    # 连接服务器
-    client_socket.connect(server_address)
-    buffer_size = global_config.buffer_size
-    try:
-        print_count = 0
-        compute_time = time.time()
-        while True:
-            print_count += 1
-            img = grab_screen_int_array(region=global_config.region)
-            print("img size:{}".format(len(img)))
-            img = zlib.compress(img)
-            print("img size zip:{}".format(len(img)))
-            socket_util.send(client_socket, img, buffer_size=buffer_size)
-            mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
-            aims = pickle.loads(mouse_data)
-            if len(aims) and get_lock_mode():
-                lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
-                     shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
-            now = time.time()
-            if now - compute_time > 1:
-                LogWindow().print_log("一秒识别[{}]次:".format(print_count))
+            # 连接服务器
+            client_socket.connect(server_address)
+            buffer_size = global_config.buffer_size
+            try:
                 print_count = 0
-                compute_time = now
-    finally:
-        # 关闭连接
-        client_socket.close()
+                compute_time = time.time()
+                while True:
+                    print_count += 1
+                    img = grab_screen_int_array(region=global_config.region)
+                    img = zlib.compress(img)
+                    print("发送数据大小：{}".format(len(img)))
+                    socket_util.send(client_socket, img, buffer_size=buffer_size)
+                    mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
+                    if not mouse_data:
+                        continue
+                    aims = pickle.loads(mouse_data)
+                    if len(aims) and get_lock_mode():
+                        lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
+                             shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
+                    now = time.time()
+                    if now - compute_time > 1:
+                        LogWindow().print_log("一秒识别[{}]次:".format(print_count))
+                        print_count = 0
+                        compute_time = now
+            except:
+                pass
+            finally:
+                # 关闭连接
+                client_socket.close()
+        except:
+            pass
+        finally:
+            time.sleep(1)
+            LogWindow().print_log("连接断开，等待重连...")
+            pass
 
 
 if __name__ == "__main__":
