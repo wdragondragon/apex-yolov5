@@ -1,13 +1,13 @@
 import pickle
 import socket
 import time
+import zlib
 
 import cv2
 import numpy as np
-from config import global_config
-import yolov5_handler
-import socket_util
-import log_ui
+
+from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
+from apex_yolov5.socket.config import global_config
 
 
 def main():
@@ -31,6 +31,7 @@ def main():
                 t0 = time.time()
                 # 接收客户端发送的图像数据
                 img_data = socket_util.recv(client_socket, buffer_size=buffer_size)
+                img_data = zlib.decompress(img_data)
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
                 img = np.frombuffer(bytes(img_data), dtype='uint8')

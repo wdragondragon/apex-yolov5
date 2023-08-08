@@ -3,6 +3,7 @@ import socket
 import sys
 import threading
 import time
+import zlib
 
 import pynput
 from PyQt5.QtWidgets import QApplication
@@ -43,6 +44,9 @@ def main():
         while True:
             print_count += 1
             img = grab_screen_int_array(region=global_config.region)
+            print("img size:{}".format(len(img)))
+            img = zlib.compress(img)
+            print("img size zip:{}".format(len(img)))
             socket_util.send(client_socket, img, buffer_size=buffer_size)
             mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
             aims = pickle.loads(mouse_data)
