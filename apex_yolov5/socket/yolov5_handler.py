@@ -25,7 +25,7 @@ def get_aims(img0):
         img = img[None]  # img = img.unsqueeze(0)
 
     pred = model(img, augment=False, visualize=False)
-    pred = non_max_suppression(pred, conf_thres, iou_thres, agnostic=False, max_det=1)
+    pred = non_max_suppression(pred, conf_thres, iou_thres, agnostic=False, max_det=10)
     # print(pred)
 
     aims = []
