@@ -9,6 +9,18 @@ import numpy as np
 from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
 
+use_time_dict = dict()
+
+
+def set_time(use_time_type, use_time):
+    use_time_dict[use_time_type] = use_time_dict.get(use_time_type, 0) + use_time
+
+
+def print_time(print_count):
+    for k, v in use_time_dict.items():
+        print("步骤[{}]使用平均时间:{}ms".format(k, v * 1000 / print_count))
+    use_time_dict.clear()
+
 
 def main():
     # 创建一个TCP/IP套接字
@@ -27,11 +39,18 @@ def main():
         print('客户端已连接:', client_address)
         try:
             start_time = time.time()
+            print_count = 0
+            compute_time = time.time()
             while True:
                 t0 = time.time()
                 # 接收客户端发送的图像数据
+                t1 = time.time()
                 img_data = socket_util.recv(client_socket, buffer_size=buffer_size)
+                set_time("接受图片", time.time() - t1)
+                t5 = time.time()
                 img_data = zlib.decompress(img_data)
+                set_time("解压图片", time.time() - t5)
+                t2 = time.time()
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
                 img = np.frombuffer(bytes(img_data), dtype='uint8')
@@ -40,15 +59,24 @@ def main():
                 height = y2 - top + 1
                 img = img.reshape((height, width, 4))
                 img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+                set_time("转换图片", time.time() - t2)
                 # 在这里可以对图像进行进一步处理
-
+                t3 = time.time()
                 aims = yolov5_handler.get_aims(img0)
+                set_time("转换坐标", time.time() - t3)
+                t4 = time.time()
                 aims_data = pickle.dumps(aims)
                 socket_util.send(client_socket, aims_data, buffer_size=buffer_size)
-
+                set_time("发送坐标", time.time() - t4)
                 if global_config.is_show_debug_window:
                     log_ui.show(aims, img0, start_time, t0, total_size)
-                print("服务端处理时间：{}\n".format((time.time() - t0)) * 1000)
+                print_count += 1
+                now = time.time()
+                if now - compute_time > 1:
+                    print("一秒识别[{}]次:".format(print_count))
+                    print_time(print_count)
+                    print_count = 0
+                    compute_time = now
         except:
             pass
         finally:

@@ -1,5 +1,6 @@
 from torch.cuda import is_available
 
+from apex_yolov5.socket.config import global_config
 from models.common import DetectMultiBackend
 from utils.general import check_img_size
 from utils.torch_utils import select_device
@@ -20,17 +21,15 @@ from utils.torch_utils import select_device
 # weights = 'best.pt' #这个模型最好
 
 # weights = 'apex-yolov5/apex.pt'
-weights = './apex_yolov5/apex2.engine'
+weights = './apex_yolov5/apex-1050.engine'
 data = './models/mydata.yaml'
 
 # weights = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/apex_yolov5/apex-1050.engine'
 # data = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/models/mydata.yaml'
 # imgsz = 640
-device = ''  # cuda,cpu
+device = global_config.device if global_config.device == 'cpu' else '0'  # cuda,cpu
 dnn = False
-
-
-half = True
+half = global_config.half
 imgsz1 = (640, 640)
 device = select_device(device)
 

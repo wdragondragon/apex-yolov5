@@ -6,7 +6,7 @@ def send(send_socket, byte_array, buffer_size=4096):
 
 
 def recv(recv_socket, buffer_size=4096):
-    data_length = recv_socket.recv(buffer_size)
+    data_length = recv_socket.recv(32)
     if not data_length:
         return None
     recv_socket.send(b'ready')
