@@ -81,7 +81,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     det = aims_copy[dist_list.index(min(dist_list))]
     # print('当前鼠标坐标',mouse.position)
     tag, target_x, target_y, target_width, target_height = det
-    targetRealHeight = shot_height * float(target_height)
+    # targetRealHeight = shot_height * float(target_height)
     targetShotX = shot_width * float(target_x)  # 目标在截图范围内的坐标
     targetShotY = shot_height * float(target_y)
     screenCenterX = screen_width // 2

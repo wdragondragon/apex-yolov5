@@ -1,7 +1,9 @@
 import sys
 from datetime import datetime
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtCore import Qt, QPoint, QRect
+from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QFont
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLabel
 
 
 class LogWindow(QMainWindow):
@@ -26,18 +28,40 @@ class LogWindow(QMainWindow):
 
         # 创建 QTextEdit 组件用于显示日志
         self.log_text = QTextEdit()
-        self.log_text.document().setMaximumBlockCount(1000)
+        self.log_text.document().setMaximumBlockCount(200)
         self.log_text.setReadOnly(True)
 
+        self.image_label = QLabel(self)
         # 添加 QTextEdit 组件到主窗口
         layout = QVBoxLayout()
+        layout.addWidget(self.image_label)
         layout.addWidget(self.log_text)
 
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
 
-        # 日志打印函数
+    def set_image(self, img_data, bboxes):
+        # 将 OpenCV 图像转换为 QImage
+        height, width, channel = img_data.shape
+        bytes_per_line = 3 * width
+        q_img = QImage(img_data.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+        pixmap = QPixmap.fromImage(q_img)
+        # 创建 QPainter 对象并设置画笔
+        painter = QPainter(pixmap)
+        pen = QPen(Qt.red, 5)  # 设置颜色和线宽
+        painter.setPen(pen)
+        for bbox in bboxes:
+            tag, top_left, bottom_right = bbox
+            # 在图像上绘制矩形
+            top_left = QPoint(*top_left)  # 你的左上角点
+            bottom_right = QPoint(*bottom_right)  # 你的右下角点
+            painter.drawRect(QRect(top_left, bottom_right))
+            # 结束绘制
+        # 设置字体
+        painter.end()
+        self.image_label.setPixmap(pixmap)
+        self.image_label.update()
 
     def print_log(self, log):
         # 获取当前日期和时间

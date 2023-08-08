@@ -6,6 +6,7 @@ import zlib
 import cv2
 import numpy as np
 
+from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
 
@@ -18,7 +19,7 @@ def set_time(use_time_type, use_time):
 
 def print_time(print_count):
     for k, v in use_time_dict.items():
-        print("步骤[{}]使用平均时间:{}ms".format(k, v * 1000 / print_count))
+        LogWindow().print_log("步骤[{}]使用平均时间:{}ms".format(k, v * 1000 / print_count))
     use_time_dict.clear()
 
 
@@ -33,12 +34,11 @@ def main():
     buffer_size = global_config.buffer_size
     while True:
         total_size = 0
-        print('等待客户端连接...')
+        LogWindow().print_log('等待客户端连接...')
         # 等待客户端连接
         client_socket, client_address = server_socket.accept()
-        print('客户端已连接:', client_address)
+        LogWindow().print_log('客户端已连接:{}'.format(client_address))
         try:
-            start_time = time.time()
             print_count = 0
             compute_time = time.time()
             while True:
@@ -69,12 +69,14 @@ def main():
                 socket_util.send(client_socket, aims_data, buffer_size=buffer_size)
                 set_time("发送坐标", time.time() - t4)
                 if global_config.is_show_debug_window:
-                    log_ui.show(aims, img0, start_time, t0, total_size)
+                    log_ui.show(aims, img0)
                 print_count += 1
                 now = time.time()
                 if now - compute_time > 1:
-                    print("一秒识别[{}]次:".format(print_count))
+                    LogWindow().print_log(
+                        "识别[{}]次，传输{:.1f}M/s".format(print_count, (1.0 * total_size / 1024 / 1024)))
                     print_time(print_count)
+                    total_size = 0
                     print_count = 0
                     compute_time = now
         except:

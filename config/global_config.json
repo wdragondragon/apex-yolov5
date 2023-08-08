@@ -3,14 +3,14 @@
     "listener_port": 8888,
     "buffer_size": 16384,
     "device": "cuda",
-    "imgszx": 480,
+    "imgszx": 320,
     "imgszy": 288,
     "conf_thres": 0.5,
     "iou_thres": 0.05,
     "screen_width": 2560,
     "screen_height": 1440,
-    "offset_shot_screen_x": 15,
+    "offset_shot_screen_x": 10,
     "offset_shot_screen_y": 15,
-    "is_show_debug_window": false,
+    "is_show_debug_window": true,
     "move_mouse_speed": 1
 }

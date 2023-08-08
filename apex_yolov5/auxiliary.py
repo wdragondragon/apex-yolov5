@@ -44,11 +44,11 @@ def start():
         if get_lock_mode() and intention is not None:
             t0 = time.time()
             (x, y) = intention
+            # LogWindow().print_log("开始移动，移动距离:{}".format((x, y)))
             while x != 0 or y != 0:
                 (x, y) = intention
                 move_up = min(1, abs(x)) * (1 if x > 0 else -1)
                 move_down = min(1, abs(y)) * (1 if y > 0 else -1)
-                time.sleep(0.000001)
                 if x == 0:
                     move_up = 0
                 elif y == 0:
@@ -56,13 +56,12 @@ def start():
                 x -= move_up
                 y -= move_down
                 intention = (x, y)
-                # set_mouse_position(int(move_up), int(move_down))
                 set_mouse_position(int(move_up * global_config.lock_move_speed),
                                    int(move_down * global_config.lock_move_speed))
-            # set_mouse_position(int(x), int(y))
+                time.sleep(0.001)
             intention = None
-            LogWindow().print_log(
-                "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
+            # LogWindow().print_log(
+            #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
         elif not lock_mode:
             intention = None
         time.sleep(0.01)
