@@ -1,0 +1,15 @@
+{
+    "listener_ip": "192.168.10.3",
+    "listener_port": 8888,
+    "buffer_size": 4096,
+    "device": "cuda",
+    "imgsz": 640,
+    "conf_thres": 0.5,
+    "iou_thres": 0.05,
+    "screen_width": 2560,
+    "screen_height": 1440,
+    "offset_shot_screen_x": 20,
+    "offset_shot_screen_y": 20,
+    "is_show_debug_window": true,
+    "move_mouse_speed": 1
+}
