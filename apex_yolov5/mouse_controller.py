@@ -1,4 +1,4 @@
-from ctypes import *
+from ctypes import windll, Structure, c_ulong, byref
 
 # API常量
 MOUSEEVENTF_LEFTDOWN = 0x2

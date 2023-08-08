@@ -1,9 +1,9 @@
 import time
 
 from apex_yolov5.LogWindow import LogWindow
-from apex_yolov5.mouse_controller import *
+from apex_yolov5.mouse_controller import get_mouse_position, is_numlock_locked, set_mouse_position
 from pynput.keyboard import Controller as KeyController, Key
-from apex_yolov5.socket.config import lock_move_speed
+from apex_yolov5.socket.config import global_config
 
 intention = None
 intention_handler = False
@@ -57,7 +57,8 @@ def start():
                 y -= move_down
                 intention = (x, y)
                 # set_mouse_position(int(move_up), int(move_down))
-                set_mouse_position(int(move_up * lock_move_speed), int(move_down * lock_move_speed))
+                set_mouse_position(int(move_up * global_config.lock_move_speed),
+                                   int(move_down * global_config.lock_move_speed))
             # set_mouse_position(int(x), int(y))
             intention = None
             LogWindow().print_log(
