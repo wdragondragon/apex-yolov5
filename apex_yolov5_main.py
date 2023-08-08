@@ -89,16 +89,18 @@ def main():
                         lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
                              shot_width=global_config.shot_width,
                              shot_height=global_config.shot_height)  # x y 是分辨率
-                    for i, det in enumerate(aims):
-                        tag, x_center, y_center, width, height = det
-                        x_center, width = global_config.shot_width * float(x_center), global_config.shot_width * float(
-                            width)
-                        y_center, height = global_config.shot_height * float(
-                            y_center), global_config.shot_height * float(
-                            height)
-                        top_left = (int(x_center - width / 2.0), int(y_center - height / 2.0))
-                        bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
-                        bboxes.append((tag, top_left, bottom_right))
+                    if global_config.is_show_debug_window:
+                        for i, det in enumerate(aims):
+                            tag, x_center, y_center, width, height = det
+                            x_center, width = global_config.shot_width * float(
+                                x_center), global_config.shot_width * float(
+                                width)
+                            y_center, height = global_config.shot_height * float(
+                                y_center), global_config.shot_height * float(
+                                height)
+                            top_left = (int(x_center - width / 2.0), int(y_center - height / 2.0))
+                            bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
+                            bboxes.append((tag, top_left, bottom_right))
             print_count += 1
             now = time.time()
             if now - compute_time > 1:

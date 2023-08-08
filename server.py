@@ -6,22 +6,10 @@ import zlib
 import cv2
 import numpy as np
 
+from apex_yolov5 import LogUtil
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
-
-use_time_dict = dict()
-
-
-def set_time(use_time_type, use_time):
-    use_time_dict[use_time_type] = use_time_dict.get(use_time_type, 0) + use_time
-
-
-def print_time(print_count):
-    for k, v in use_time_dict.items():
-        LogWindow().print_log("步骤[{}]使用平均时间:{}ms".format(k, v * 1000 / print_count))
-    use_time_dict.clear()
-
 
 def main():
     # 创建一个TCP/IP套接字
@@ -46,10 +34,10 @@ def main():
                 # 接收客户端发送的图像数据
                 t1 = time.time()
                 img_data = socket_util.recv(client_socket, buffer_size=buffer_size)
-                set_time("接受图片", time.time() - t1)
+                LogUtil.set_time("接受图片", time.time() - t1)
                 t5 = time.time()
                 img_data = zlib.decompress(img_data)
-                set_time("解压图片", time.time() - t5)
+                LogUtil.set_time("解压图片", time.time() - t5)
                 t2 = time.time()
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
@@ -59,15 +47,15 @@ def main():
                 height = y2 - top + 1
                 img = img.reshape((height, width, 4))
                 img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-                set_time("转换图片", time.time() - t2)
+                LogUtil.set_time("转换图片", time.time() - t2)
                 # 在这里可以对图像进行进一步处理
                 t3 = time.time()
                 aims = yolov5_handler.get_aims(img0)
-                set_time("转换坐标", time.time() - t3)
+                LogUtil.set_time("转换坐标", time.time() - t3)
                 t4 = time.time()
                 aims_data = pickle.dumps(aims)
                 socket_util.send(client_socket, aims_data, buffer_size=buffer_size)
-                set_time("发送坐标", time.time() - t4)
+                LogUtil.set_time("发送坐标", time.time() - t4)
                 if global_config.is_show_debug_window:
                     log_ui.show(aims, img0)
                 print_count += 1
@@ -75,7 +63,7 @@ def main():
                 if now - compute_time > 1:
                     LogWindow().print_log(
                         "识别[{}]次，传输{:.1f}M/s".format(print_count, (1.0 * total_size / 1024 / 1024)))
-                    print_time(print_count)
+                    LogUtil.print_time(print_count)
                     total_size = 0
                     print_count = 0
                     compute_time = now

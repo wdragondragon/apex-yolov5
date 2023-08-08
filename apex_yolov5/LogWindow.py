@@ -5,6 +5,8 @@ from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLabel
 
+from apex_yolov5.socket.config import global_config
+
 
 class LogWindow(QMainWindow):
     # 类变量用于保存单例实例
@@ -69,8 +71,9 @@ class LogWindow(QMainWindow):
         # 格式化日期为字符串
         formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
         msg = "[{}]{}".format(formatted_date, log)
-        self.log_text.append(msg)
-        self.log_text.moveCursor(self.log_text.textCursor().End)
+        if global_config.is_show_debug_window:
+            self.log_text.append(msg)
+            self.log_text.moveCursor(self.log_text.textCursor().End)
         print(msg)
 
     # def exit(self):
