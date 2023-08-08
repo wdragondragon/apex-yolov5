@@ -39,6 +39,8 @@ threading.Thread(target=start).start()
 #                                            shot_Height)).start()
 
 def main():
+    print_count = 0
+    compute_time = time.time()
     while True:
         t0 = time.time()
         img0 = grab_screen(region=global_config.region)
@@ -47,7 +49,7 @@ def main():
         # if img0 is None:
         #     continue
         stride = model.stride
-        img = letterbox(img0, global_config.imgsz, stride=stride, auto=model.pt)[0]
+        img = letterbox(img0, (global_config.imgsz,global_config.imgszy), stride=stride, auto=model.pt)[0]
         img = img.transpose((2, 0, 1))[::-1]
         img = np.ascontiguousarray(img)
 
@@ -96,7 +98,7 @@ def main():
                         cv2.rectangle(img0, top_left, bottom_right, color, thickness=3)
         if global_config.is_show_debug_window:
             cv2.namedWindow(global_config.window_name, cv2.WINDOW_NORMAL)
-            cv2.resizeWindow(global_config.window_name, global_config.shot_width // 2, global_config.shot_height // 2)
+            cv2.resizeWindow(global_config.window_name, global_config.shot_width, global_config.shot_height)
             # global t0
             cv2.putText(img0, "FPS:{:.1f}".format(1.0 / (time.time() - t0)), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 2,
                         (0, 255, 0), 4)
@@ -108,6 +110,12 @@ def main():
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 cv2.destroyAllWindows()
                 break
+        print_count += 1
+        now = time.time()
+        if now - compute_time > 1:
+            print("一秒识别[{}]次:".format(print_count))
+            print_count = 0
+            compute_time = now
 
 
 # main()

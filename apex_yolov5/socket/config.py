@@ -19,7 +19,8 @@ class Config:
         self.device = self.get_config(data, 'device')
         if self.device == 'cuda':
             self.device = 'cuda' if is_available() else 'cpu'
-        self.imgsz = self.get_config(data, 'imgsz')
+        self.imgsz = self.get_config(data, 'imgszx')
+        self.imgszy = self.get_config(data, 'imgszy')
         self.conf_thres = self.get_config(data, 'conf_thres')
         self.iou_thres = self.get_config(data, 'iou_thres')
         # 分辨率

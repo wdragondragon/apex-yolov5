@@ -21,7 +21,7 @@ from utils.torch_utils import select_device
 # weights = 'best.pt' #这个模型最好
 
 # weights = 'apex-yolov5/apex.pt'
-weights = './apex_yolov5/apex-1050.engine'
+weights = './apex_yolov5/apex3.engine'
 data = './models/mydata.yaml'
 
 # weights = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/apex_yolov5/apex-1050.engine'
@@ -30,7 +30,7 @@ data = './models/mydata.yaml'
 device = global_config.device if global_config.device == 'cpu' else '0'  # cuda,cpu
 dnn = False
 half = global_config.half
-imgsz1 = (640, 640)
+imgsz1 = (global_config.imgsz, global_config.imgszy)
 device = select_device(device)
 
 
