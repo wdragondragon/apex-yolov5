@@ -74,7 +74,7 @@ GIT_INFO = check_git_info()
 
 def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictionary
     save_dir, epochs, batch_size, weights, single_cls, evolve, data, cfg, resume, noval, nosave, workers, freeze = \
-        Path(opt.save_dir), opt.epochs, opt.buffer_size, opt.weights, opt.single_cls, opt.evolve, opt.data, opt.cfg, \
+        Path(opt.save_dir), opt.epochs, opt.batch_size, opt.weights, opt.single_cls, opt.evolve, opt.data, opt.cfg, \
         opt.resume, opt.noval, opt.nosave, opt.workers, opt.freeze
     callbacks.run('on_pretrain_routine_start')
 
@@ -107,7 +107,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         # Process custom dataset artifact link
         data_dict = loggers.remote_dataset
         if resume:  # If resuming runs from remote artifact
-            weights, epochs, hyp, batch_size = opt.weights, opt.epochs, opt.hyp, opt.buffer_size
+            weights, epochs, hyp, batch_size = opt.weights, opt.epochs, opt.hyp, opt.batch_size
 
     # Config
     plots = not evolve and not opt.noplots  # create plots
