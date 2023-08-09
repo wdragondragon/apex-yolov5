@@ -11,7 +11,7 @@ isRightKeyDown = False
 isLeftKeyDown = False
 mouseFlag = 0  # 0, 1 2 3
 lock_mode = False  # don's edit this
-step = 5
+step = 1
 num_lock_pressed = True
 keyboard = KeyController()
 middle_toggle = False
@@ -47,8 +47,8 @@ def start():
             # LogWindow().print_log("开始移动，移动距离:{}".format((x, y)))
             while x != 0 or y != 0:
                 (x, y) = intention
-                move_up = min(1, abs(x)) * (1 if x > 0 else -1)
-                move_down = min(1, abs(y)) * (1 if y > 0 else -1)
+                move_up = min(step, abs(x)) * (1 if x > 0 else -1)
+                move_down = min(step, abs(y)) * (1 if y > 0 else -1)
                 if x == 0:
                     move_up = 0
                 elif y == 0:
