@@ -21,8 +21,8 @@ from utils.torch_utils import select_device
 # weights = 'best.pt' #这个模型最好
 
 # weights = 'apex-yolov5/apex.pt'
-weights = './apex_yolov5/apex3.engine'
-data = './models/mydata.yaml'
+weights = global_config.weights
+data = global_config.data
 
 # weights = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/apex_yolov5/apex-1050.engine'
 # data = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/models/mydata.yaml'

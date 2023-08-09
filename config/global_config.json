@@ -1,16 +1,23 @@
 {
-    "listener_ip": "192.168.10.3",
-    "listener_port": 8888,
-    "buffer_size": 204800,
-    "device": "cuda",
-    "imgszx": 320,
-    "imgszy": 288,
-    "conf_thres": 0.5,
-    "iou_thres": 0.05,
-    "screen_width": 2560,
-    "screen_height": 1440,
-    "offset_shot_screen_x": 10,
-    "offset_shot_screen_y": 15,
-    "is_show_debug_window": false,
-    "move_mouse_speed": 2
+  "weights": "./apex_model/1w2/best.engine",
+  "data": "./apex_model/1w2/1w.yaml",
+  "listener_ip": "192.168.10.3",
+  "listener_port": 8888,
+  "buffer_size": 204800,
+  "device": "cuda",
+  "imgszx": 320,
+  "imgszy": 288,
+  "conf_thres": 0.5,
+  "iou_thres": 0.05,
+  "screen_width": 2560,
+  "screen_height": 1440,
+  "offset_shot_screen_x": 10,
+  "offset_shot_screen_y": 15,
+  "is_show_debug_window": true,
+  "move_mouse_speed": 2,
+  "move_step": 1,
+  "lock_index": [
+    "1",
+    "2"
+  ]
 }

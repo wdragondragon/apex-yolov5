@@ -11,7 +11,7 @@ isRightKeyDown = False
 isLeftKeyDown = False
 mouseFlag = 0  # 0, 1 2 3
 lock_mode = False  # don's edit this
-step = 1
+step = global_config.move_step
 num_lock_pressed = True
 keyboard = KeyController()
 middle_toggle = False
@@ -30,6 +30,7 @@ def set_intention(x, y):
 
 def get_lock_mode():
     # return True
+    # print(lock_mode)
     return lock_mode and num_lock_pressed and middle_toggle
 
 

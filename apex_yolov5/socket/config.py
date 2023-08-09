@@ -13,6 +13,8 @@ if op.exists(global_config_path):
 
 class Config:
     def __init__(self, data):
+        self.weights = self.get_config(data, 'weights')
+        self.data = self.get_config(data, 'data')
         self.listener_ip = self.get_config(data, 'listener_ip')
         self.listener_port = self.get_config(data, 'listener_port')
         self.buffer_size = self.get_config(data, 'buffer_size')
@@ -31,6 +33,8 @@ class Config:
         self.offset_shot_screen_y = self.get_config(data, 'offset_shot_screen_y')
         self.is_show_debug_window = self.get_config(data, "is_show_debug_window")  # 可修改为True，会出现调试窗口
         self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
+        self.move_step = self.get_config(data, "move_step")
+        self.lock_index = self.get_config(data, "lock_index")  # 锁定目标的索引
 
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
