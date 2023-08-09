@@ -7,6 +7,7 @@ import zlib
 
 import cv2
 import numpy as np
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
 from apex_yolov5 import LogUtil
@@ -86,8 +87,8 @@ def main():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     log_window = LogWindow()
-
     if global_config.is_show_debug_window:
+        log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
         threading.Thread(target=log_window.show_msg).start()
         log_window.show()
     threading.Thread(target=main).start()
