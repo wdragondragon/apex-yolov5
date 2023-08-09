@@ -1,22 +1,20 @@
 import time
 
-from apex_yolov5.LogWindow import LogWindow
-from apex_yolov5.mouse_controller import get_mouse_position, is_numlock_locked, set_mouse_position
-from pynput.keyboard import Controller as KeyController, Key
+from pynput.mouse import Button
+
+from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
+from apex_yolov5.ScreenUtil import select_gun
+from apex_yolov5.mouse_controller import get_mouse_position, set_mouse_position, left_click
 from apex_yolov5.socket.config import global_config
 
 intention = None
 intention_handler = False
-isRightKeyDown = False
-isLeftKeyDown = False
-mouseFlag = 0  # 0, 1 2 3
-lock_mode = False  # don's edit this
 step = global_config.move_step
-num_lock_pressed = True
-keyboard = KeyController()
-middle_toggle = False
-
 change_coordinates_num = 0
+
+last_click_time = 0
+click_interval = 0.1
+click_sign = False
 
 
 def set_intention(x, y):
@@ -28,20 +26,24 @@ def set_intention(x, y):
     change_coordinates_num += 1
 
 
+def set_click():
+    global click_sign
+    click_sign = True
+
+
 def get_lock_mode():
-    # return True
-    # print(lock_mode)
-    return lock_mode and num_lock_pressed and middle_toggle
-
-
-def set_lock_mode(lock):
-    global lock_mode
-    lock_mode = lock
+    lock_mode = apex_mouse_listener.is_press(Button.left) or apex_mouse_listener.is_press(
+        Button.right) or apex_mouse_listener.is_press(Button.x2)
+    return lock_mode and apex_mouse_listener.middle_toggle
 
 
 def start():
-    global intention, intention_handler, change_coordinates_num
+    global intention, intention_handler, change_coordinates_num, last_click_time, click_sign
     while True:
+        if click_sign and time.time() - last_click_time > click_interval and select_gun.current_gun in global_config.click_gun:
+            left_click()
+            last_click_time = time.time()
+            click_sign = False
         if get_lock_mode() and intention is not None:
             t0 = time.time()
             (x, y) = intention
@@ -63,46 +65,7 @@ def start():
             intention = None
             # LogWindow().print_log(
             #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
-        elif not lock_mode:
+        elif not get_lock_mode():
             intention = None
         time.sleep(0.01)
         change_coordinates_num = 0
-
-
-def on_press(key):
-    global num_lock_pressed
-
-    try:
-        # 检查按下的键是否为 Num Lock 键
-        if key == Key.num_lock:
-            num_lock_pressed = is_numlock_locked()
-            print(f"Num Lock is {'ON' if num_lock_pressed else 'OFF'}")
-    except AttributeError:
-        pass
-
-
-def on_click(x, y, button, pressed):
-    global lock_mode, isLeftKeyDown, isRightKeyDown, mouseFlag, middle_toggle
-    if pressed:
-        if button == button.left:
-            lock_mode = True
-            isLeftKeyDown = True
-        if button == button.right:
-            lock_mode = True
-            isRightKeyDown = True
-        if button == button.middle:
-            middle_toggle = not middle_toggle
-    else:
-        if button == button.left:
-            isLeftKeyDown = False
-        if button == button.right:
-            isRightKeyDown = False
-        if isLeftKeyDown or isRightKeyDown:
-            lock_mode = True
-        else:
-            lock_mode = False
-
-
-def on_move(x, y):
-    # print("on_move: {}".format((x, y)))
-    pass

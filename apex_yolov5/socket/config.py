@@ -4,10 +4,20 @@ import os.path as op
 import jsonpath as jsonpath
 import json
 
+from apex_yolov5.Tools import Tools
+
+screenshot_resolution = {
+    (1920, 1080): (1542, 959, 1695, 996),
+    (2560, 1440): (2093, 1281, 2275, 1332),
+    # (2560, 1440): (1905, 1092, 2087, 1143),
+    (3440, 1440): (2093, 1281, 2275, 1332)
+}
+(x, y) = Tools.get_resolution()
+
 global_config = dict()
 global_config_path = 'config\\global_config.json'
 if op.exists(global_config_path):
-    with open(global_config_path, 'r') as global_file:
+    with open(global_config_path, 'r', encoding='utf-8') as global_file:
         global_config = json.load(global_file)
 
 
@@ -36,6 +46,8 @@ class Config:
         self.move_step = self.get_config(data, "move_step")
         self.lock_index = self.get_config(data, "lock_index")  # 锁定目标的索引
         self.aim_type = self.get_config(data, "aim_type")  # 锁定目标的索引
+        self.refresh_button = self.get_config(data, "refresh_button")  # 刷新按钮
+        self.click_gun = self.get_config(data, "click_gun")  # 点击枪械
 
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
@@ -48,6 +60,8 @@ class Config:
         self.region = (self.left_top_x, self.left_top_y, self.right_bottom_x, self.right_bottom_y)
         self.window_name = "apex-gun"
         self.lock_move_speed = 2 / self.move_mouse_speed  # 锁定模式下鼠标移动速度
+        self.select_gun_bbox = screenshot_resolution[(x, y)]  # 选择枪械的区域
+        self.image_path = 'images/' + '{}x{}/'.format(x, y)  # 枪械图片路径
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 

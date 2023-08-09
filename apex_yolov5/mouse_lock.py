@@ -1,71 +1,12 @@
-import time
-
-import win32api
-import win32con
-
-from apex_yolov5.auxiliary import set_intention
+from apex_yolov5.auxiliary import set_intention, set_click
+from apex_yolov5.mouse_controller import left_click
 from apex_yolov5.socket.config import global_config
-
-
-def mouse_To1(des_X, des_Y, current_mouse_x=0, current_mouse_y=0):
-    up = des_X - current_mouse_x
-    down = des_Y - current_mouse_y
-    up = int(up)
-    down = int(down)
-
-    # win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, up, down)
-    # 计算移动的单位数
-    move_up = min(1, abs(up)) * (1 if up > 0 else -1)
-    move_down = min(1, abs(down)) * (1 if down > 0 else -1)
-    t0 = time.time()
-    while up != 0 or down != 0:
-        time.sleep(0.00001)
-        if up == 0:
-            move_up = 0
-        elif down == 0:
-            move_down = 0
-        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, move_up, move_down)
-        up -= move_up
-        down -= move_down
-        # print("up: {}, down: {}".format(up, down))
-    print("完成移动时间：{}ms".format((time.time() - t0) * 1000))
-    # pyautogui.moveRel(up, down, duration=0.1)
-
-
-def mouse_To(des_X, des_Y, current_mouse_x=0, current_mouse_y=0):
-    # 效果不好
-    up = des_X - current_mouse_x
-    down = des_Y - current_mouse_y
-    if up == 0 and down == 0:
-        return
-    up = int(up)
-    down = int(down)
-    movingUp = up // 2
-    movingDown = down // 2
-    abs_up = up if up > 0 else -up
-    abs_down = down if down > 0 else -down
-    Max = max(abs_down, abs_up)
-    ite = Max
-    for i in range(ite):
-        if (2 ** i) > Max:
-            break
-        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, movingUp, movingDown)
-        movingUp = movingUp // 2
-        movingDown = movingDown // 2
-
-    # mouse_xy(int(up),int(down))
-    # des_Y = int(des_Y)
-    # des_X = int(des_X)
-    # pydirectinput.moveTo(int(des_X),int(des_Y))
 
 
 def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     # shot_width 截图高度，shot_height 截图区域高度
     # x,y 是分辨率
     # mouse_x,mouse_y = mouse.position
-
-    current_mouse_x = screen_width / 2  # 当前鼠标坐标，为屏幕中心
-    current_mouse_y = screen_height / 2  # 同上
     current_mouse_x, current_mouse_y = mouse.position
     dist_list = []
     aims_copy = aims.copy()
@@ -91,6 +32,14 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
     # dist = (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2
     set_intention(targetRealX, targetRealY)
+
+    # tag, x_center, y_center, width, height = det
+    width = shot_width * float(target_width)
+    height = shot_height * float(target_height)
+    (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
+    (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
+    if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
+        set_click()
 
     # if(dist < 100000):
     # if (dist < 20000):

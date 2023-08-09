@@ -3,25 +3,25 @@ import socket
 import sys
 import threading
 import time
-import zlib
 
 import pynput
 from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5 import LogUtil
+from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
-from apex_yolov5.auxiliary import get_lock_mode, on_click, on_move, on_press, start
+from apex_yolov5.auxiliary import get_lock_mode, start
 from apex_yolov5.grabscreen import grab_screen_int_array
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 
 listener = pynput.mouse.Listener(
-    on_click=on_click, on_move=on_move)
+    on_click=apex_mouse_listener.on_click)
 listener.start()
 
 key_listener = pynput.keyboard.Listener(
-    on_press=on_press,
+    on_press=apex_key_listener.on_press, on_release=apex_key_listener.on_release
 )
 key_listener.start()
 

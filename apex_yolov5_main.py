@@ -1,18 +1,17 @@
 import sys
 import threading
+import time
 
 import cv2
 import numpy as np
 import pynput.mouse
-import time
 import torch
-import win32con
-import win32gui
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
+from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listener
 from apex_yolov5.LogWindow import LogWindow
-from apex_yolov5.auxiliary import on_click, get_lock_mode, on_move, on_press, start
+from apex_yolov5.auxiliary import get_lock_mode, start
 from apex_yolov5.grabscreen import grab_screen
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
@@ -101,11 +100,11 @@ def main():
 if __name__ == "__main__":
     # ...or, in a non-blocking fashion:
     listener = pynput.mouse.Listener(
-        on_click=on_click, on_move=on_move)
+        on_click=apex_mouse_listener.on_click)
     listener.start()
 
     key_listener = pynput.keyboard.Listener(
-        on_press=on_press,
+        on_press=apex_key_listener.on_press, on_release=apex_key_listener.on_release
     )
     key_listener.start()
 

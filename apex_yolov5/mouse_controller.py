@@ -27,6 +27,11 @@ def set_mouse_position(x, y):
     user32.mouse_event(MOUSEEVENTF_MOVE, x, y)
 
 
+def left_click():
+    user32.mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+    user32.mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+
+
 def is_numlock_locked():
     # 使用ctypes获取键盘状态信息
     # 0x90 是Num Lock键的虚拟键码
