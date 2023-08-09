@@ -82,7 +82,6 @@ def main():
                         line = (cls, *xywh)  # label format
                         aim = ('%g ' * len(line)).rstrip() % line
                         aim = aim.split(' ')
-                        # print("aim:",aim)
                         aims.append(aim)
                 if len(aims):
                     if get_lock_mode():

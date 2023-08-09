@@ -1,4 +1,4 @@
-path: ./apex_model  # dataset root dir
+path: ./apex_model/1w2  # dataset root dir
 train: images/train
 val: images/val
 test: images/test

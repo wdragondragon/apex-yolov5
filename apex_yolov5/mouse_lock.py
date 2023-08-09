@@ -4,8 +4,7 @@ import win32api
 import win32con
 
 from apex_yolov5.auxiliary import set_intention
-
-lock_tag = '0'
+from apex_yolov5.socket.config import global_config
 
 
 def mouse_To1(des_X, des_Y, current_mouse_x=0, current_mouse_y=0):
@@ -71,7 +70,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     dist_list = []
     aims_copy = aims.copy()
     # print(aims_copy)
-    aims_copy = [x for x in aims_copy if x[0] == lock_tag]
+    aims_copy = [x for x in aims_copy if x[0] in global_config.lock_index]
     if len(aims_copy) == 0:
         return
     for det in aims_copy:
