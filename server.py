@@ -1,15 +1,31 @@
 import pickle
 import socket
+import sys
+import threading
 import time
 import zlib
 
 import cv2
 import numpy as np
+from PyQt5.QtWidgets import QApplication
 
 from apex_yolov5 import LogUtil
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
+
+use_time_dict = dict()
+
+
+def set_time(use_time_type, use_time):
+    use_time_dict[use_time_type] = use_time_dict.get(use_time_type, 0) + use_time
+
+
+def print_time(print_count):
+    for k, v in use_time_dict.items():
+        print("步骤[{}]使用平均时间:{}ms".format(k, v * 1000 / print_count))
+    use_time_dict.clear()
+
 
 def main():
     # 创建一个TCP/IP套接字
@@ -36,8 +52,8 @@ def main():
                 img_data = socket_util.recv(client_socket, buffer_size=buffer_size)
                 LogUtil.set_time("接受图片", time.time() - t1)
                 t5 = time.time()
-                img_data = zlib.decompress(img_data)
-                LogUtil.set_time("解压图片", time.time() - t5)
+                # img_data = zlib.decompress(img_data)
+                set_time("解压图片", time.time() - t5)
                 t2 = time.time()
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
@@ -78,4 +94,9 @@ def main():
             log_ui.destroy()
 
 
-main()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    log_window = LogWindow()
+    log_window.show()
+    threading.Thread(target=main).start()
+    sys.exit(app.exec_())
