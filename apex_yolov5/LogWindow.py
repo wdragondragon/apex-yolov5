@@ -1,15 +1,10 @@
-import queue
-import sys
-import time
 from datetime import datetime
 
-from PyQt5.QtCore import Qt, QPoint, QRect
-from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QFont, QColor
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLabel
+from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLabel
 
 from apex_yolov5.socket.config import global_config
-
-message_queue = queue.Queue()
 
 
 class LogWindow(QMainWindow):
@@ -47,39 +42,9 @@ class LogWindow(QMainWindow):
         container.setLayout(layout)
         self.setCentralWidget(container)
 
-    @staticmethod
-    def set_image(img_data, bboxes):
-        message_queue.put({'msg_type': 'image', 'param': (img_data, bboxes)})
-
-    @staticmethod
-    def print_log(log):
-        message_queue.put({'msg_type': 'log', 'param': (log)})
-
-    def show_msg(self):
-        while True:
-            if not message_queue.empty():
-                msg = message_queue.get()
-                msg_type = msg['msg_type']
-                param = msg['param']
-                if msg_type == 'image':
-                    self.show_image(*param)
-                elif msg_type == 'log':
-                    self.show_log(param)
-            QApplication.processEvents()
-            time.sleep(0.01)
-
-    def show_log(self, log):
-        # 获取当前日期和时间
-        now = datetime.now()
-        # 格式化日期为字符串
-        formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
-        msg = "[{}]{}".format(formatted_date, log)
-        if global_config.is_show_debug_window:
-            self.log_text.append(msg)
-            self.log_text.moveCursor(self.log_text.textCursor().End)
-        print(msg)
-
-    def show_image(self, img_data, bboxes):
+    def set_image(self, img_data, bboxes):
+        if not global_config.is_show_debug_window:
+            return
         # 将 OpenCV 图像转换为 QImage
         height, width, channel = img_data.shape
         bytes_per_line = 3 * width
@@ -101,3 +66,14 @@ class LogWindow(QMainWindow):
         painter.end()
         self.image_label.setPixmap(pixmap)
         self.image_label.update()
+
+    def print_log(self, log):
+        # 获取当前日期和时间
+        now = datetime.now()
+        # 格式化日期为字符串
+        formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
+        msg = "[{}]{}".format(formatted_date, log)
+        # if global_config.is_show_debug_window:
+        #     self.log_text.append(msg)
+        #     self.log_text.moveCursor(self.log_text.textCursor().End)
+        print(msg)

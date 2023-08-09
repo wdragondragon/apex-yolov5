@@ -118,7 +118,6 @@ if __name__ == "__main__":
 
     if global_config.is_show_debug_window:
         log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
-        threading.Thread(target=log_window.show_msg).start()
         log_window.show()
     threading.Thread(target=main).start()
     sys.exit(app.exec_())
