@@ -19,24 +19,6 @@ from apex_yolov5.socket.yolov5_handler import model
 from utils.augmentations import letterbox
 from utils.general import non_max_suppression, scale_boxes, xyxy2xywh
 
-# ...or, in a non-blocking fashion:
-listener = pynput.mouse.Listener(
-    on_click=on_click, on_move=on_move)
-listener.start()
-
-key_listener = pynput.keyboard.Listener(
-    on_press=on_press,
-)
-key_listener.start()
-
-names = model.module.names if hasattr(model, 'module') else model.names
-
-threading.Thread(target=start).start()
-
-
-# threading.Thread(target=loop_screen, args=((left_top_x, left_top_y, right_bottom_x, right_bottom_y),
-#                                            shot_Width,
-#                                            shot_Height)).start()
 
 def main():
     print_count = 0
@@ -116,9 +98,25 @@ def main():
 
 # main()
 if __name__ == "__main__":
+    # ...or, in a non-blocking fashion:
+    listener = pynput.mouse.Listener(
+        on_click=on_click, on_move=on_move)
+    listener.start()
+
+    key_listener = pynput.keyboard.Listener(
+        on_press=on_press,
+    )
+    key_listener.start()
+
+    names = model.module.names if hasattr(model, 'module') else model.names
+
+    threading.Thread(target=start).start()
+
     app = QApplication(sys.argv)
     log_window = LogWindow()
+
     if global_config.is_show_debug_window:
+        threading.Thread(target=log_window.show_msg).start()
         log_window.show()
     threading.Thread(target=main).start()
     sys.exit(app.exec_())
