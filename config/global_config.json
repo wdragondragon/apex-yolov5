@@ -16,7 +16,16 @@
   "is_show_debug_window": true,
   "move_mouse_speed": 2,
   "move_step": 1,
-  "lock_index": {
+  "lock_index": [
+    "1",
+    "2"
+  ],
+  "aim_type": {
+    "0": [
+      0,
+      255,
+      0
+    ],
     "1": [
       255,
       0,

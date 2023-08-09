@@ -70,7 +70,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     dist_list = []
     aims_copy = aims.copy()
     # print(aims_copy)
-    aims_copy = [x for x in aims_copy if x[0] in global_config.lock_index.keys()]
+    aims_copy = [x for x in aims_copy if x[0] in global_config.lock_index]
     if len(aims_copy) == 0:
         return
     for det in aims_copy:

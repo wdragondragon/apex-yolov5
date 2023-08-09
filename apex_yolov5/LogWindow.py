@@ -64,7 +64,7 @@ class LogWindow(QMainWindow):
                 if msg_type == 'image':
                     self.show_image(*param)
                 elif msg_type == 'log':
-                    self.show_log(*param)
+                    self.show_log(param)
             QApplication.processEvents()
             time.sleep(0.01)
 
@@ -89,7 +89,7 @@ class LogWindow(QMainWindow):
         painter = QPainter(pixmap)
         for bbox in bboxes:
             tag, top_left, bottom_right = bbox
-            color = global_config.lock_index[tag]
+            color = global_config.aim_type[tag]
             pen = QPen(QColor(color[0], color[1], color[2]), 5)  # 设置颜色和线宽
             painter.setPen(pen)
             # 在图像上绘制矩形

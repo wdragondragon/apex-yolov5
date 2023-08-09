@@ -35,6 +35,7 @@ class Config:
         self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
         self.move_step = self.get_config(data, "move_step")
         self.lock_index = self.get_config(data, "lock_index")  # 锁定目标的索引
+        self.aim_type = self.get_config(data, "aim_type")  # 锁定目标的索引
 
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
