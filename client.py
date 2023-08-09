@@ -89,6 +89,7 @@ def main():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     log_window = LogWindow()
-    log_window.show()
+    if global_config.is_show_debug_window:
+        log_window.show()
     threading.Thread(target=main).start()
     sys.exit(app.exec_())
