@@ -1,15 +1,19 @@
 import pickle
 import socket
+import sys
+import threading
 import time
 import zlib
 
 import cv2
 import numpy as np
+from PyQt5.QtWidgets import QApplication
 
 from apex_yolov5 import LogUtil
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
+
 
 def main():
     # 创建一个TCP/IP套接字
@@ -78,4 +82,13 @@ def main():
             log_ui.destroy()
 
 
-main()
+# main()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    log_window = LogWindow()
+
+    if global_config.is_show_debug_window:
+        threading.Thread(target=log_window.show_msg).start()
+        log_window.show()
+    threading.Thread(target=main).start()
+    sys.exit(app.exec_())

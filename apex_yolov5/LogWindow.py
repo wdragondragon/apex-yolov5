@@ -55,7 +55,7 @@ class LogWindow(QMainWindow):
     def print_log(log):
         message_queue.put({'msg_type': 'log', 'param': (log)})
 
-    def show(self):
+    def show_msg(self):
         while True:
             if not message_queue.empty():
                 msg = message_queue.get()
