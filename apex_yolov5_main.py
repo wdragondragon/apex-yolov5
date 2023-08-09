@@ -82,7 +82,8 @@ def main():
                         line = (cls, *xywh)  # label format
                         aim = ('%g ' * len(line)).rstrip() % line
                         aim = aim.split(' ')
-                        aims.append(aim)
+                        if aim[0] in global_config.aim_list:
+                            aims.append(aim)
                 if len(aims):
                     if get_lock_mode():
                         lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
