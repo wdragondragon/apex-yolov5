@@ -2,7 +2,7 @@ import sys
 from datetime import datetime
 
 from PyQt5.QtCore import Qt, QPoint, QRect
-from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QFont
+from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QFont, QColor
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLabel
 
 from apex_yolov5.socket.config import global_config
@@ -51,10 +51,11 @@ class LogWindow(QMainWindow):
         pixmap = QPixmap.fromImage(q_img)
         # 创建 QPainter 对象并设置画笔
         painter = QPainter(pixmap)
-        pen = QPen(Qt.red, 5)  # 设置颜色和线宽
-        painter.setPen(pen)
         for bbox in bboxes:
             tag, top_left, bottom_right = bbox
+            color = global_config.lock_index[tag]
+            pen = QPen(QColor(color[0], color[1], color[2]), 5)  # 设置颜色和线宽
+            painter.setPen(pen)
             # 在图像上绘制矩形
             top_left = QPoint(*top_left)  # 你的左上角点
             bottom_right = QPoint(*bottom_right)  # 你的右下角点
