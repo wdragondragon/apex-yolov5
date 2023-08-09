@@ -82,8 +82,7 @@ def main():
                         line = (cls, *xywh)  # label format
                         aim = ('%g ' * len(line)).rstrip() % line
                         aim = aim.split(' ')
-                        if aim[0] in global_config.aim_list:
-                            aims.append(aim)
+                        aims.append(aim)
                 if len(aims):
                     if get_lock_mode():
                         lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
@@ -119,6 +118,7 @@ def main():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     log_window = LogWindow()
-    log_window.show()
+    if global_config.is_show_debug_window:
+        log_window.show()
     threading.Thread(target=main).start()
     sys.exit(app.exec_())

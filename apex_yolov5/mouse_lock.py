@@ -68,16 +68,16 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     current_mouse_y = screen_height / 2  # 同上
     current_mouse_x, current_mouse_y = mouse.position
     dist_list = []
-    # aims_copy = aims.copy()
+    aims_copy = aims.copy()
     # print(aims_copy)
-    # aims_copy = [x for x in aims_copy if x[0] in global_config.lock_index]
-    if len(aims) == 0:
+    aims_copy = [x for x in aims_copy if x[0] in global_config.lock_index.keys()]
+    if len(aims_copy) == 0:
         return
-    for det in aims:
+    for det in aims_copy:
         _, x_c, y_c, _, _ = det
         dist = (shot_width * float(x_c) - current_mouse_x) ** 2 + (shot_height * float(y_c) - current_mouse_y) ** 2
         dist_list.append(dist)
-    det = aims[dist_list.index(min(dist_list))]
+    det = aims_copy[dist_list.index(min(dist_list))]
     # print('当前鼠标坐标',mouse.position)
     tag, target_x, target_y, target_width, target_height = det
     # targetRealHeight = shot_height * float(target_height)
