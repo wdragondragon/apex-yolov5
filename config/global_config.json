@@ -3,6 +3,11 @@
   "data": "./models/mydata.yaml",
   "listener_ip": "192.168.10.3",
   "listener_port": 8888,
+  "listener_ports": [
+    8888,
+    8889,
+    8890
+  ],
   "buffer_size": 204800,
   "device": "cuda",
   "imgszx": 320,

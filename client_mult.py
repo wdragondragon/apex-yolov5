@@ -94,10 +94,9 @@ def asyn_compute_picture(client_socket, img):
     send_start_time = time.time()
     socket_util.send(client_socket, img, buffer_size=buffer_size)
     mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
-    recv_mouse_end_time = time.time()
-    if send_start_time > last_recv_mouse_data["send_time"]:
+    if send_start_time > last_recv_mouse_data["send_time"] and mouse_data is not None:
         last_recv_mouse_data["send_time"] = send_start_time
-        last_recv_mouse_data["recv_time"] = recv_mouse_end_time
+        last_recv_mouse_data["recv_time"] = time.time()
         last_recv_mouse_data["mouse_data"] = mouse_data
         mouse_block_queue.put(mouse_data)
     usable_client_socket.put(client_socket)
@@ -109,8 +108,8 @@ def consumption_mouse_data():
     compute_time = time.time()
     while True:
         mouse_data = mouse_block_queue.get()
-        print_count += 1
         aims = pickle.loads(mouse_data)
+        print_count += 1
         if len(aims) and get_lock_mode():
             lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
                  shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
