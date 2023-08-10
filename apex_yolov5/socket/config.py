@@ -62,6 +62,11 @@ class Config:
             self.right_bottom_y = self.screen_height // 2 + self.offset_shot_screen_y * 9
             self.shot_width = 2 * self.offset_shot_screen_x * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
             self.shot_height = 2 * self.offset_shot_screen_y * 9
+        else:
+            self.left_top_x = self.screen_width // 2 - 320
+            self.left_top_y = self.screen_height // 2 - 320
+            self.right_bottom_x = self.screen_width // 2 + 320
+            self.right_bottom_y = self.screen_height // 2 + 320
         self.region = (self.left_top_x, self.left_top_y, self.right_bottom_x, self.right_bottom_y)
         self.window_name = "apex-gun"
         self.lock_move_speed = 2 / self.move_mouse_speed  # 锁定模式下鼠标移动速度

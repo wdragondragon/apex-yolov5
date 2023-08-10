@@ -78,7 +78,8 @@ class ServerSocket:
                         total_size = 0
                         print_count = 0
                         compute_time = now
-            except:
+            except Exception as e:
+                print(e)
                 pass
             finally:
                 # 关闭连接
