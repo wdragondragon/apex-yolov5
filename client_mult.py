@@ -9,7 +9,6 @@ import pynput
 from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
-from apex_yolov5 import LogUtil
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
@@ -51,56 +50,66 @@ class GetBlockQueue:
 
 def socket_start():
     while True:
+        init_socket(global_config.listener_ports)
         try:
-            # ...or, in a non-blocking fashion:
-            # 创建一个TCP/IP套接字
-            listener_ports = global_config.listener_ports
-            for listener_port in listener_ports:
+            while True:
+                img = grab_screen_int_array(region=global_config.region)
+                image_block_queue.put(img)
+        except Exception as e:
+            print(e)
+        finally:
+            # 关闭连接
+            for client_socket_info in client_socket_list:
+                client_socket_info["socket"].close()
+            client_socket_list.clear()
+
+
+def init_socket(listener_ports):
+    # ...or, in a non-blocking fashion:
+    # 创建一个TCP/IP套接字
+    for listener_port in listener_ports:
+        while True:
+            try:
                 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 # 服务器地址和端口
                 server_address = (global_config.listener_ip, listener_port)
                 # 连接服务器
                 client_socket.connect(server_address)
-                client_socket_list.append(client_socket)
-                usable_client_socket.put(client_socket)
-            try:
-                while True:
-                    img = grab_screen_int_array(region=global_config.region)
-                    image_block_queue.put(img)
+                client_socket_info = {"port": listener_port, "socket": client_socket}
+                client_socket_list.append(client_socket_info)
+                usable_client_socket.put(client_socket_info)
             except Exception as e:
                 print(e)
-            finally:
-                # 关闭连接
-                for client_socket in client_socket_list:
-                    client_socket.close()
-                client_socket_list.clear()
-
-        except Exception as e:
-            print(e)
-        finally:
-            time.sleep(1)
-            LogWindow().print_log("连接断开，等待重连...")
+                print("连接失败，等待重连...")
+                time.sleep(1)
+                continue
+            break
 
 
 def consumption_picture():
     while True:
         with consumption_picture_lock:
-            client_socket = usable_client_socket.get()
+            client_socket_info = usable_client_socket.get()
             img = image_block_queue.get()
-        threading.Thread(target=asyn_compute_picture, args=(client_socket, img)).start()
+        threading.Thread(target=asyn_compute_picture, args=(client_socket_info, img)).start()
 
 
-def asyn_compute_picture(client_socket, img):
-    send_start_time = time.time()
-    socket_util.send(client_socket, img, buffer_size=buffer_size)
-    mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
-    if send_start_time > last_recv_mouse_data["send_time"] and mouse_data is not None:
-        last_recv_mouse_data["send_time"] = send_start_time
-        last_recv_mouse_data["recv_time"] = time.time()
-        last_recv_mouse_data["mouse_data"] = mouse_data
-        mouse_block_queue.put(mouse_data)
-    usable_client_socket.put(client_socket)
-    return mouse_data
+def asyn_compute_picture(client_socket_info, img):
+    client_socket = client_socket_info["socket"]
+    try:
+        send_start_time = time.time()
+        socket_util.send(client_socket, img, buffer_size=buffer_size)
+        mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
+        if send_start_time > last_recv_mouse_data["send_time"] and mouse_data is not None:
+            last_recv_mouse_data["send_time"] = send_start_time
+            last_recv_mouse_data["recv_time"] = time.time()
+            last_recv_mouse_data["mouse_data"] = mouse_data
+            mouse_block_queue.put(mouse_data)
+        usable_client_socket.put(client_socket_info)
+    except Exception as e:
+        client_socket.close()
+        client_socket_list.remove(client_socket_info)
+        init_socket([client_socket_info["port"]])
 
 
 def consumption_mouse_data():
@@ -135,6 +144,7 @@ if __name__ == "__main__":
     key_listener.start()
 
     client_socket_list = []
+    reconnect_socket_list = []
     usable_client_socket = GetBlockQueue(name="socket_queue", maxsize=len(global_config.listener_ports))
 
     buffer_size = global_config.buffer_size

@@ -27,7 +27,7 @@ key_listener.start()
 
 threading.Thread(target=start).start()
 
-
+log_util = LogUtil.LogUtil()
 def main():
     while True:
         try:
@@ -48,17 +48,17 @@ def main():
                     print_count += 1
                     t0 = time.time()
                     img = grab_screen_int_array(region=global_config.region)
-                    LogUtil.set_time("截图", time.time() - t0)
+                    log_util.set_time("截图", time.time() - t0)
                     t1 = time.time()
                     # img = zlib.compress(img)
-                    LogUtil.set_time("压缩图片", time.time() - t1)
+                    log_util.set_time("压缩图片", time.time() - t1)
                     # print("发送数据大小：{}".format(len(img)))
                     t2 = time.time()
                     socket_util.send(client_socket, img, buffer_size=buffer_size)
-                    LogUtil.set_time("发送图片", time.time() - t2)
+                    log_util.set_time("发送图片", time.time() - t2)
                     t3 = time.time()
                     mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
-                    LogUtil.set_time("接收鼠标数据", time.time() - t3)
+                    log_util.set_time("接收鼠标数据", time.time() - t3)
                     if not mouse_data:
                         continue
                     t4 = time.time()
@@ -66,11 +66,11 @@ def main():
                     if len(aims) and get_lock_mode():
                         lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
                              shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
-                    LogUtil.set_time("处理鼠标数据", time.time() - t4)
+                    log_util.set_time("处理鼠标数据", time.time() - t4)
                     now = time.time()
                     if now - compute_time > 1:
                         LogWindow().print_log("一秒识别[{}]次:".format(print_count))
-                        LogUtil.print_time(print_count)
+                        log_util.print_time(print_count)
                         print_count = 0
                         compute_time = now
             except:
