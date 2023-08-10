@@ -47,6 +47,6 @@ def get_aims(img0):
                 line = (cls, *xywh)  # label format
                 aim = ('%g ' * len(line)).rstrip() % line
                 aim = aim.split(' ')
-                # print("aim:",aim)
-                aims.append(aim)
+                if aim[1] != 'nan':
+                    aims.append(aim)
     return aims
