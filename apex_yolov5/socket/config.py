@@ -55,7 +55,7 @@ class Config:
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
 
-        if self.shot_width != 0 and self.shot_height != 0:
+        if self.shot_width == 0 and self.shot_height == 0:
             self.left_top_x = self.screen_width // 2 - self.offset_shot_screen_x * 16
             self.left_top_y = self.screen_height // 2 - self.offset_shot_screen_y * 9
             self.right_bottom_x = self.screen_width // 2 + self.offset_shot_screen_x * 16
