@@ -36,6 +36,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     # tag, x_center, y_center, width, height = det
     width = shot_width * float(target_width)
     height = shot_height * float(target_height)
+    print('目标宽度', targetShotY, '目标高度', height)
     (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
     (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
     if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:

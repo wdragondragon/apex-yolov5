@@ -1,9 +1,13 @@
+import time
+from datetime import datetime
+
 import cv2
 import numpy as np
 import win32api
 import win32con
 import win32gui
 import win32ui
+from PIL import Image
 
 
 def grab_screen(region=None):
@@ -84,3 +88,35 @@ def grab_screen_int_array(region=None):
     win32gui.DeleteObject(bmp.GetHandle())
 
     return signedIntsArray
+
+
+last_save_time = time.time()
+
+
+def save_bitmap_to_file(bitmap, width, height, aims):
+    global last_save_time
+    if time.time() - last_save_time < 1:
+        return
+    last_save_time = time.time()
+    # 将位图数据转换为numpy数组
+    img = np.frombuffer(bitmap, dtype='uint8')
+    img.shape = (height, width, 4)
+
+    # 创建一个图像对象
+    image = Image.fromarray(img)
+
+    now = datetime.now()
+    # 格式化日期为字符串
+    formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 保存图像到文件
+    image.save("./apex_model/save/images/" + formatted_date + ".png")
+
+    with open("./apex_model/save/labels/" + formatted_date + ".txt", 'w') as f:
+        length = len(aims)
+        for i in range(length):
+            aim = aims[i]
+            line = ' '.join(str(x) for x in aim)
+            if i != length - 1:
+                f.write(line + '\n')
+            else:
+                f.write(line)

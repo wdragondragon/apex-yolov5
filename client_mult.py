@@ -6,13 +6,14 @@ import threading
 import time
 
 import pynput
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array
+from apex_yolov5.grabscreen import grab_screen_int_array, save_bitmap_to_file
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 
@@ -94,6 +95,9 @@ def consumption_picture():
         threading.Thread(target=asyn_compute_picture, args=(client_socket_info, img)).start()
 
 
+last_save_pic_time = time.time()
+
+
 def asyn_compute_picture(client_socket_info, img):
     client_socket = client_socket_info["socket"]
     try:
@@ -104,7 +108,10 @@ def asyn_compute_picture(client_socket_info, img):
             last_recv_mouse_data["send_time"] = send_start_time
             last_recv_mouse_data["recv_time"] = time.time()
             last_recv_mouse_data["mouse_data"] = mouse_data
-            mouse_block_queue.put(mouse_data)
+            aims = pickle.loads(mouse_data)
+            mouse_block_queue.put(aims)
+            # 获取位图数据
+            save_bitmap_to_file(img, global_config.shot_width, global_config.shot_height, aims)
         usable_client_socket.put(client_socket_info)
     except Exception as e:
         client_socket.close()
@@ -116,8 +123,9 @@ def consumption_mouse_data():
     print_count = 0
     compute_time = time.time()
     while True:
-        mouse_data = mouse_block_queue.get()
-        aims = pickle.loads(mouse_data)
+        # mouse_data = mouse_block_queue.get()
+        aims = mouse_block_queue.get()
+        # aims = pickle.loads(mouse_data)
         print_count += 1
         if len(aims) and get_lock_mode():
             lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
@@ -133,6 +141,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     log_window = LogWindow()
     if global_config.is_show_debug_window:
+        log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
         log_window.show()
 
     listener = pynput.mouse.Listener(

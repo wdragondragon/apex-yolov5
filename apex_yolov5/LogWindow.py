@@ -73,7 +73,7 @@ class LogWindow(QMainWindow):
         # 格式化日期为字符串
         formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
         msg = "[{}]{}".format(formatted_date, log)
-        # if global_config.is_show_debug_window:
-        #     self.log_text.append(msg)
-        #     self.log_text.moveCursor(self.log_text.textCursor().End)
+        if global_config.is_show_debug_window:
+            self.log_text.append(msg)
+            self.log_text.moveCursor(self.log_text.textCursor().End)
         print(msg)

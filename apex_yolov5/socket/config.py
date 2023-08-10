@@ -49,15 +49,19 @@ class Config:
         self.aim_type = self.get_config(data, "aim_type")  # 锁定目标的索引
         self.refresh_button = self.get_config(data, "refresh_button")  # 刷新按钮
         self.click_gun = self.get_config(data, "click_gun")  # 点击枪械
+        self.shot_width = self.get_config(data, "shot_width")
+        self.shot_height = self.get_config(data, "shot_height")
 
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
-        self.left_top_x = self.screen_width // 2 - self.offset_shot_screen_x * 16
-        self.left_top_y = self.screen_height // 2 - self.offset_shot_screen_y * 9
-        self.right_bottom_x = self.screen_width // 2 + self.offset_shot_screen_x * 16
-        self.right_bottom_y = self.screen_height // 2 + self.offset_shot_screen_y * 9
-        self.shot_width = 2 * self.offset_shot_screen_x * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
-        self.shot_height = 2 * self.offset_shot_screen_y * 9
+
+        if self.shot_width != 0 and self.shot_height != 0:
+            self.left_top_x = self.screen_width // 2 - self.offset_shot_screen_x * 16
+            self.left_top_y = self.screen_height // 2 - self.offset_shot_screen_y * 9
+            self.right_bottom_x = self.screen_width // 2 + self.offset_shot_screen_x * 16
+            self.right_bottom_y = self.screen_height // 2 + self.offset_shot_screen_y * 9
+            self.shot_width = 2 * self.offset_shot_screen_x * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
+            self.shot_height = 2 * self.offset_shot_screen_y * 9
         self.region = (self.left_top_x, self.left_top_y, self.right_bottom_x, self.right_bottom_y)
         self.window_name = "apex-gun"
         self.lock_move_speed = 2 / self.move_mouse_speed  # 锁定模式下鼠标移动速度

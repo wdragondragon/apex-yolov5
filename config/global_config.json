@@ -18,6 +18,8 @@
   "screen_height": 1440,
   "offset_shot_screen_x": 10,
   "offset_shot_screen_y": 15,
+  "shot_width": 640,
+  "shot_height": 640,
   "is_show_debug_window": false,
   "move_mouse_speed": 2,
   "move_step": 1,
@@ -47,6 +49,7 @@
     "辅助手枪",
     "莫桑比克",
     "猎兽",
-    "三重"
+    "三重",
+    "和平捍卫者"
   ]
 }

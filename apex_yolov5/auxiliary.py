@@ -34,7 +34,7 @@ def set_click():
 def get_lock_mode():
     lock_mode = apex_mouse_listener.is_press(Button.left) or apex_mouse_listener.is_press(
         Button.right) or apex_mouse_listener.is_press(Button.x2)
-    return lock_mode and apex_mouse_listener.middle_toggle
+    return (lock_mode and apex_mouse_listener.middle_toggle) or select_gun.current_gun in global_config.click_gun
 
 
 def start():
