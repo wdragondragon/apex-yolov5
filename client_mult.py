@@ -19,17 +19,34 @@ from apex_yolov5.socket.config import global_config
 
 
 class GetBlockQueue:
-    def __init__(self, maxsize=1):
+    def __init__(self, name, maxsize=1):
+        self.name = name
         self.lock = threading.Lock()
         self.queue = queue.Queue(maxsize=maxsize)
 
     def get(self):
-        return self.queue.get()
+        # print("[{}]get操作前队列大小：{}".format(self.name, self.queue.qsize()))
+        o = self.queue.get()
+        # print("[{}]get操作后队列大小：{}".format(self.name, self.queue.qsize()))
+        return o
 
     def put(self, data):
-        if self.queue.full():
-            self.queue.get()
-        self.queue.put(data)
+        while True:
+            try:
+                self.queue.put(data, block=False)
+                break
+            except queue.Full:
+                try:
+                    self.queue.get_nowait()
+                except queue.Empty:
+                    pass
+        # print("[{}]put操作后队列大小：{}".format(self.name, self.queue.qsize()))
+
+    def clear(self):
+        with self.lock:
+            while not self.queue.empty():
+                self.queue.get()
+            # print("[{}]清空队列".format(self.name))
 
 
 def socket_start():
@@ -48,28 +65,28 @@ def socket_start():
                 usable_client_socket.put(client_socket)
             try:
                 while True:
-                    t0 = time.time()
                     img = grab_screen_int_array(region=global_config.region)
-                    LogUtil.set_time("截图", time.time() - t0)
                     image_block_queue.put(img)
-            except:
-                pass
+            except Exception as e:
+                print(e)
             finally:
                 # 关闭连接
                 for client_socket in client_socket_list:
                     client_socket.close()
-        except:
-            pass
+                client_socket_list.clear()
+
+        except Exception as e:
+            print(e)
         finally:
             time.sleep(1)
             LogWindow().print_log("连接断开，等待重连...")
-            pass
 
 
 def consumption_picture():
     while True:
-        client_socket = usable_client_socket.get()
-        img = image_block_queue.get()
+        with consumption_picture_lock:
+            client_socket = usable_client_socket.get()
+            img = image_block_queue.get()
         threading.Thread(target=asyn_compute_picture, args=(client_socket, img)).start()
 
 
@@ -119,11 +136,11 @@ if __name__ == "__main__":
     key_listener.start()
 
     client_socket_list = []
-    usable_client_socket = queue.Queue(maxsize=len(global_config.listener_ports))
+    usable_client_socket = GetBlockQueue(name="socket_queue", maxsize=len(global_config.listener_ports))
 
     buffer_size = global_config.buffer_size
-    image_block_queue = GetBlockQueue(maxsize=1)
-    mouse_block_queue = GetBlockQueue(maxsize=1)
+    image_block_queue = GetBlockQueue("image_queue", maxsize=1)
+    mouse_block_queue = GetBlockQueue("image_queue", maxsize=1)
     last_recv_mouse_data = {"send_time": 0.0, "recv_time": 0.0, "mouse_data": None}
 
     # 主线程，用于初始化socket后截图
@@ -131,6 +148,7 @@ if __name__ == "__main__":
     # 鼠标移动线程
     threading.Thread(target=start).start()
     # 图片消费线程，用于发送到服务端
+    consumption_picture_lock = threading.Lock()
     for i in range(len(global_config.listener_ports)):
         threading.Thread(target=consumption_picture).start()
     # 鼠标数据消费线程，用于处理鼠标数据
