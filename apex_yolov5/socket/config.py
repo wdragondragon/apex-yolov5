@@ -27,6 +27,7 @@ class Config:
         self.data = self.get_config(data, 'data')
         self.listener_ip = self.get_config(data, 'listener_ip')
         self.listener_port = self.get_config(data, 'listener_port')
+        self.listener_ports = self.get_config(data, 'listener_ports')
         self.buffer_size = self.get_config(data, 'buffer_size')
         self.device = self.get_config(data, 'device')
         if self.device == 'cuda':
