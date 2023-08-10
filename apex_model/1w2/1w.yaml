@@ -6,6 +6,6 @@ test: images/test
 nc: 3  # number of classes
 #names: ['ct_body', 'ct_head', 't_body', 't_head']  # class names
 names:
-    0: 'team'
-    1: 'enemy'
+    0: 'enemy'
+    1: 'team'
     2: 'through'
