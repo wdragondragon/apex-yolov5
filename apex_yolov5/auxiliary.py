@@ -34,7 +34,7 @@ def set_click():
 def get_lock_mode():
     lock_mode = apex_mouse_listener.is_press(Button.left) or apex_mouse_listener.is_press(
         Button.right) or apex_mouse_listener.is_press(Button.x2)
-    return (lock_mode and apex_mouse_listener.middle_toggle) or select_gun.current_gun in global_config.click_gun
+    return (lock_mode or select_gun.current_gun in global_config.click_gun) and apex_mouse_listener.middle_toggle
 
 
 def start():
@@ -62,6 +62,8 @@ def start():
                 set_mouse_position(int(move_up * global_config.lock_move_speed),
                                    int(move_down * global_config.lock_move_speed))
                 time.sleep(0.001)
+                if not apex_mouse_listener.middle_toggle:
+                    break
             intention = None
             # LogWindow().print_log(
             #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))

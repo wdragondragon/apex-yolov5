@@ -3,7 +3,10 @@ import socket
 import sys
 import threading
 import time
+import traceback
 
+import mss
+import numpy as np
 import pynput
 from PyQt5.QtWidgets import QApplication
 
@@ -12,7 +15,7 @@ from apex_yolov5 import LogUtil
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array
+from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_bitmap_to_file
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 
@@ -28,6 +31,8 @@ key_listener.start()
 threading.Thread(target=start).start()
 
 log_util = LogUtil.LogUtil()
+
+
 def main():
     while True:
         try:
@@ -41,20 +46,26 @@ def main():
             # 连接服务器
             client_socket.connect(server_address)
             buffer_size = global_config.buffer_size
+
+            sct = mss.mss()
             try:
                 print_count = 0
                 compute_time = time.time()
                 while True:
+                    if not apex_mouse_listener.middle_toggle:
+                        time.sleep(0.1)
+                        continue
                     print_count += 1
                     t0 = time.time()
-                    img = grab_screen_int_array(region=global_config.region)
+                    # img = grab_screen_int_array(region=global_config.region)
+                    screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.monitor)
                     log_util.set_time("截图", time.time() - t0)
                     t1 = time.time()
                     # img = zlib.compress(img)
                     log_util.set_time("压缩图片", time.time() - t1)
                     # print("发送数据大小：{}".format(len(img)))
                     t2 = time.time()
-                    socket_util.send(client_socket, img, buffer_size=buffer_size)
+                    socket_util.send(client_socket, screenshot.rgb, buffer_size=buffer_size)
                     log_util.set_time("发送图片", time.time() - t2)
                     t3 = time.time()
                     mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
@@ -71,9 +82,12 @@ def main():
                     if now - compute_time > 1:
                         LogWindow().print_log("一秒识别[{}]次:".format(print_count))
                         log_util.print_time(print_count)
+                        threading.Thread(target=save_bitmap_to_file, args=(screenshot, aims)).start()
                         print_count = 0
                         compute_time = now
-            except:
+            except Exception as e:
+                print(e)
+                traceback.print_exc()
                 pass
             finally:
                 # 关闭连接

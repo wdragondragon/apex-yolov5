@@ -4,6 +4,8 @@ import time
 from datetime import datetime
 
 import cv2
+import mss
+import mss.tools
 import numpy as np
 import win32api
 import win32con
@@ -94,26 +96,23 @@ def grab_screen_int_array(region=None):
     return signedIntsArray
 
 
+def grab_screen_int_array2(sct, monitor=None):
+    return sct.grab(monitor)
+
+
 last_save_time = time.time()
 
 
-def save_bitmap_to_file(bitmap, region, aims):
+def save_bitmap_to_file(screenshot, aims):
     try:
         global last_save_time
-        if time.time() - last_save_time < 1 or len(aims) == 0:
+        if not global_config.auto_save or time.time() - last_save_time < 1 or len(aims) == 0:
             return
-        last_save_time = time.time()
-        img = np.frombuffer(bytes(bitmap), dtype='uint8')
-        left, top, x2, y2 = region
-        width = x2 - left + 1
-        height = y2 - top + 1
-        img = img.reshape((height, width, 4))
+
+        img = np.frombuffer(screenshot.rgb, dtype='uint8')
+        img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
         img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-        img0 = cv2.resize(img0, (global_config.shot_width, global_config.shot_height))
-
-        # 将位图数据转换为numpy数组
-
-        # 创建一个图像对象
+        # img0 = cv2.resize(img0, (global_config.imgsz, global_config.imgszy))
         image = Image.fromarray(img0)
 
         now = datetime.now()

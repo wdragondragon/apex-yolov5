@@ -3,9 +3,11 @@ import socket
 import sys
 import threading
 import time
+import traceback
 
 import cv2
 import numpy as np
+from PIL import Image
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
@@ -15,6 +17,8 @@ from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
 
 log_util = LogUtil.LogUtil()
+
+
 def main():
     # 创建一个TCP/IP套接字
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -45,12 +49,16 @@ def main():
                 t2 = time.time()
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
-                img = np.frombuffer(bytes(img_data), dtype='uint8')
-                left, top, x2, y2 = global_config.region
-                width = x2 - left + 1
-                height = y2 - top + 1
-                img = img.reshape((height, width, 4))
+                # img = np.frombuffer(bytes(img_data), dtype='uint8')
+                # left, top, x2, y2 = global_config.region
+                # width = x2 - left + 1
+                # height = y2 - top + 1
+                # img = img.reshape((height, width, 4))
+                # img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+                img = np.frombuffer(img_data, dtype='uint8')
+                img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
                 img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+
                 log_util.set_time("转换图片", time.time() - t2)
                 # 在这里可以对图像进行进一步处理
                 t3 = time.time()
@@ -71,7 +79,9 @@ def main():
                     total_size = 0
                     print_count = 0
                     compute_time = now
-        except:
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
             pass
         finally:
             # 关闭连接
