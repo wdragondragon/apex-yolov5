@@ -18,6 +18,10 @@ server_socket_list = []
 
 
 class ServerSocket:
+
+    def __init__(self):
+        self.log_util = LogUtil.LogUtil()
+
     def start(self, listener_ip, listener_port):
         # 创建一个TCP/IP套接字
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,10 +45,10 @@ class ServerSocket:
                     # 接收客户端发送的图像数据
                     t1 = time.time()
                     img_data = socket_util.recv(client_socket, buffer_size=buffer_size)
-                    LogUtil.set_time(str(listener_port) + ":接受图片", time.time() - t1)
+                    self.log_util.set_time(str(listener_port) + ":接受图片", time.time() - t1)
                     t5 = time.time()
                     # img_data = zlib.decompress(img_data)
-                    LogUtil.set_time("解压图片", time.time() - t5)
+                    self.log_util.set_time("解压图片", time.time() - t5)
                     t2 = time.time()
                     total_size += len(img_data)
                     # 将接收到的数据转换为图像
@@ -54,15 +58,15 @@ class ServerSocket:
                     height = y2 - top + 1
                     img = img.reshape((height, width, 4))
                     img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-                    LogUtil.set_time(str(listener_port) + ":转换图片", time.time() - t2)
+                    self.log_util.set_time(str(listener_port) + ":转换图片", time.time() - t2)
                     # 在这里可以对图像进行进一步处理
                     t3 = time.time()
                     aims = yolov5_handler.get_aims(img0)
-                    LogUtil.set_time(str(listener_port) + ":转换坐标", time.time() - t3)
+                    self.log_util.set_time(str(listener_port) + ":转换坐标", time.time() - t3)
                     t4 = time.time()
                     aims_data = pickle.dumps(aims)
                     socket_util.send(client_socket, aims_data, buffer_size=buffer_size)
-                    LogUtil.set_time(str(listener_port) + ":发送坐标", time.time() - t4)
+                    self.log_util.set_time(str(listener_port) + ":发送坐标", time.time() - t4)
                     if global_config.is_show_debug_window:
                         log_ui.show(aims, img0)
                     print_count += 1
@@ -70,7 +74,7 @@ class ServerSocket:
                     if now - compute_time > 1:
                         LogWindow().print_log(
                             "识别[{}]次，传输{:.1f}M/s".format(print_count, (1.0 * total_size / 1024 / 1024)))
-                        LogUtil.print_time(print_count)
+                        self.log_util.print_time(print_count)
                         total_size = 0
                         print_count = 0
                         compute_time = now
