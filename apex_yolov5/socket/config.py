@@ -51,6 +51,8 @@ class Config:
         self.click_gun = self.get_config(data, "click_gun")  # 点击枪械
         self.shot_width = self.get_config(data, "shot_width")
         self.shot_height = self.get_config(data, "shot_height")
+        self.auto_save = self.get_config(data, "auto_save")
+        self.auto_save_path = self.get_config(data, "auto_save_path")
 
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改

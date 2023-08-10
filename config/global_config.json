@@ -51,5 +51,7 @@
     "猎兽",
     "三重",
     "和平捍卫者"
-  ]
+  ],
+  "auto_save": true,
+  "auto_save_path": "./apex_model/save/"
 }

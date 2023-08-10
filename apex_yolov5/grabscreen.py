@@ -1,3 +1,5 @@
+import io
+import os
 import time
 from datetime import datetime
 
@@ -8,6 +10,8 @@ import win32con
 import win32gui
 import win32ui
 from PIL import Image
+
+from apex_yolov5.socket.config import global_config
 
 
 def grab_screen(region=None):
@@ -93,30 +97,45 @@ def grab_screen_int_array(region=None):
 last_save_time = time.time()
 
 
-def save_bitmap_to_file(bitmap, width, height, aims):
-    global last_save_time
-    if time.time() - last_save_time < 1:
-        return
-    last_save_time = time.time()
-    # 将位图数据转换为numpy数组
-    img = np.frombuffer(bitmap, dtype='uint8')
-    img.shape = (height, width, 4)
+def save_bitmap_to_file(bitmap, region, aims):
+    try:
+        global last_save_time
+        if time.time() - last_save_time < 1 or len(aims) == 0:
+            return
+        last_save_time = time.time()
+        img = np.frombuffer(bytes(bitmap), dtype='uint8')
+        left, top, x2, y2 = region
+        width = x2 - left + 1
+        height = y2 - top + 1
+        img = img.reshape((height, width, 4))
+        img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+        img0 = cv2.resize(img0, (global_config.shot_width, global_config.shot_height))
 
-    # 创建一个图像对象
-    image = Image.fromarray(img)
+        # 将位图数据转换为numpy数组
 
-    now = datetime.now()
-    # 格式化日期为字符串
-    formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
-    # 保存图像到文件
-    image.save("./apex_model/save/images/" + formatted_date + ".png")
+        # 创建一个图像对象
+        image = Image.fromarray(img0)
 
-    with open("./apex_model/save/labels/" + formatted_date + ".txt", 'w') as f:
-        length = len(aims)
-        for i in range(length):
-            aim = aims[i]
-            line = ' '.join(str(x) for x in aim)
-            if i != length - 1:
-                f.write(line + '\n')
-            else:
-                f.write(line)
+        now = datetime.now()
+        # 格式化日期为字符串
+        formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
+        # 保存图像到文件
+
+        os.makedirs(global_config.auto_save_path + "images/", exist_ok=True)
+        os.makedirs(global_config.auto_save_path + "labels/", exist_ok=True)
+
+        # cv2.imwrite(global_config.auto_save_path + "images/" + formatted_date + ".png", img)
+
+        image.save(global_config.auto_save_path + "images/" + formatted_date + ".png", 'PNG')
+        with open(global_config.auto_save_path + "labels/" + formatted_date + ".txt", 'w') as f:
+            length = len(aims)
+            for i in range(length):
+                aim = aims[i]
+                line = ' '.join(str(x) for x in aim)
+                if i != length - 1:
+                    f.write(line + '\n')
+                else:
+                    f.write(line)
+    except Exception as e:
+        print(e)
+        pass

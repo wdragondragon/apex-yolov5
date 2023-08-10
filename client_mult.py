@@ -111,7 +111,7 @@ def asyn_compute_picture(client_socket_info, img):
             aims = pickle.loads(mouse_data)
             mouse_block_queue.put(aims)
             # 获取位图数据
-            save_bitmap_to_file(img, global_config.shot_width, global_config.shot_height, aims)
+            save_bitmap_to_file(img, global_config.region, aims)
         usable_client_socket.put(client_socket_info)
     except Exception as e:
         client_socket.close()
