@@ -1,0 +1,7 @@
+{
+    "imgsz": [320,320],
+    "weights": ".\\apex_model\\1w2\\best.pt",
+    "data": ".\\apex_model\\1w2\\1w.yaml",
+    "half": true,
+    "device": 0
+}

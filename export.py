@@ -854,6 +854,16 @@ def parse_opt(known=False):
 
 
 def main(opt):
+    # 检查配置文件是否存在
+    config_file = 'config/export_config.json'
+    if os.path.exists(config_file):
+        # 加载配置文件
+        with open(config_file, 'r') as f:
+            config_data = json.load(f)
+        # 使用配置文件的数据覆盖opt的属性
+        for key, value in config_data.items():
+            if hasattr(opt, key):
+                setattr(opt, key, value)
     for opt.weights in (opt.weights if isinstance(opt.weights, list) else [opt.weights]):
         run(**vars(opt))
 

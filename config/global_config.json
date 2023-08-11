@@ -1,7 +1,7 @@
 {
-  "weights": "./apex_model/common/apex-320-288.engine",
-  "data": "./models/mydata.yaml",
-  "listener_ip": "localhost",
+  "weights": "./apex_model/1w2/best-320-320.engine",
+  "data": "./apex_model/1w2/1w.yaml",
+  "listener_ip": "192.168.10.3",
   "listener_port": 8888,
   "listener_ports": [
     8888
@@ -9,7 +9,7 @@
   "buffer_size": 204800,
   "device": "cuda",
   "imgszx": 320,
-  "imgszy": 288,
+  "imgszy": 320,
   "conf_thres": 0.5,
   "iou_thres": 0.05,
   "screen_width": 2560,
@@ -22,13 +22,24 @@
   "move_mouse_speed": 2,
   "move_step": 1,
   "lock_index": [
-    "0"
+    "1",
+    "2"
   ],
   "aim_type": {
     "0": [
       0,
       255,
       0
+    ],
+    "1": [
+      255,
+      0,
+      0
+    ],
+    "2": [
+      0,
+      0,
+      255
     ]
   },
   "refresh_button": [
