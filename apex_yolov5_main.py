@@ -1,6 +1,7 @@
 import sys
 import threading
 import time
+import traceback
 
 import cv2
 import mss
@@ -24,11 +25,11 @@ def main():
     compute_time = time.time()
     while True:
         try:
-            img0 = grab_screen_int_array2(sct, monitor=global_config.monitor)
-            img0 = np.frombuffer(img0.rgb, dtype='uint8')
-            img0 = img0.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
-            img0 = cv2.cvtColor(img0, cv2.COLOR_BGRA2BGR)
-            aims = get_aims(img0)
+            img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
+            img = np.frombuffer(img_origin.rgb, dtype='uint8')
+            img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+            aims = get_aims(img)
             bboxes = []
             if len(aims):
                 if get_lock_mode():
@@ -52,13 +53,14 @@ def main():
             if now - compute_time > 1:
                 image_text = "一秒识别[{}]次:".format(print_count)
                 log_window.print_log(image_text)
-                threading.Thread(target=save_bitmap_to_file, args=(img0.rgb, aims)).start()
+                threading.Thread(target=save_bitmap_to_file, args=(img_origin.rgb, aims)).start()
                 print_count = 0
                 compute_time = now
             if global_config.is_show_debug_window:
-                log_window.set_image(img0, bboxes=bboxes)
+                log_window.set_image(img, bboxes=bboxes)
         except Exception as e:
             log_window.print_log(e)
+            traceback.print_exc()
             pass
 
 
