@@ -103,13 +103,13 @@ def grab_screen_int_array2(sct, monitor=None):
 last_save_time = time.time()
 
 
-def save_bitmap_to_file(screenshot, aims):
+def save_bitmap_to_file(rgb, aims):
     try:
         global last_save_time
         if not global_config.auto_save or time.time() - last_save_time < 1 or len(aims) == 0:
             return
 
-        img = np.frombuffer(screenshot.rgb, dtype='uint8')
+        img = np.frombuffer(rgb, dtype='uint8')
         img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
         img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
         # img0 = cv2.resize(img0, (global_config.imgsz, global_config.imgszy))

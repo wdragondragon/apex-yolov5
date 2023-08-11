@@ -82,7 +82,7 @@ def main():
                     if now - compute_time > 1:
                         LogWindow().print_log("一秒识别[{}]次:".format(print_count))
                         log_util.print_time(print_count)
-                        threading.Thread(target=save_bitmap_to_file, args=(screenshot, aims)).start()
+                        threading.Thread(target=save_bitmap_to_file, args=(screenshot.rgb, aims)).start()
                         print_count = 0
                         compute_time = now
             except Exception as e:
