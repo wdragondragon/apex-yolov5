@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 
+import mss
 import pynput
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
@@ -13,7 +14,7 @@ import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array, save_bitmap_to_file
+from apex_yolov5.grabscreen import grab_screen_int_array, save_bitmap_to_file, grab_screen_int_array2
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 
@@ -50,11 +51,13 @@ class GetBlockQueue:
 
 
 def socket_start():
+    sct = mss.mss()
     while True:
         init_socket(global_config.listener_ports)
         try:
             while True:
-                img = grab_screen_int_array(region=global_config.region)
+                # img = grab_screen_int_array(region=global_config.region)
+                img = grab_screen_int_array2(sct, monitor=global_config.monitor)
                 image_block_queue.put(img)
         except Exception as e:
             print(e)
@@ -102,7 +105,7 @@ def asyn_compute_picture(client_socket_info, img):
     client_socket = client_socket_info["socket"]
     try:
         send_start_time = time.time()
-        socket_util.send(client_socket, img, buffer_size=buffer_size)
+        socket_util.send(client_socket, img.rgb, buffer_size=buffer_size)
         mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
         if send_start_time > last_recv_mouse_data["send_time"] and mouse_data is not None:
             last_recv_mouse_data["send_time"] = send_start_time
@@ -111,7 +114,7 @@ def asyn_compute_picture(client_socket_info, img):
             aims = pickle.loads(mouse_data)
             mouse_block_queue.put(aims)
             # 获取位图数据
-            save_bitmap_to_file(img, global_config.region, aims)
+            save_bitmap_to_file(img.rgb, aims)
         usable_client_socket.put(client_socket_info)
     except Exception as e:
         client_socket.close()
@@ -162,6 +165,7 @@ if __name__ == "__main__":
     last_recv_mouse_data = {"send_time": 0.0, "recv_time": 0.0, "mouse_data": None}
 
     # 主线程，用于初始化socket后截图
+
     threading.Thread(target=socket_start).start()
     # 鼠标移动线程
     threading.Thread(target=start).start()

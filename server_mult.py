@@ -3,6 +3,7 @@ import socket
 import sys
 import threading
 import time
+import traceback
 
 import cv2
 import numpy as np
@@ -52,12 +53,9 @@ class ServerSocket:
                     t2 = time.time()
                     total_size += len(img_data)
                     # 将接收到的数据转换为图像
-                    img = np.frombuffer(bytes(img_data), dtype='uint8')
-                    left, top, x2, y2 = global_config.region
-                    width = x2 - left + 1
-                    height = y2 - top + 1
-                    img = img.reshape((height, width, 4))
-                    img0 = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+                    img0 = np.frombuffer(img_data, dtype='uint8')
+                    img0 = img0.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
+                    img0 = cv2.cvtColor(img0, cv2.COLOR_BGRA2BGR)
                     self.log_util.set_time(str(listener_port) + ":转换图片", time.time() - t2)
                     # 在这里可以对图像进行进一步处理
                     t3 = time.time()
@@ -80,6 +78,7 @@ class ServerSocket:
                         compute_time = now
             except Exception as e:
                 print(e)
+                traceback.print_exc()
                 pass
             finally:
                 # 关闭连接

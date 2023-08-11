@@ -56,19 +56,22 @@ class Config:
 
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
-
+        # 屏幕中心坐标
+        self.screen_center_x, self.screen_center_y = self.screen_width // 2, self.screen_height // 2
         if self.shot_width == 0 and self.shot_height == 0:
-            self.left_top_x = self.screen_width // 2 - self.offset_shot_screen_x * 16
-            self.left_top_y = self.screen_height // 2 - self.offset_shot_screen_y * 9
-            self.right_bottom_x = self.screen_width // 2 + self.offset_shot_screen_x * 16
-            self.right_bottom_y = self.screen_height // 2 + self.offset_shot_screen_y * 9
-            self.shot_width = 2 * self.offset_shot_screen_x * 16  # 截屏区域的实际大小需要乘以2，因为是计算的中心点
-            self.shot_height = 2 * self.offset_shot_screen_y * 9
+            # 截屏区域的实际大小需要乘以2，因为是计算的中心点
+            self.half_shot_width, self.half_shot_height = (self.offset_shot_screen_x * 16,
+                                                           self.offset_shot_screen_y * 9)
+            self.shot_width, self.shot_height = (2 * self.half_shot_width,
+                                                 2 * self.half_shot_height)
         else:
-            self.left_top_x = self.screen_width // 2 - 320
-            self.left_top_y = self.screen_height // 2 - 320
-            self.right_bottom_x = self.screen_width // 2 + 320
-            self.right_bottom_y = self.screen_height // 2 + 320
+            self.half_shot_width, self.half_shot_height = self.shot_width // 2, self.shot_height // 2
+
+        self.left_top_x, self.left_top_y = (self.screen_center_x - self.half_shot_width,
+                                            self.screen_center_y - self.half_shot_height)
+        self.right_bottom_x, self.right_bottom_y = (self.screen_center_x + self.half_shot_width,
+                                                    self.screen_center_y + self.half_shot_height)
+
         self.region = (self.left_top_x, self.left_top_y, self.right_bottom_x, self.right_bottom_y)
         self.monitor = {"top": self.left_top_y, "left": self.left_top_x, "width": self.shot_width,
                         "height": self.shot_height}
