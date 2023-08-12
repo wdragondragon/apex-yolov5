@@ -1,5 +1,5 @@
 {
-  "weights": "./apex_model/1w2/best-320-320.engine",
+  "weights": "./apex_model/1w2/best.engine",
   "data": "./apex_model/1w2/1w.yaml",
   "listener_ip": "192.168.10.3",
   "listener_port": 8888,
@@ -19,11 +19,10 @@
   "shot_width": 0,
   "shot_height": 0,
   "is_show_debug_window": false,
-  "move_mouse_speed": 2,
   "move_step": 1,
+  "move_path_nx": 1,
   "lock_index": [
-    "1",
-    "2"
+    "0"
   ],
   "aim_type": {
     "0": [
@@ -43,11 +42,24 @@
     ]
   },
   "refresh_button": [
-
+    "f",
+    "F",
+    "1",
+    "2"
   ],
   "click_gun": [
-
+    "3030",
+    "EVA-8",
+    "G7",
+    "p2020",
+    "敖犬",
+    "汗洛",
+    "辅助手枪",
+    "莫桑比克",
+    "猎兽",
+    "三重",
+    "和平捍卫者"
   ],
-  "auto_save": true,
+  "auto_save": false,
   "auto_save_path": "./apex_model/save/"
 }

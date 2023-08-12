@@ -62,10 +62,10 @@ def main():
                 print_count = 0
                 compute_time = time.time()
                 while True:
-                    if not Tools.is_apex_windows():
-                        LogWindow().print_log("不是apex窗口")
-                        time.sleep(0.5)
-                        continue
+                    # if not Tools.is_apex_windows():
+                    #     LogWindow().print_log("不是apex窗口")
+                    #     time.sleep(0.5)
+                    #     continue
                     if not apex_mouse_listener.middle_toggle:
                     #     now = time.time()
                     #     if now - compute_time > 1:

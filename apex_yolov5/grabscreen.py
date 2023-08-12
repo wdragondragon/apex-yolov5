@@ -133,7 +133,7 @@ def save_screen_to_file():
 def save_screen_and_aims_save_to_file():
     try:
         global last_save_time, save_sign
-        if not global_config.auto_save or time.time() - last_save_time < 3 or save_sign:
+        if not global_config.auto_save or time.time() - last_save_time < 1 or save_sign:
             return
         save_sign = True
         last_save_time = time.time()
@@ -145,12 +145,21 @@ def save_screen_and_aims_save_to_file():
         img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
         # img0 = cv2.resize(img0, (global_config.imgsz, global_config.imgszy))
         aims = get_aims(img)
+        has_aim = False
+        for aim in aims:
+            if aim[0] in global_config.lock_index:
+                has_aim = True
+                break
+
         if len(aims) == 0:
-            save_image_path = save_no_aim_image_path
-            save_label_path = save_no_aim_label_path
+            if has_aim:
+                save_image_path = save_no_aim_image_path
+                save_label_path = save_no_aim_label_path
+            else:
+                save_image_path = save_has_aim_image_path
+                save_label_path = save_has_aim_label_path
         else:
-            save_image_path = save_has_aim_image_path
-            save_label_path = save_has_aim_label_path
+            return
         now = datetime.now()
         # 格式化日期为字符串
         formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
@@ -159,7 +168,8 @@ def save_screen_and_aims_save_to_file():
         os.makedirs(save_label_path, exist_ok=True)
 
         image = Image.fromarray(img)
-        image.save(save_image_path + formatted_date + ".png", 'PNG')
+        full_save_path = save_image_path + formatted_date + ".png"
+        image.save(full_save_path, 'PNG')
         with open(save_label_path + formatted_date + ".txt", 'w') as f:
             length = len(aims)
             for i in range(length):
@@ -169,7 +179,7 @@ def save_screen_and_aims_save_to_file():
                     f.write(line + '\n')
                 else:
                     f.write(line)
-        print("save image to file: {}".format(formatted_date))
+        print("save image to file: {}".format(full_save_path))
     except Exception as e:
         print(e)
         traceback.print_exc()

@@ -43,8 +43,11 @@ class Config:
         self.offset_shot_screen_x = self.get_config(data, 'offset_shot_screen_x')
         self.offset_shot_screen_y = self.get_config(data, 'offset_shot_screen_y')
         self.is_show_debug_window = self.get_config(data, "is_show_debug_window")  # 可修改为True，会出现调试窗口
-        self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
+        # self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
+        # 最终鼠标移动单次像素
         self.move_step = self.get_config(data, "move_step")
+        # 移动路径倍率
+        self.move_path_nx = self.get_config(data, "move_path_nx")  # 锁定模式下鼠标移动速度
         self.lock_index = self.get_config(data, "lock_index")  # 锁定目标的索引
         self.aim_type = self.get_config(data, "aim_type")  # 锁定目标的索引
         self.refresh_button = self.get_config(data, "refresh_button")  # 刷新按钮
@@ -80,7 +83,6 @@ class Config:
                                   "height": 640}
 
         self.window_name = "apex-gun"
-        self.lock_move_speed = 2 / self.move_mouse_speed  # 锁定模式下鼠标移动速度
         self.select_gun_bbox = screenshot_resolution[(x, y)]  # 选择枪械的区域
         self.image_path = 'images/' + '{}x{}/'.format(x, y)  # 枪械图片路径
 
