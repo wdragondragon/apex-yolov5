@@ -14,6 +14,7 @@ import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5 import LogUtil, check_run
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
 from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_bitmap_to_file
 from apex_yolov5.mouse_lock import lock
@@ -31,6 +32,15 @@ key_listener.start()
 threading.Thread(target=start).start()
 
 log_util = LogUtil.LogUtil()
+
+
+
+
+
+
+
+
+
 
 
 def main():
@@ -52,6 +62,10 @@ def main():
                 print_count = 0
                 compute_time = time.time()
                 while True:
+                    if not Tools.is_apex_windows():
+                        LogWindow().print_log("不是apex窗口")
+                        time.sleep(0.5)
+                        continue
                     if not apex_mouse_listener.middle_toggle:
                         now = time.time()
                         if now - compute_time > 1:

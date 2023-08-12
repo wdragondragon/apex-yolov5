@@ -4,6 +4,7 @@ from io import BytesIO
 import os
 import cv2
 import numpy as np
+import win32gui
 from skimage.metrics import structural_similarity
 from shutil import copyfile
 
@@ -42,3 +43,9 @@ class Tools:
                 copyfile(source_path, target_path)
             else:
                 print("源文件不存在")
+
+    @staticmethod
+    def is_apex_windows():
+        window_handle = win32gui.GetForegroundWindow()
+        window_title = win32gui.GetWindowText(window_handle)
+        return window_title == 'Apex Legends'

@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QApplication
 from apex_yolov5 import check_run
 from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listener
 from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_bitmap_to_file
 from apex_yolov5.mouse_lock import lock
@@ -26,6 +27,10 @@ def main():
     compute_time = time.time()
     while True:
         try:
+            if not Tools.is_apex_windows():
+                LogWindow().print_log("不是apex窗口")
+                time.sleep(0.5)
+                continue
             img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
             img = np.frombuffer(img_origin.rgb, dtype='uint8')
             img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
