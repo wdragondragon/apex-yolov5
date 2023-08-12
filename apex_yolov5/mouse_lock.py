@@ -27,15 +27,16 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     screenCenterX = screen_width // 2
     screenCenterY = screen_height // 2
     left_top_x, left_top_y = screenCenterX - shot_width // 2, screenCenterY - shot_height // 2  # 截图框的左上角坐标
+    # tag, x_center, y_center, width, height = det
+    width = shot_width * float(target_width)
+    height = shot_height * float(target_height)
+
     targetRealX = left_top_x + targetShotX  # 目标在屏幕的坐标
-    targetRealY = left_top_y + targetShotY
+    targetRealY = left_top_y + targetShotY - 0.2 * height
 
     # dist = (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2
     set_intention(targetRealX, targetRealY)
 
-    # tag, x_center, y_center, width, height = det
-    width = shot_width * float(target_width)
-    height = shot_height * float(target_height)
     (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
     (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
     if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
