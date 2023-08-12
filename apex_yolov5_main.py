@@ -15,7 +15,7 @@ from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listen
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array2, save_bitmap_to_file
+from apex_yolov5.grabscreen import grab_screen_int_array2, save_screen_and_aims_save_to_file
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 from apex_yolov5.socket.yolov5_handler import model, get_aims
@@ -59,7 +59,7 @@ def main():
             if now - compute_time > 1:
                 image_text = "一秒识别[{}]次:".format(print_count)
                 log_window.print_log(image_text)
-                threading.Thread(target=save_bitmap_to_file).start()
+                threading.Thread(target=save_screen_and_aims_save_to_file).start()
                 print_count = 0
                 compute_time = now
             if global_config.is_show_debug_window:

@@ -2,6 +2,7 @@ import threading
 
 from apex_yolov5.ScreenUtil import select_gun
 from apex_yolov5.Tools import Tools
+from apex_yolov5.grabscreen import save_screen_to_file
 from apex_yolov5.socket.config import global_config
 
 
@@ -16,9 +17,11 @@ class KeyListener:
 
     # 释放按钮，按esc按键会退出监听
     def on_release(self, key):
-        if not hasattr(key, 'name') and hasattr(key, 'char') and key.char is not None and (
-                key.char in self.refresh_button):
-            threading.Thread(target=select_gun.select_gun).start()
+        if Tools.is_apex_windows() and not hasattr(key, 'name') and hasattr(key, 'char') and key.char is not None:
+            if key.char in self.refresh_button:
+                threading.Thread(target=select_gun.select_gun).start()
+            elif key.char == 'p' or key.char == 'P':
+                threading.Thread(target=save_screen_to_file).start()
 
 
 class MouseListener:

@@ -112,11 +112,28 @@ save_no_aim_image_path = "{}images_no_aim/{}/".format(global_config.auto_save_pa
 save_no_aim_label_path = "{}labels_no_aim/{}/".format(global_config.auto_save_path, start_save_time_format)
 save_count = 0
 
+save_manual_operation_path = "{}labels_manual/{}/".format(global_config.auto_save_path, start_save_time_format)
 
-def save_bitmap_to_file():
+
+def save_screen_to_file():
+    with mss.mss() as sct:
+        screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
+    rgb = screenshot.rgb
+    img = np.frombuffer(rgb, dtype='uint8')
+    img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
+    img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+    image = Image.fromarray(img)
+    now = datetime.now()
+    # 格式化日期为字符串
+    formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
+    os.makedirs(save_manual_operation_path, exist_ok=True)
+    image.save(save_manual_operation_path + formatted_date + ".png", 'PNG')
+
+
+def save_screen_and_aims_save_to_file():
     try:
         global last_save_time, save_sign
-        if not global_config.auto_save or time.time() - last_save_time < 1 or save_sign:
+        if not global_config.auto_save or time.time() - last_save_time < 3 or save_sign:
             return
         save_sign = True
         last_save_time = time.time()

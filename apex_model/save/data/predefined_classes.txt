@@ -1,3 +1,5 @@
 enemy
 team
 through
+wall_enemy
+wall_team

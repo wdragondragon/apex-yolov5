@@ -1,0 +1,11 @@
+path: ./apex_model/1w2  # dataset root dir
+train: images/train
+val: images/val
+test: images/test
+# Classes
+nc: 3  # number of classes
+#names: ['ct_body', 'ct_head', 't_body', 't_head']  # class names
+names:
+    0: 'enemy'
+    1: 'team'
+    2: 'through'
