@@ -106,8 +106,10 @@ save_sign = False
 last_save_time = time.time()
 start_save_time = time.time()
 start_save_time_format = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-save_image_path = "{}images/{}/".format(global_config.auto_save_path, start_save_time_format)
-save_label_path = "{}labels/{}/".format(global_config.auto_save_path, start_save_time_format)
+save_has_aim_image_path = "{}images/{}/".format(global_config.auto_save_path, start_save_time_format)
+save_has_aim_label_path = "{}labels/{}/".format(global_config.auto_save_path, start_save_time_format)
+save_no_aim_image_path = "{}images_no_aim/{}/".format(global_config.auto_save_path, start_save_time_format)
+save_no_aim_label_path = "{}labels_no_aim/{}/".format(global_config.auto_save_path, start_save_time_format)
 save_count = 0
 
 
@@ -127,8 +129,11 @@ def save_bitmap_to_file():
         # img0 = cv2.resize(img0, (global_config.imgsz, global_config.imgszy))
         aims = get_aims(img)
         if len(aims) == 0:
-            save_sign = False
-            return
+            save_image_path = save_no_aim_image_path
+            save_label_path = save_no_aim_label_path
+        else:
+            save_image_path = save_has_aim_image_path
+            save_label_path = save_has_aim_label_path
         now = datetime.now()
         # 格式化日期为字符串
         formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
@@ -136,7 +141,6 @@ def save_bitmap_to_file():
         os.makedirs(save_image_path, exist_ok=True)
         os.makedirs(save_label_path, exist_ok=True)
 
-        # cv2.imwrite(global_config.auto_save_path + "images/" + formatted_date + ".png", img)
         image = Image.fromarray(img)
         image.save(save_image_path + formatted_date + ".png", 'PNG')
         with open(save_label_path + formatted_date + ".txt", 'w') as f:
