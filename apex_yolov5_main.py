@@ -10,6 +10,7 @@ import pynput.mouse
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
+from apex_yolov5 import check_run
 from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listener
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
@@ -53,7 +54,7 @@ def main():
             if now - compute_time > 1:
                 image_text = "一秒识别[{}]次:".format(print_count)
                 log_window.print_log(image_text)
-                threading.Thread(target=save_bitmap_to_file, args=(img_origin.rgb, aims)).start()
+                threading.Thread(target=save_bitmap_to_file).start()
                 print_count = 0
                 compute_time = now
             if global_config.is_show_debug_window:
@@ -67,6 +68,7 @@ def main():
 # main()
 if __name__ == "__main__":
     # ...or, in a non-blocking fashion:
+    check_run.check()
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click)
     listener.start()

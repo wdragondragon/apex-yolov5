@@ -14,7 +14,7 @@ names = model.module.names if hasattr(model, 'module') else model.names
 
 
 def get_aims(img0):
-    img0 = cv2.resize(img0, (global_config.shot_width, global_config.shot_height))
+    # img0 = cv2.resize(img0, (global_config.shot_width, global_config.shot_height))
     stride = model.stride
     img = letterbox(img0, (global_config.imgsz, global_config.imgszy), stride=stride, auto=model.pt)[0]
     img = img.transpose((2, 0, 1))[::-1]

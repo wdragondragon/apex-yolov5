@@ -75,6 +75,10 @@ class Config:
         self.region = (self.left_top_x, self.left_top_y, self.right_bottom_x, self.right_bottom_y)
         self.monitor = {"top": self.left_top_y, "left": self.left_top_x, "width": self.shot_width,
                         "height": self.shot_height}
+
+        self.auto_save_monitor = {"top": self.screen_center_y - 320, "left": self.screen_center_x - 320, "width": 640,
+                                  "height": 640}
+
         self.window_name = "apex-gun"
         self.lock_move_speed = 2 / self.move_mouse_speed  # 锁定模式下鼠标移动速度
         self.select_gun_bbox = screenshot_resolution[(x, y)]  # 选择枪械的区域

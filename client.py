@@ -11,7 +11,7 @@ import pynput
 from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
-from apex_yolov5 import LogUtil
+from apex_yolov5 import LogUtil, check_run
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
@@ -53,6 +53,10 @@ def main():
                 compute_time = time.time()
                 while True:
                     if not apex_mouse_listener.middle_toggle:
+                        now = time.time()
+                        if now - compute_time > 1:
+                            threading.Thread(target=save_bitmap_to_file).start()
+                            compute_time = now
                         time.sleep(0.1)
                         continue
                     print_count += 1
@@ -82,7 +86,7 @@ def main():
                     if now - compute_time > 1:
                         LogWindow().print_log("一秒识别[{}]次:".format(print_count))
                         log_util.print_time(print_count)
-                        threading.Thread(target=save_bitmap_to_file, args=(screenshot.rgb, aims)).start()
+                        threading.Thread(target=save_bitmap_to_file).start()
                         print_count = 0
                         compute_time = now
             except Exception as e:
@@ -101,6 +105,7 @@ def main():
 
 
 if __name__ == "__main__":
+    check_run.check()
     app = QApplication(sys.argv)
     log_window = LogWindow()
     if global_config.is_show_debug_window:

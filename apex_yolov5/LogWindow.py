@@ -48,7 +48,7 @@ class LogWindow(QMainWindow):
         # 将 OpenCV 图像转换为 QImage
         height, width, channel = img_data.shape
         bytes_per_line = 3 * width
-        q_img = QImage(img_data.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+        q_img = QImage(img_data.data, width, height, bytes_per_line, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(q_img)
         # 创建 QPainter 对象并设置画笔
         painter = QPainter(pixmap)
