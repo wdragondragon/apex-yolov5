@@ -58,14 +58,14 @@ def main():
             now = time.time()
             if now - compute_time > 1:
                 image_text = "一秒识别[{}]次:".format(print_count)
-                log_window.print_log(image_text)
+                print(image_text)
                 threading.Thread(target=save_screen_and_aims_save_to_file).start()
                 print_count = 0
                 compute_time = now
             if global_config.is_show_debug_window:
                 log_window.set_image(img, bboxes=bboxes)
         except Exception as e:
-            log_window.print_log(e)
+            print(e)
             traceback.print_exc()
             pass
 

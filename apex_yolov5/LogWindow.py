@@ -20,9 +20,9 @@ class LogWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.config_window = None
-        if not hasattr(self, 'log_text'):
+        if not hasattr(self, 'image_label'):
             # self.app = QApplication(sys.argv)
-            self.log_text = None
+            self.image_label = None
             self.init_ui()
 
     def init_ui(self):
@@ -31,15 +31,15 @@ class LogWindow(QMainWindow):
         self.create_menus()
 
         # 创建 QTextEdit 组件用于显示日志
-        self.log_text = QTextEdit()
-        self.log_text.document().setMaximumBlockCount(200)
-        self.log_text.setReadOnly(True)
+        # self.log_text = QTextEdit()
+        # self.log_text.document().setMaximumBlockCount(200)
+        # self.log_text.setReadOnly(True)
 
         self.image_label = QLabel(self)
         # 添加 QTextEdit 组件到主窗口
         layout = QVBoxLayout()
         layout.addWidget(self.image_label)
-        layout.addWidget(self.log_text)
+        # layout.addWidget(self.log_text)
 
         container = QWidget()
         container.setLayout(layout)
@@ -83,16 +83,16 @@ class LogWindow(QMainWindow):
         self.image_label.setPixmap(pixmap)
         self.image_label.update()
 
-    def print_log(self, log):
-        # 获取当前日期和时间
-        now = datetime.now()
-        # 格式化日期为字符串
-        formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
-        msg = "[{}]{}".format(formatted_date, log)
-        if global_config.is_show_debug_window:
-            self.log_text.append(msg)
-            self.log_text.moveCursor(self.log_text.textCursor().End)
-        print(msg)
+    # def print_log(self, log):
+    #     # 获取当前日期和时间
+    #     now = datetime.now()
+    #     # 格式化日期为字符串
+    #     formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
+    #     msg = "[{}]{}".format(formatted_date, log)
+    #     if global_config.is_show_debug_window:
+    #         self.log_text.append(msg)
+    #         self.log_text.moveCursor(self.log_text.textCursor().End)
+    #     print(msg)
 
 
 class ConfigWindow(QMainWindow):
