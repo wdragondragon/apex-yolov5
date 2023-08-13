@@ -24,42 +24,42 @@ if op.exists(global_config_path):
 class Config:
     def __init__(self, data):
         self.config_data = data
-        self.weights = self.get_config(data, 'weights')
-        self.data = self.get_config(data, 'data')
-        self.listener_ip = self.get_config(data, 'listener_ip')
-        self.listener_port = self.get_config(data, 'listener_port')
-        self.listener_ports = self.get_config(data, 'listener_ports')
-        self.buffer_size = self.get_config(data, 'buffer_size')
-        self.device = self.get_config(data, 'device')
-        if self.device == 'cuda':
-            self.device = 'cuda' if is_available() else 'cpu'
-        self.imgsz = self.get_config(data, 'imgszx')
-        self.imgszy = self.get_config(data, 'imgszy')
-        self.conf_thres = self.get_config(data, 'conf_thres')
-        self.iou_thres = self.get_config(data, 'iou_thres')
-        # 分辨率
-        self.screen_width = self.get_config(data, 'screen_width')
-        self.screen_height = self.get_config(data, 'screen_height')
-        # 截屏区域
-        self.offset_shot_screen_x = self.get_config(data, 'offset_shot_screen_x')
-        self.offset_shot_screen_y = self.get_config(data, 'offset_shot_screen_y')
-        self.is_show_debug_window = self.get_config(data, "is_show_debug_window")  # 可修改为True，会出现调试窗口
-        # self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
-        # 最终鼠标移动单次像素
-        self.move_step = self.get_config(data, "move_step")
-        # 移动路径倍率
-        self.move_path_nx = self.get_config(data, "move_path_nx")  # 锁定模式下鼠标移动速度
-        self.lock_index = self.get_config(data, "lock_index")  # 锁定目标的索引
-        self.aim_type = self.get_config(data, "aim_type")  # 锁定目标的索引
-        self.refresh_button = self.get_config(data, "refresh_button")  # 刷新按钮
-        self.click_gun = self.get_config(data, "click_gun")  # 点击枪械
-        self.shot_width = self.get_config(data, "shot_width")
-        self.shot_height = self.get_config(data, "shot_height")
-        self.auto_save = self.get_config(data, "auto_save")
-        self.auto_save_path = self.get_config(data, "auto_save_path")
         self.init()
 
     def init(self):
+        self.weights = self.get_config(self.config_data, 'weights')
+        self.data = self.get_config(self.config_data, 'data')
+        self.listener_ip = self.get_config(self.config_data, 'listener_ip')
+        self.listener_port = self.get_config(self.config_data, 'listener_port')
+        self.listener_ports = self.get_config(self.config_data, 'listener_ports')
+        self.buffer_size = self.get_config(self.config_data, 'buffer_size')
+        self.device = self.get_config(self.config_data, 'device')
+        if self.device == 'cuda':
+            self.device = 'cuda' if is_available() else 'cpu'
+        self.imgsz = self.get_config(self.config_data, 'imgszx')
+        self.imgszy = self.get_config(self.config_data, 'imgszy')
+        self.conf_thres = self.get_config(self.config_data, 'conf_thres')
+        self.iou_thres = self.get_config(self.config_data, 'iou_thres')
+        # 分辨率
+        self.screen_width = self.get_config(self.config_data, 'screen_width')
+        self.screen_height = self.get_config(self.config_data, 'screen_height')
+        # 截屏区域
+        self.offset_shot_screen_x = self.get_config(self.config_data, 'offset_shot_screen_x')
+        self.offset_shot_screen_y = self.get_config(self.config_data, 'offset_shot_screen_y')
+        self.is_show_debug_window = self.get_config(self.config_data, "is_show_debug_window")  # 可修改为True，会出现调试窗口
+        # self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
+        # 最终鼠标移动单次像素
+        self.move_step = self.get_config(self.config_data, "move_step")
+        # 移动路径倍率
+        self.move_path_nx = self.get_config(self.config_data, "move_path_nx")  # 锁定模式下鼠标移动速度
+        self.lock_index = self.get_config(self.config_data, "lock_index")  # 锁定目标的索引
+        self.aim_type = self.get_config(self.config_data, "aim_type")  # 锁定目标的索引
+        self.refresh_button = self.get_config(self.config_data, "refresh_button")  # 刷新按钮
+        self.click_gun = self.get_config(self.config_data, "click_gun")  # 点击枪械
+        self.shot_width = self.get_config(self.config_data, "shot_width")
+        self.shot_height = self.get_config(self.config_data, "shot_height")
+        self.auto_save = self.get_config(self.config_data, "auto_save")
+        self.auto_save_path = self.get_config(self.config_data, "auto_save_path")
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
         # 屏幕中心坐标

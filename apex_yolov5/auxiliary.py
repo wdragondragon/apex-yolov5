@@ -9,7 +9,6 @@ from apex_yolov5.socket.config import global_config
 
 intention = None
 intention_handler = False
-step = global_config.move_step
 change_coordinates_num = 0
 
 last_click_time = 0
@@ -50,8 +49,8 @@ def start():
             # print("开始移动，移动距离:{}".format((x, y)))
             while x != 0 or y != 0:
                 (x, y) = intention
-                move_up = min(step, abs(x)) * (1 if x > 0 else -1)
-                move_down = min(step, abs(y)) * (1 if y > 0 else -1)
+                move_up = min(global_config.move_step, abs(x)) * (1 if x > 0 else -1)
+                move_down = min(global_config.move_step, abs(y)) * (1 if y > 0 else -1)
                 if x == 0:
                     move_up = 0
                 elif y == 0:
