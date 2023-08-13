@@ -135,7 +135,7 @@ def consumption_mouse_data():
                  shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
         now = time.time()
         if now - compute_time > 1:
-            LogWindow().print_log("一秒移动[{}]次:".format(print_count))
+            print("一秒移动[{}]次:".format(print_count))
             print_count = 0
             compute_time = now
 

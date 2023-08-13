@@ -30,10 +30,10 @@ def main():
     buffer_size = global_config.buffer_size
     while True:
         total_size = 0
-        LogWindow().print_log('等待客户端连接...')
+        print('等待客户端连接...')
         # 等待客户端连接
         client_socket, client_address = server_socket.accept()
-        LogWindow().print_log('客户端已连接:{}'.format(client_address))
+        print('客户端已连接:{}'.format(client_address))
         try:
             print_count = 0
             compute_time = time.time()
@@ -67,7 +67,7 @@ def main():
                 print_count += 1
                 now = time.time()
                 if now - compute_time > 1:
-                    LogWindow().print_log(
+                    print(
                         "识别[{}]次，传输{:.1f}M/s".format(print_count, (1.0 * total_size / 1024 / 1024)))
                     log_util.print_time(print_count)
                     total_size = 0

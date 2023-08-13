@@ -31,11 +31,11 @@ class SelectGun:
             if score_temp > 0.9:
                 break
         if gun_temp == self.current_gun:
-            LogWindow().print_log("当前枪械已经是: {}".format(self.current_gun))
+            print("当前枪械已经是: {}".format(self.current_gun))
             self.select_gun_sign = False
             return
         self.current_gun = gun_temp
-        LogWindow().print_log("枪械: {}, 最大相似度: {}".format(self.current_gun, score_temp))
+        print("枪械: {}, 最大相似度: {}".format(self.current_gun, score_temp))
         self.select_gun_sign = False
 
 

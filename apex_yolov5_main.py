@@ -28,7 +28,7 @@ def main():
     while True:
         try:
             if not Tools.is_apex_windows():
-                LogWindow().print_log("不是apex窗口")
+                print("不是apex窗口")
                 time.sleep(0.5)
                 continue
             img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)

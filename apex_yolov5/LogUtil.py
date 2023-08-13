@@ -11,5 +11,5 @@ class LogUtil:
 
     def print_time(self, print_count):
         for k, v in self.use_time_dict.items():
-            LogWindow().print_log("步骤[{}]使用平均时间:{}ms".format(k, v * 1000 / print_count))
+            print("步骤[{}]使用平均时间:{}ms".format(k, v * 1000 / print_count))
         self.use_time_dict.clear()

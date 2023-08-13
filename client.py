@@ -63,7 +63,7 @@ def main():
                 compute_time = time.time()
                 while True:
                     # if not Tools.is_apex_windows():
-                    #     LogWindow().print_log("不是apex窗口")
+                    #     print("不是apex窗口")
                     #     time.sleep(0.5)
                     #     continue
                     if not apex_mouse_listener.middle_toggle:
@@ -98,7 +98,7 @@ def main():
                     log_util.set_time("处理鼠标数据", time.time() - t4)
                     now = time.time()
                     if now - compute_time > 1:
-                        LogWindow().print_log("一秒识别[{}]次:".format(print_count))
+                        print("一秒识别[{}]次:".format(print_count))
                         log_util.print_time(print_count)
                         threading.Thread(target=save_screen_and_aims_save_to_file).start()
                         print_count = 0
@@ -114,7 +114,7 @@ def main():
             pass
         finally:
             time.sleep(1)
-            LogWindow().print_log("连接断开，等待重连...")
+            print("连接断开，等待重连...")
             pass
 
 

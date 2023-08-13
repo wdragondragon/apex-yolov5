@@ -14,15 +14,16 @@ screenshot_resolution = {
 }
 (x, y) = Tools.get_resolution()
 
-global_config = dict()
+config_data = dict()
 global_config_path = 'config\\global_config.json'
 if op.exists(global_config_path):
     with open(global_config_path, 'r', encoding='utf-8') as global_file:
-        global_config = json.load(global_file)
+        config_data = json.load(global_file)
 
 
 class Config:
     def __init__(self, data):
+        self.config_data = data
         self.weights = self.get_config(data, 'weights')
         self.data = self.get_config(data, 'data')
         self.listener_ip = self.get_config(data, 'listener_ip')
@@ -56,7 +57,9 @@ class Config:
         self.shot_height = self.get_config(data, "shot_height")
         self.auto_save = self.get_config(data, "auto_save")
         self.auto_save_path = self.get_config(data, "auto_save_path")
+        self.init()
 
+    def init(self):
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
         # 屏幕中心坐标
@@ -99,5 +102,13 @@ class Config:
         else:
             return config
 
+    def set_config(self, key, value):
+        self.config_data[key] = value
 
-global_config = Config(global_config)
+    def save_config(self):
+        with open(global_config_path, "w", encoding="utf8") as f:
+            json.dump(self.config_data, f, ensure_ascii=False, indent=4)
+        self.init()
+
+
+global_config = Config(config_data)
