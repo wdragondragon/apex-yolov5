@@ -61,13 +61,6 @@ def loop_screen(region=None, shot_width=416, shot_height=416):
         screen_image = cv2.resize(screen_image, (shot_width, shot_height))
 
 
-def get_img():
-    global screen_image
-    temp = screen_image
-    screen_image = None
-    return temp
-
-
 def grab_screen_int_array(region=None):
     hwin = win32gui.GetDesktopWindow()
 
@@ -130,58 +123,69 @@ def save_screen_to_file():
     image.save(save_manual_operation_path + formatted_date + ".png", 'PNG')
 
 
-def save_screen_and_aims_save_to_file():
+def save_rescreen_and_aims_to_file(img_origin, img, aims):
     try:
         global last_save_time, save_sign
         if not global_config.auto_save or time.time() - last_save_time < 1 or save_sign:
             return
         save_sign = True
         last_save_time = time.time()
-        with mss.mss() as sct:
-            screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
-        rgb = screenshot.rgb
-        img = np.frombuffer(rgb, dtype='uint8')
-        img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
-        img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-        # img0 = cv2.resize(img0, (global_config.imgsz, global_config.imgszy))
-        aims = get_aims(img)
-        has_aim = False
-        for aim in aims:
-            if aim[0] in global_config.lock_index:
-                has_aim = True
-                break
-
-        if len(aims):
-            if has_aim:
-                save_image_path = save_no_aim_image_path
-                save_label_path = save_no_aim_label_path
-            else:
-                save_image_path = save_has_aim_image_path
-                save_label_path = save_has_aim_label_path
-        else:
-            return
-        now = datetime.now()
-        # 格式化日期为字符串
-        formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
-        # 保存图像到文件
-        os.makedirs(save_image_path, exist_ok=True)
-        os.makedirs(save_label_path, exist_ok=True)
-
-        image = Image.fromarray(img)
-        full_save_path = save_image_path + formatted_date + ".png"
-        image.save(full_save_path, 'PNG')
-        with open(save_label_path + formatted_date + ".txt", 'w') as f:
-            length = len(aims)
-            for i in range(length):
-                aim = aims[i]
-                line = ' '.join(str(x) for x in aim)
-                if i != length - 1:
-                    f.write(line + '\n')
-                else:
-                    f.write(line)
-        print("save image to file: {}".format(full_save_path))
+        img_origin_size = img_origin.size
+        if not (img_origin_size.width == global_config.auto_save_monitor['width'] and
+                img_origin_size.height == global_config.auto_save_monitor['height']):
+            with mss.mss() as sct:
+                screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
+            rgb = screenshot.rgb
+            img = np.frombuffer(rgb, dtype='uint8')
+            img = img.reshape((global_config.auto_save_monitor["width"], global_config.auto_save_monitor["height"], 3))
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+            aims = get_aims(img)
+        elif img is None:
+            img = np.frombuffer(img_origin.rgb, dtype='uint8')
+            img = img.reshape((global_config.auto_save_monitor["width"], global_config.auto_save_monitor["height"], 3))
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+        # img = cv2.resize(img, (global_config.imgsz, global_config.imgszy))
+        save_img_and_aims_to_file(img, aims)
     except Exception as e:
         print(e)
         traceback.print_exc()
         pass
     save_sign = False
+
+
+def save_img_and_aims_to_file(img, aims):
+    has_aim = False
+    for aim in aims:
+        if aim[0] in global_config.lock_index:
+            has_aim = True
+            break
+    if len(aims):
+        if has_aim:
+            save_image_path = save_no_aim_image_path
+            save_label_path = save_no_aim_label_path
+        else:
+            save_image_path = save_has_aim_image_path
+            save_label_path = save_has_aim_label_path
+    else:
+        print("no aims without save image")
+        return
+    now = datetime.now()
+    # 格式化日期为字符串
+    formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
+    # 保存图像到文件
+    os.makedirs(save_image_path, exist_ok=True)
+    os.makedirs(save_label_path, exist_ok=True)
+
+    image = Image.fromarray(img)
+    full_save_path = save_image_path + formatted_date + ".png"
+    image.save(full_save_path, 'PNG')
+    with open(save_label_path + formatted_date + ".txt", 'w') as f:
+        length = len(aims)
+        for i in range(length):
+            aim = aims[i]
+            line = ' '.join(str(x) for x in aim)
+            if i != length - 1:
+                f.write(line + '\n')
+            else:
+                f.write(line)
+    print("save image to file: {}".format(full_save_path))

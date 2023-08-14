@@ -14,7 +14,7 @@ import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.LogWindow import LogWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array, save_screen_and_aims_save_to_file, grab_screen_int_array2
+from apex_yolov5.grabscreen import grab_screen_int_array2
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 
@@ -113,8 +113,6 @@ def asyn_compute_picture(client_socket_info, img):
             last_recv_mouse_data["mouse_data"] = mouse_data
             aims = pickle.loads(mouse_data)
             mouse_block_queue.put(aims)
-            # 获取位图数据
-            save_screen_and_aims_save_to_file(aims)
         usable_client_socket.put(client_socket_info)
     except Exception as e:
         client_socket.close()

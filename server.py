@@ -50,7 +50,7 @@ def main():
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
                 img0 = np.frombuffer(img_data, dtype='uint8')
-                img0 = img0.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
+                img0 = img0.reshape((global_config.monitor["width"], global_config.monitor["height"], 3))
                 img0 = cv2.cvtColor(img0, cv2.COLOR_BGRA2BGR)
 
                 log_util.set_time("转换图片", time.time() - t2)
@@ -67,8 +67,7 @@ def main():
                 print_count += 1
                 now = time.time()
                 if now - compute_time > 1:
-                    print(
-                        "识别[{}]次，传输{:.1f}M/s".format(print_count, (1.0 * total_size / 1024 / 1024)))
+                    print("识别[{}]次，传输{:.1f}M/s".format(print_count, (1.0 * total_size / 1024 / 1024)))
                     log_util.print_time(print_count)
                     total_size = 0
                     print_count = 0
