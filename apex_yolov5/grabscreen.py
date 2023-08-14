@@ -151,7 +151,7 @@ def save_screen_and_aims_save_to_file():
                 has_aim = True
                 break
 
-        if len(aims) == 0:
+        if len(aims):
             if has_aim:
                 save_image_path = save_no_aim_image_path
                 save_label_path = save_no_aim_label_path

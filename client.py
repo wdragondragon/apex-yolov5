@@ -34,15 +34,6 @@ threading.Thread(target=start).start()
 log_util = LogUtil.LogUtil()
 
 
-
-
-
-
-
-
-
-
-
 def main():
     while True:
         try:
@@ -62,15 +53,7 @@ def main():
                 print_count = 0
                 compute_time = time.time()
                 while True:
-                    # if not Tools.is_apex_windows():
-                    #     print("不是apex窗口")
-                    #     time.sleep(0.5)
-                    #     continue
                     if not apex_mouse_listener.middle_toggle:
-                    #     now = time.time()
-                    #     if now - compute_time > 1:
-                    #         threading.Thread(target=save_screen_and_aims_save_to_file).start()
-                    #         compute_time = now
                         time.sleep(0.1)
                         continue
                     print_count += 1
