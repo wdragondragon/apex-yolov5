@@ -532,9 +532,9 @@ def export_tfjs(file, int8, prefix=colorstr('TensorFlow.js:')):
             r'"Identity.?.?": {"name": "Identity.?.?"}, '
             r'"Identity.?.?": {"name": "Identity.?.?"}, '
             r'"Identity.?.?": {"name": "Identity.?.?"}}}', r'{"outputs": {"Identity": {"name": "Identity"}, '
-            r'"Identity_1": {"name": "Identity_1"}, '
-            r'"Identity_2": {"name": "Identity_2"}, '
-            r'"Identity_3": {"name": "Identity_3"}}}', json)
+                                                           r'"Identity_1": {"name": "Identity_1"}, '
+                                                           r'"Identity_2": {"name": "Identity_2"}, '
+                                                           r'"Identity_3": {"name": "Identity_3"}}}', json)
         j.write(subst)
     return f, None
 
@@ -849,11 +849,6 @@ def parse_opt(known=False):
         default=['torchscript'],
         help='torchscript, onnx, openvino, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle')
     opt = parser.parse_known_args()[0] if known else parser.parse_args()
-    print_args(vars(opt))
-    return opt
-
-
-def main(opt):
     # 检查配置文件是否存在
     config_file = 'config/export_config.json'
     if os.path.exists(config_file):
@@ -864,6 +859,11 @@ def main(opt):
         for key, value in config_data.items():
             if hasattr(opt, key):
                 setattr(opt, key, value)
+    print_args(vars(opt))
+    return opt
+
+
+def main(opt):
     for opt.weights in (opt.weights if isinstance(opt.weights, list) else [opt.weights]):
         run(**vars(opt))
 

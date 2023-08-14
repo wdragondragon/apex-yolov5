@@ -1,3 +1,4 @@
+import hashlib
 import os
 import os
 import shutil
@@ -102,6 +103,3 @@ def check_label_image():
         png_file_path = os.path.join(images_folder, filename + '.png')
         # 在这里可以进行进一步的处理，例如将txt和png文件进行匹配操作
         print(f"Matched: {txt_file_path} - {png_file_path}")
-
-
-check_label_image()

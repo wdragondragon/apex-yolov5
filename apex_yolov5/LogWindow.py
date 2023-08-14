@@ -1,14 +1,11 @@
 import os
-import sys
-from datetime import datetime
 
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QLineEdit, QPushButton, QAction, QApplication
-from PyQt5.QtWidgets import QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QVBoxLayout, QWidget
 
 from apex_yolov5.socket.config import global_config
-from web.validate import app
 
 
 class LogWindow(QMainWindow):
