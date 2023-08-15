@@ -53,6 +53,10 @@ def main():
                 print_count = 0
                 compute_time = time.time()
                 while True:
+                    if not Tools.is_apex_windows():
+                        print("不是apex窗口")
+                        time.sleep(1)
+                        continue
                     if not apex_mouse_listener.middle_toggle:
                         time.sleep(0.1)
                         continue
@@ -75,7 +79,7 @@ def main():
                         continue
                     t4 = time.time()
                     aims = pickle.loads(mouse_data)
-                    if len(aims) and get_lock_mode():
+                    if len(aims) and get_lock_mode() and not global_config.only_save:
                         lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
                              shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
                     log_util.set_time("处理鼠标数据", time.time() - t4)

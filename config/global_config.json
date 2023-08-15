@@ -18,11 +18,12 @@
   "offset_shot_screen_y": 15,
   "shot_width": 0,
   "shot_height": 0,
-  "is_show_debug_window": false,
-  "move_step": 1,
-  "move_path_nx": 1,
+  "is_show_debug_window": true,
+  "move_step": 10,
+  "move_path_nx": 10,
   "lock_index": [
-    "0"
+    "0",
+    "2"
   ],
   "aim_type": {
     "0": [
@@ -60,6 +61,7 @@
     "三重",
     "和平捍卫者"
   ],
-  "auto_save": false,
-  "auto_save_path": "./apex_model/save/"
+  "auto_save": true,
+  "auto_save_path": "./apex_model/save/",
+  "only_save": true
 }
