@@ -137,12 +137,12 @@ def save_rescreen_and_aims_to_file(img_origin, img, aims):
                 screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
             rgb = screenshot.rgb
             img = np.frombuffer(rgb, dtype='uint8')
-            img = img.reshape((global_config.auto_save_monitor["width"], global_config.auto_save_monitor["height"], 3))
+            img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             aims = get_aims(img)
         elif img is None:
             img = np.frombuffer(img_origin.rgb, dtype='uint8')
-            img = img.reshape((global_config.auto_save_monitor["width"], global_config.auto_save_monitor["height"], 3))
+            img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
         # img = cv2.resize(img, (global_config.imgsz, global_config.imgszy))
         save_img_and_aims_to_file(img, aims)
