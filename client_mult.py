@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
-from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.auxiliary import get_lock_mode, start
 from apex_yolov5.grabscreen import grab_screen_int_array2
 from apex_yolov5.mouse_lock import lock
@@ -140,7 +140,7 @@ def consumption_mouse_data():
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    log_window = LogWindow()
+    log_window = MainWindow()
     if global_config.is_show_debug_window:
         log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
         log_window.show()

@@ -61,6 +61,8 @@ class Config:
         self.auto_save = self.get_config(self.config_data, "auto_save")
         self.auto_save_path = self.get_config(self.config_data, "auto_save_path")
         self.only_save = self.get_config(self.config_data, "only_save")
+        self.cross_hair = self.get_config(self.config_data, "cross_hair")
+        self.available_guns = self.get_config(self.config_data, "available_guns")
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
