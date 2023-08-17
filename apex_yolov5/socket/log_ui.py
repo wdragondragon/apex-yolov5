@@ -2,7 +2,7 @@ import time
 
 import cv2
 
-from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.socket.config import global_config
 
 
@@ -17,7 +17,7 @@ def show(aims, img0):
             bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
             bboxes.append((tag, top_left, bottom_right))
     if global_config.is_show_debug_window:
-        LogWindow().set_image(img0, bboxes=bboxes)
+        MainWindow().set_image(img0, bboxes=bboxes)
     return True
 
 

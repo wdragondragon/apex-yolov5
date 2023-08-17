@@ -1,4 +1,4 @@
-from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.MainWindow import MainWindow
 
 
 class LogUtil:

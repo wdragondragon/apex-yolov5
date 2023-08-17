@@ -2,7 +2,7 @@ import os
 
 from PIL import ImageGrab
 
-from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.Tools import Tools
 from apex_yolov5.socket.config import global_config
 

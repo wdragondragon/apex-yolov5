@@ -32,7 +32,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     height = shot_height * float(target_height)
 
     targetRealX = left_top_x + targetShotX  # 目标在屏幕的坐标
-    targetRealY = left_top_y + targetShotY - 0.2 * height
+    targetRealY = left_top_y + targetShotY - int(global_config.cross_hair / 2 * height)
 
     # dist = (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2
     set_intention(targetRealX, targetRealY)

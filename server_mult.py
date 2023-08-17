@@ -11,7 +11,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
 from apex_yolov5 import LogUtil
-from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
 
@@ -92,7 +92,7 @@ class ServerSocket:
 # main()
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    log_window = LogWindow()
+    log_window = MainWindow()
     if global_config.is_show_debug_window:
         log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
         log_window.show()

@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QApplication
 
 from apex_yolov5 import check_run
 from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listener
-from apex_yolov5.LogWindow import LogWindow
+from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aims_to_file
@@ -27,10 +27,10 @@ def main():
     compute_time = time.time()
     while True:
         try:
-            if not Tools.is_apex_windows():
-                print("不是apex窗口")
-                time.sleep(1)
-                continue
+            # if not Tools.is_apex_windows():
+            #     print("不是apex窗口")
+            #     time.sleep(1)
+            #     continue
             img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
             img = np.frombuffer(img_origin.rgb, dtype='uint8')
             img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
@@ -90,10 +90,10 @@ if __name__ == "__main__":
     threading.Thread(target=start).start()
 
     app = QApplication(sys.argv)
-    log_window = LogWindow()
+    log_window = MainWindow()
 
     if global_config.is_show_debug_window:
-        log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
+        # log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
         log_window.show()
     threading.Thread(target=main).start()
     sys.exit(app.exec_())
