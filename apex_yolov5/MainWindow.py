@@ -98,6 +98,7 @@ class ConfigWindow(QMainWindow):
         super().__init__()
         self.config = config
         self.initUI()
+        self.setWindowFlags(Qt.FramelessWindowHint)
 
     def initUI(self):
         self.setWindowTitle("Config Window")
@@ -146,6 +147,27 @@ class ConfigWindow(QMainWindow):
         cross_layout.addWidget(self.cross_label)
         cross_layout.addWidget(self.slider)
         cross_layout.addWidget(self.image_widget)
+
+        add_refresh_button_title_layout = QVBoxLayout()
+        add_refresh_button_layout = QHBoxLayout()
+        add_refresh_button_input_layout = QVBoxLayout()
+        self.refresh_button_title = QLabel("触发枪械识别按键列表", self)
+        self.refresh_button_title.setAlignment(Qt.AlignCenter)
+        self.fresh_button_list = QListWidget(self)
+        self.refresh_button_input = QLineEdit()
+        self.fresh_button_list.addItems(self.config.refresh_button)
+        self.add_refresh_button = QPushButton("Add")
+        self.add_refresh_button.clicked.connect(self.add_refresh_button_item)
+        self.remove_refresh_button = QPushButton("Remove", self)
+        self.remove_refresh_button.clicked.connect(self.delete_refresh_button_item)
+
+        add_refresh_button_input_layout.addWidget(self.refresh_button_input)
+        add_refresh_button_input_layout.addWidget(self.add_refresh_button)
+        add_refresh_button_input_layout.addWidget(self.remove_refresh_button)
+        add_refresh_button_layout.addWidget(self.fresh_button_list)
+        add_refresh_button_layout.addLayout(add_refresh_button_input_layout)
+        add_refresh_button_title_layout.addWidget(self.refresh_button_title)
+        add_refresh_button_title_layout.addLayout(add_refresh_button_layout)
 
         list_layout = QHBoxLayout()
         list_layout_label = QLabel("自动开枪枪械识别列表", self)
@@ -229,6 +251,7 @@ class ConfigWindow(QMainWindow):
         config_layout.addLayout(move_step_layout)
         config_layout.addLayout(move_path_nx_layout)
         config_layout.addLayout(cross_layout)
+        config_layout.addLayout(add_refresh_button_title_layout)
         config_layout.addWidget(list_layout_label)
         config_layout.addLayout(list_layout)
         config_layout.addLayout(toggle_layout)
@@ -243,11 +266,11 @@ class ConfigWindow(QMainWindow):
         self.setCentralWidget(container)
 
     def update_move_step_label(self, value):
-        self.move_step_label.setText("单次移动像素:" + value)
+        self.move_step_label.setText("单次移动像素:" + str(value))
         self.move_step_label.adjustSize()
 
     def update_move_path_nx_label(self, value):
-        self.move_path_nx_label.setText("移动路径倍率:" + value)
+        self.move_path_nx_label.setText("移动路径倍率:" + str(value))
         self.move_path_nx_label.adjustSize()
 
     def move_crosshair(self, value):
@@ -260,6 +283,18 @@ class ConfigWindow(QMainWindow):
         painter = QPainter(self.image_widget)
         painter.drawPixmap(0, 0, self.human_pixmap)
         painter.drawPixmap(self.crosshair_position, self.crosshair_pixmap)
+
+    def add_refresh_button_item(self):
+        new_item = self.refresh_button_input.text()
+        if new_item:
+            self.fresh_button_list.addItem(new_item)
+            self.config.refresh_button.append(new_item)
+
+    def delete_refresh_button_item(self):
+        selected_items = self.fresh_button_list.selectedItems()
+        for item in selected_items:
+            self.fresh_button_list.takeItem(self.fresh_button_list.row(item))
+            self.config.refresh_button.remove(item.text())
 
     def addGun(self):
         selected_guns = self.available_guns_list.selectedItems()
@@ -296,8 +331,9 @@ class ConfigWindow(QMainWindow):
         self.config.set_config("move_step", new_move_step)
         self.config.set_config("move_path_nx", new_move_path_nx)
         self.config.set_config("cross_hair", new_cross_hair)
-        self.config.set_config("shot_width", self.view.inner_rect.rect().width() * 10)
-        self.config.set_config("shot_height", self.view.inner_rect.rect().height() * 10)
+        self.config.set_config("shot_width", int(self.view.inner_rect.rect().width() * 10))
+        self.config.set_config("shot_height", int(self.view.inner_rect.rect().height() * 10))
+
         self.config.save_config()
         self.destroy()
 

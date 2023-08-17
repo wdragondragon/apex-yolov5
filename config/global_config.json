@@ -18,11 +18,11 @@
     "screen_height": 1440,
     "offset_shot_screen_x": 10,
     "offset_shot_screen_y": 15,
-    "shot_width": 0,
-    "shot_height": 0,
+    "shot_width": 640,
+    "shot_height": 640,
     "is_show_debug_window": true,
-    "move_step": 9,
-    "move_path_nx": 9.6,
+    "move_step": 1,
+    "move_path_nx": 0.1,
     "lock_index": [
         "0",
         "2"
@@ -45,10 +45,10 @@
         ]
     },
     "refresh_button": [
-        "f",
-        "F",
         "1",
-        "2"
+        "2",
+        "F",
+        "f"
     ],
     "click_gun": [
         "3030",
