@@ -10,18 +10,38 @@ class KeyListener:
 
     def __init__(self):
         super().__init__()
+        self.toggle_key = dict()
         self.refresh_button = global_config.refresh_button
 
     def on_press(self, key):
-        pass
+        if Tools.is_apex_windows():
+            if not hasattr(key, 'name') and hasattr(key, 'char') and key.char is not None:
+                # if key.char in self.toggle_key:
+                #     self.toggle_key.pop(key.char)
+                # else:
+                self.toggle_key[key.char] = Tools.current_milli_time()
+            elif hasattr(key, 'name') and key.name is not None:
+                # if key.name in self.toggle_key:
+                #     self.toggle_key.pop(key.name)
+                # else:
+                self.toggle_key[key.name] = Tools.current_milli_time()
 
     # 释放按钮，按esc按键会退出监听
     def on_release(self, key):
-        if Tools.is_apex_windows() and not hasattr(key, 'name') and hasattr(key, 'char') and key.char is not None:
-            if key.char in self.refresh_button:
-                threading.Thread(target=select_gun.select_gun).start()
-            elif key.char == 'p' or key.char == 'P':
-                threading.Thread(target=save_screen_to_file).start()
+        if Tools.is_apex_windows():
+            if not hasattr(key, 'name') and hasattr(key, 'char') and key.char is not None:
+                if key.char in self.toggle_key:
+                    self.toggle_key.pop(key.char)
+                if key.char in self.refresh_button:
+                    threading.Thread(target=select_gun.select_gun).start()
+                elif key.char == 'p' or key.char == 'P':
+                    threading.Thread(target=save_screen_to_file).start()
+            elif hasattr(key, 'name') and key.name is not None:
+                if key.name in self.toggle_key:
+                    self.toggle_key.pop(key.name)
+
+    def is_open(self, button):
+        return button in self.toggle_key
 
 
 class MouseListener:

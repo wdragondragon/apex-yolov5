@@ -63,6 +63,9 @@ class Config:
         self.only_save = self.get_config(self.config_data, "only_save")
         self.cross_hair = self.get_config(self.config_data, "cross_hair")
         self.available_guns = self.get_config(self.config_data, "available_guns")
+        self.auto_charged_energy = self.get_config(self.config_data, "auto_charged_energy", False)
+        self.storage_interval = self.get_config(self.config_data, "storage_interval", 0.109)
+        self.auto_charged_energy_toggle = self.get_config(self.config_data, "auto_charged_energy_toggle", "shift")
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
@@ -99,9 +102,11 @@ class Config:
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 
     @staticmethod
-    def get_config(config, pattern=None):
+    def get_config(config, pattern=None, default=None):
         if pattern is not None:
             value = jsonpath.jsonpath(config, pattern)
+            if value is None or not value:
+                return default if default is not None else False
             if isinstance(value, list) and len(value) == 1:
                 return value[0]
             else:

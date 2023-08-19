@@ -2,7 +2,7 @@ import time
 
 from pynput.mouse import Button
 
-from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
+from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.ScreenUtil import select_gun
 from apex_yolov5.mouse_controller import get_mouse_position, set_mouse_position, left_click
 from apex_yolov5.socket.config import global_config
@@ -43,10 +43,15 @@ def start():
             left_click()
             last_click_time = time.time()
             click_sign = False
+        elif global_config.auto_charged_energy and select_gun.current_gun == '充能步枪' and time.time() - last_click_time > global_config.storage_interval and not apex_key_listener.is_open(
+                global_config.auto_charged_energy_toggle):
+            left_click()
+            last_click_time = time.time()
+
         if get_lock_mode() and intention is not None:
             t0 = time.time()
             (x, y) = intention
-            # print("开始移动，移动距离:{}".format((x, y)))
+            print("开始移动，移动距离:{}".format((x, y)))
             while x != 0 or y != 0:
                 (x, y) = intention
                 move_up = min(global_config.move_step, abs(x)) * (1 if x > 0 else -1)
@@ -63,8 +68,8 @@ def start():
                 if not apex_mouse_listener.middle_toggle:
                     break
             intention = None
-            # print(
-            #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
+            print(
+                "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
         elif not get_lock_mode():
             intention = None
         time.sleep(0.01)
