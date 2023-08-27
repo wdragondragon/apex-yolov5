@@ -96,8 +96,8 @@ class Config:
                                   "height": 640}
 
         self.window_name = "apex-gun"
-        self.select_gun_bbox = screenshot_resolution[(x, y)]  # 选择枪械的区域
-        self.image_path = 'images/' + '{}x{}/'.format(x, y)  # 枪械图片路径
+        self.select_gun_bbox = screenshot_resolution[(self.screen_width, self.screen_height)]  # 选择枪械的区域
+        self.image_path = 'images/' + '{}x{}/'.format(self.screen_width, self.screen_height)  # 枪械图片路径
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 
