@@ -58,11 +58,11 @@ class MouseListener:
             self.on_mouse_key_map[button] = Tools.current_milli_time()
             if button == button.middle:
                 self.middle_toggle = not self.middle_toggle
-            # print("左键按下")
+            print("左键按下")
         elif not pressed:
             if button not in self.on_mouse_key_map:
                 return
-            # print("左键释放, 持续时间: {}".format(Tools.current_milli_time() - self.on_mouse_key_map[button]))
+            print("左键释放, 持续时间: {}".format(Tools.current_milli_time() - self.on_mouse_key_map[button]))
             self.on_mouse_key_map.pop(button)
 
     def on_scroll(self, x, y, dx, dy):

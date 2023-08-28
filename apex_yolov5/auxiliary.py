@@ -21,7 +21,7 @@ def set_intention(x, y):
     # print("set_intention: {}".format((x, y)))
     (current_x, current_y) = get_mouse_position()
     # intention = ((x - current_x) * lock_move_speed, (y - current_y) * lock_move_speed)
-    intention = ((x - current_x) * global_config.move_path_nx, (y - current_y) * global_config.move_path_nx)
+    intention = ((x - current_x) * global_config.move_path_nx, (y - current_y) * global_config.move_path_ny)
     change_coordinates_num += 1
 
 
@@ -31,8 +31,9 @@ def set_click():
 
 
 def get_lock_mode():
-    lock_mode = apex_mouse_listener.is_press(Button.left) or apex_mouse_listener.is_press(
-        Button.right) or apex_mouse_listener.is_press(Button.x2)
+    lock_mode = (("left" in global_config.aim_button and apex_mouse_listener.is_press(Button.left)) or
+                 ("right" in global_config.aim_button and apex_mouse_listener.is_press(Button.right)) or
+                 ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)))
     return lock_mode and apex_mouse_listener.middle_toggle
 
 

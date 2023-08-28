@@ -51,8 +51,10 @@ class Config:
         # self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
         # 最终鼠标移动单次像素
         self.move_step = self.get_config(self.config_data, "move_step")
+        self.move_step_y = self.get_config(self.config_data, "move_step_y", self.move_step)
         # 移动路径倍率
         self.move_path_nx = self.get_config(self.config_data, "move_path_nx")  # 锁定模式下鼠标移动速度
+        self.move_path_ny = self.get_config(self.config_data, "move_path_ny", self.move_path_nx)  # 锁定模式下鼠标移动速度
         self.lock_index = self.get_config(self.config_data, "lock_index")  # 锁定目标的索引
         self.aim_type = self.get_config(self.config_data, "aim_type")  # 锁定目标的索引
         self.refresh_button = self.get_config(self.config_data, "refresh_button")  # 刷新按钮
@@ -67,6 +69,7 @@ class Config:
         self.auto_charged_energy = self.get_config(self.config_data, "auto_charged_energy", False)
         self.storage_interval = self.get_config(self.config_data, "storage_interval", 0.109)
         self.auto_charged_energy_toggle = self.get_config(self.config_data, "auto_charged_energy_toggle", "shift")
+        self.aim_button = self.get_config(self.config_data, "aim_button", ["left", "right", "x2"])
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
