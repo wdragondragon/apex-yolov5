@@ -36,7 +36,7 @@ class MouseConfigLayout:
         self.left_aim.setChecked("left" in self.config.aim_button)  # 初始化开关的值
         self.left_aim.toggled.connect(self.handle_toggled)
 
-        self.right_aim = QCheckBox("左键")
+        self.right_aim = QCheckBox("右键")
         self.right_aim.setObjectName("right")
         self.right_aim.setChecked("right" in self.config.aim_button)  # 初始化开关的值
         self.right_aim.toggled.connect(self.handle_toggled)
