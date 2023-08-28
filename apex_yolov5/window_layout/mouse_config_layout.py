@@ -66,7 +66,7 @@ class MouseConfigLayout:
         self.move_step_y_slider = QSlider(Qt.Horizontal, self.main_window)
         self.move_step_y_slider.setMinimum(1)  # 最小值
         self.move_step_y_slider.setMaximum(30)  # 最大值
-        self.move_step_y_slider.setValue(self.config.move_step)  # 初始化值
+        self.move_step_y_slider.setValue(self.config.move_step_y)  # 初始化值
         self.move_step_y_slider.valueChanged.connect(self.update_move_step_y_label)
         move_step_y_layout.addWidget(self.move_step_y_label)
         move_step_y_layout.addWidget(self.move_step_y_slider)
