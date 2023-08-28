@@ -10,7 +10,8 @@ screenshot_resolution = {
     (1920, 1080): (1542, 959, 1695, 996),
     (2560, 1440): (2093, 1281, 2275, 1332),
     # (2560, 1440): (1905, 1092, 2087, 1143),
-    (3440, 1440): (2093, 1281, 2275, 1332)
+    (3440, 1440): (2093, 1281, 2275, 1332),
+    (1920, 1200): (1539, 1142, 1728, 1142)
 }
 (x, y) = Tools.get_resolution()
 
@@ -96,7 +97,10 @@ class Config:
                                   "height": 640}
 
         self.window_name = "apex-gun"
-        self.select_gun_bbox = screenshot_resolution[(self.screen_width, self.screen_height)]  # 选择枪械的区域
+        if (self.screen_width, self.screen_height) in screenshot_resolution:
+            self.select_gun_bbox = screenshot_resolution[(self.screen_width, self.screen_height)]  # 选择枪械的区域
+        else:
+            self.select_gun_bbox = screenshot_resolution[(1920, 1080)]
         self.image_path = 'images/' + '{}x{}/'.format(self.screen_width, self.screen_height)  # 枪械图片路径
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
