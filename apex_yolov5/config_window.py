@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout
 
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
@@ -24,7 +24,8 @@ class ConfigWindow(QMainWindow):
         self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_2)
         self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_2)
         self.initUI()
-        # self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.installEventFilter(self)
 
     def initUI(self):
         self.setWindowTitle("Config Window")
@@ -51,6 +52,13 @@ class ConfigWindow(QMainWindow):
 
     def handle_toggled(self, checked):
         self.config.set_config(self.sender().objectName(), checked)
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.WindowDeactivate:
+            self.setWindowOpacity(0.1)  # Set window opacity to 90% when focus is lost
+        elif event.type() == QEvent.WindowActivate:
+            self.setWindowOpacity(1.0)  # Set window opacity to fully opaque when focus is regained
+        return super().eventFilter(obj, event)
 
     def saveConfig(self):
         # 更新配置对象的属性

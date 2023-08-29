@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtCore import QPoint, QRect, QEvent
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QApplication
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         if not hasattr(self, 'image_label'):
             self.image_label = None
             self.init_ui()
+        self.installEventFilter(self)
 
     def init_ui(self):
         self.setWindowTitle("Apex gun")
@@ -77,6 +78,12 @@ class MainWindow(QMainWindow):
         self.image_label.setPixmap(pixmap)
         self.image_label.update()
 
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.WindowDeactivate:
+            self.setWindowOpacity(0.1)  # Set window opacity to 90% when focus is lost
+        elif event.type() == QEvent.WindowActivate:
+            self.setWindowOpacity(1.0)  # Set window opacity to fully opaque when focus is regained
+        return super().eventFilter(obj, event)
     def closeEvent(self, event):
         QApplication.quit()
         os._exit(0)
