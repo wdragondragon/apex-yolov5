@@ -6,21 +6,6 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSlider, QWidget, QCheckBox
 class MouseConfigLayout:
 
     def __init__(self, config, main_window, parent_layout):
-        self.move_step_label = None
-        self.move_step_slider = None
-        self.move_step_layout = None
-
-        self.move_path_nx_layout = None
-        self.move_path_nx_label = None
-        self.move_path_nx_slider = None
-
-        self.cross_layout = None
-        self.cross_label = None
-        self.human_pixmap = None
-        self.crosshair_pixmap = None
-        self.crosshair_position = None
-        self.image_widget = None
-        self.slider = None
         self.config = config
         self.main_window = main_window
         self.parent_layout = parent_layout

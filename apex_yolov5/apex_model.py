@@ -31,6 +31,7 @@ device = global_config.device if global_config.device == 'cpu' else '0'  # cuda,
 dnn = False
 half = global_config.half
 imgsz1 = (global_config.imgsz, global_config.imgszy)
+# device = select_device(device)
 device = select_device(device)
 
 
