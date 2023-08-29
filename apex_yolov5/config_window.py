@@ -29,7 +29,7 @@ class ConfigWindow(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("Config Window")
-        self.setGeometry(100, 100, 250, 200)
+        self.setGeometry(0, 0, 250, 200)
         self.mouse_config_layout.add_layout()
         self.auto_gun_config_layout.add_layout()
         self.model_config_layout.add_layout()

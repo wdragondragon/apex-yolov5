@@ -47,7 +47,7 @@ class MouseConfigLayout:
 
         move_step_y_layout = QHBoxLayout()
         # 创建标签和滑动条
-        self.move_step_y_label = QLabel("单次垂直移动像素:" + str(self.config.move_step), self.main_window)
+        self.move_step_y_label = QLabel("单次垂直移动像素:" + str(self.config.move_step_y), self.main_window)
         self.move_step_y_slider = QSlider(Qt.Horizontal, self.main_window)
         self.move_step_y_slider.setMinimum(1)  # 最小值
         self.move_step_y_slider.setMaximum(30)  # 最大值
