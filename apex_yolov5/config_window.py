@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBo
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
 from apex_yolov5.window_layout.auto_gun_config_layout import AutoGunConfigLayout
 from apex_yolov5.window_layout.auto_save_config_layout import AutoSaveConfigLayout
+from apex_yolov5.window_layout.model_config_layout import ModelConfigLayout
 from apex_yolov5.window_layout.mouse_config_layout import MouseConfigLayout
 from apex_yolov5.window_layout.screenshot_area_layout import ScreenshotAreaLayout
 
@@ -18,6 +19,7 @@ class ConfigWindow(QMainWindow):
         self.config_layout_2 = QVBoxLayout()
         self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
         self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_1)
+        self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_2)
         self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_2)
         self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_2)
         self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_2)
@@ -29,6 +31,7 @@ class ConfigWindow(QMainWindow):
         self.setGeometry(100, 100, 250, 200)
         self.mouse_config_layout.add_layout()
         self.auto_gun_config_layout.add_layout()
+        self.model_config_layout.add_layout()
         self.auto_save_config_layout.add_layout()
         self.auto_charge_energy_layout.add_layout()
         self.screenshot_layout.add_layout()
@@ -36,7 +39,6 @@ class ConfigWindow(QMainWindow):
         # 创建保存按钮
         self.save_button = QPushButton("Save", self)
         self.save_button.clicked.connect(self.saveConfig)
-
 
         self.config_layout.addLayout(self.config_layout_1)
         self.config_layout.addLayout(self.config_layout_2)

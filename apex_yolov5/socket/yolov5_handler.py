@@ -1,6 +1,4 @@
 import time
-
-import cv2
 import numpy as np
 from torch import from_numpy, tensor
 
@@ -11,6 +9,12 @@ from utils.general import non_max_suppression, scale_boxes, xyxy2xywh
 
 model = load_model()
 names = model.module.names if hasattr(model, 'module') else model.names
+
+
+def reload_model():
+    global model, names
+    model = load_model()
+    names = model.module.names if hasattr(model, 'module') else model.names
 
 
 def get_aims(img0):

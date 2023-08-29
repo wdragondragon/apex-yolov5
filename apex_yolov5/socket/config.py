@@ -70,6 +70,16 @@ class Config:
         self.storage_interval = self.get_config(self.config_data, "storage_interval", 0.109)
         self.auto_charged_energy_toggle = self.get_config(self.config_data, "auto_charged_energy_toggle", "shift")
         self.aim_button = self.get_config(self.config_data, "aim_button", ["left", "right", "x2"])
+        self.available_models = self.get_config(self.config_data, "available_models", {
+            "apex标准": {
+                "weights": "./apex_model/best2.engine",
+                "data": "./apex_model/best2.yaml"
+            },
+            "apex区分敌我": {
+                "weights": "./apex_model/best.engine",
+                "data": "./apex_model/best.yaml"
+            }
+        })
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
@@ -113,7 +123,11 @@ class Config:
         if pattern is not None:
             value = jsonpath.jsonpath(config, pattern)
             if value is None or not value:
-                return default if default is not None else False
+                if default is not None:
+                    config[pattern] = default
+                    return default
+                else:
+                    return False
             if isinstance(value, list) and len(value) == 1:
                 return value[0]
             else:

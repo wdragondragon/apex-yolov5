@@ -21,27 +21,22 @@ from utils.torch_utils import select_device
 # weights = 'best.pt' #这个模型最好
 
 # weights = 'apex-yolov5/apex.pt'
-weights = global_config.weights
-data = global_config.data
-
 # weights = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/apex_yolov5/apex-1050.engine'
 # data = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/models/mydata.yaml'
 # imgsz = 640
 device = global_config.device if global_config.device == 'cpu' else '0'  # cuda,cpu
 dnn = False
-half = global_config.half
-imgsz1 = (global_config.imgsz, global_config.imgszy)
-# device = select_device(device)
 device = select_device(device)
 
 
 def load_model():
     print("cuda is ok?", is_available())
-    model = DetectMultiBackend(weights=weights, device=device, dnn=dnn, data=data, fp16=half)
+    model = DetectMultiBackend(weights=global_config.weights, device=device, dnn=dnn, data=global_config.data,
+                               fp16=global_config.half)
 
     bs = 1  # batch_size
     stride, names, pt = model.stride, model.names, model.pt
-    imgsz = check_img_size(imgsz=imgsz1, s=stride)  # check image size
+    imgsz = check_img_size(imgsz=(global_config.imgsz, global_config.imgszy), s=stride)  # check image size
     # Run inference
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
 
