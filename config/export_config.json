@@ -3,8 +3,8 @@
     320,
     320
   ],
-  "weights": ".\\apex_model\\1w2\\best.pt",
-  "data": ".\\apex_model\\1w2\\1w.yaml",
+  "weights": ".\\apex_model\\apex2.pt",
+  "data": ".\\apex_model\\1w2\\mydata.yaml",
   "half": true,
   "device": 0,
   "include": ["engine"]

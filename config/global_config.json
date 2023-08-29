@@ -100,5 +100,11 @@
         "电能",
         "转换者",
         "长弓"
-    ]
+    ],
+    "aim_button": [
+        "left",
+        "x2"
+    ],
+    "move_path_ny": 2.0,
+    "move_step_y": 2
 }
