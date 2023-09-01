@@ -19,6 +19,7 @@ class ModelConfigLayout:
 
         for key in self.config.available_models.keys():
             self.model_combo_box.addItem(key)
+        self.model_combo_box.setCurrentText(self.config.current_model)
         self.model_combo_box.currentIndexChanged.connect(self.selection_changed)
 
         model_combo_box_layout.addWidget(label)
@@ -54,10 +55,8 @@ class ModelConfigLayout:
 
     def selection_changed(self, index):
         selected_key = self.model_combo_box.currentText()
-        model_info = self.config.available_models.get(selected_key)
         self.model_combo_box.setEnabled(False)
-        self.config.weights = model_info["weights"]
-        self.config.data = model_info["data"]
+        self.config.current_model = selected_key
         yolov5_handler.reload_model()
         self.model_combo_box.setEnabled(True)
 

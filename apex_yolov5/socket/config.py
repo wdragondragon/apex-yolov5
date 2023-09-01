@@ -28,8 +28,6 @@ class Config:
         self.init()
 
     def init(self):
-        self.weights = self.get_config(self.config_data, 'weights')
-        self.data = self.get_config(self.config_data, 'data')
         self.listener_ip = self.get_config(self.config_data, 'listener_ip')
         self.listener_port = self.get_config(self.config_data, 'listener_port')
         self.listener_ports = self.get_config(self.config_data, 'listener_ports')
@@ -73,13 +71,14 @@ class Config:
         self.available_models = self.get_config(self.config_data, "available_models", {
             "apex标准": {
                 "weights": "./apex_model/best2.engine",
-                "data": "./apex_model/best2.yaml"
+                "data": "./apex_model/data2.yaml"
             },
             "apex区分敌我": {
                 "weights": "./apex_model/best.engine",
-                "data": "./apex_model/best.yaml"
+                "data": "./apex_model/data.yaml"
             }
         })
+        self.current_model = self.get_config(self.config_data, "current_model", "apex区分敌我")
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640

@@ -5,25 +5,6 @@ from models.common import DetectMultiBackend
 from utils.general import check_img_size
 from utils.torch_utils import select_device
 
-# sys.path.append(dir+"\\utils")
-
-# from models.experimental import attempt_load
-# import utils.general as utils_general
-# import utils.torch_utils as utils_torch
-# import models.common as models_common
-
-# device = 'cuda' if torch.cuda.is_available() else 'cpu'
-# #device = 'cpu'
-# half = device != 'cpu'
-#
-# weights = r'apexSt1.pt'
-# weights = "yolov5s.pt"
-# weights = 'best.pt' #这个模型最好
-
-# weights = 'apex-yolov5/apex.pt'
-# weights = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/apex_yolov5/apex-1050.engine'
-# data = 'C:/Users/Administrator/PycharmProjects/apex-yolov5/models/mydata.yaml'
-# imgsz = 640
 device = global_config.device if global_config.device == 'cpu' else '0'  # cuda,cpu
 dnn = False
 device = select_device(device)
@@ -31,7 +12,9 @@ device = select_device(device)
 
 def load_model():
     print("cuda is ok?", is_available())
-    model = DetectMultiBackend(weights=global_config.weights, device=device, dnn=dnn, data=global_config.data,
+    current_model_info = global_config.available_models.get(global_config.current_model)
+    model = DetectMultiBackend(weights=current_model_info["weights"], device=device, dnn=dnn,
+                               data=current_model_info["data"],
                                fp16=global_config.half)
 
     bs = 1  # batch_size

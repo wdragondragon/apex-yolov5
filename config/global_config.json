@@ -1,7 +1,5 @@
 {
-    "weights": "./apex_model/apex2.pt",
-    "data": "./models/mydata.yaml",
-    "listener_ip": "localhost",
+    "listener_ip": "192.168.10.3",
     "listener_port": 8888,
     "listener_ports": [
         7777,
@@ -9,19 +7,19 @@
         9999
     ],
     "buffer_size": 204800,
-    "device": "cpu",
-    "imgszx": 640,
-    "imgszy": 640,
-    "conf_thres": 0.5,
+    "device": "cuda",
+    "imgszx": 320,
+    "imgszy": 320,
+    "conf_thres": 0.8,
     "iou_thres": 0.05,
     "screen_width": 2560,
     "screen_height": 1440,
     "offset_shot_screen_x": 10,
     "offset_shot_screen_y": 15,
-    "shot_width": 320,
-    "shot_height": 320,
+    "shot_width": 640,
+    "shot_height": 640,
     "is_show_debug_window": true,
-    "move_step": 20,
+    "move_step": 1,
     "move_path_nx": 1.0,
     "lock_index": [
         "0",
@@ -51,25 +49,16 @@
         "f"
     ],
     "click_gun": [
-        "3030",
-        "EVA-8",
-        "G7",
-        "p2020",
-        "敖犬",
-        "汗洛",
-        "辅助手枪",
-        "莫桑比克",
-        "猎兽",
-        "三重",
-        "和平捍卫者"
+        "和平捍卫者",
+        "3030"
     ],
-    "auto_save": false,
+    "auto_save": true,
     "auto_save_path": "./apex_model/save/",
-    "only_save": false,
-    "auto_charged_energy": true,
+    "only_save": true,
+    "auto_charged_energy": false,
     "storage_interval": 0.109,
     "auto_charged_energy_toggle": "shift",
-    "cross_hair": 0.47,
+    "cross_hair": 0.3999999999999999,
     "available_guns": [
         "3030",
         "EVA-8",
@@ -101,10 +90,18 @@
         "转换者",
         "长弓"
     ],
-    "aim_button": [
-        "left",
-        "x2"
-    ],
-    "move_path_ny": 2.0,
-    "move_step_y": 2
+    "aim_button": [],
+    "move_path_ny": 1.5,
+    "move_step_y": 5,
+    "current_model": "apex区分敌我",
+    "available_models": {
+        "apex标准": {
+            "weights": "./apex_model/best2.engine",
+            "data": "./apex_model/data2.yaml"
+        },
+        "apex区分敌我": {
+            "weights": "./apex_model/best.engine",
+            "data": "./apex_model/data.yaml"
+        }
+    }
 }

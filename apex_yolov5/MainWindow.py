@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         if not hasattr(self, 'image_label'):
             self.image_label = None
             self.init_ui()
-        self.installEventFilter(self)
+        # self.installEventFilter(self)
 
     def init_ui(self):
         self.setWindowTitle("Apex gun")
