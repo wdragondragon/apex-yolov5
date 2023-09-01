@@ -25,7 +25,7 @@ class ConfigWindow(QMainWindow):
         self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_2)
         self.initUI()
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.installEventFilter(self)
+        # self.installEventFilter(self)
 
     def initUI(self):
         self.setWindowTitle("Config Window")
