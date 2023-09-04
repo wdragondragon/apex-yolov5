@@ -90,7 +90,9 @@
         "转换者",
         "长弓"
     ],
-    "aim_button": [],
+    "aim_button": [
+        "x1"
+    ],
     "move_path_ny": 1.5,
     "move_step_y": 5,
     "current_model": "apex区分敌我",

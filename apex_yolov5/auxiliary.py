@@ -33,7 +33,8 @@ def set_click():
 def get_lock_mode():
     lock_mode = (("left" in global_config.aim_button and apex_mouse_listener.is_press(Button.left)) or
                  ("right" in global_config.aim_button and apex_mouse_listener.is_press(Button.right)) or
-                 ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)))
+                 ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)) or
+                 ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)))
     return lock_mode and apex_mouse_listener.middle_toggle
 
 

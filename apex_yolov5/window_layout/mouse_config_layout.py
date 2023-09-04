@@ -34,6 +34,13 @@ class MouseConfigLayout:
         self.aim_button_layout.addWidget(self.right_aim)
         self.aim_button_layout.addWidget(self.x2_aim)
 
+
+        self.x1_aim = QCheckBox("后侧键")
+        self.x1_aim.setObjectName("x1")
+        self.x1_aim.setChecked("x1" in self.config.aim_button)  # 初始化开关的值
+        self.x1_aim.toggled.connect(self.handle_toggled)
+        self.aim_button_layout.addWidget(self.x1_aim)
+
         move_step_layout = QHBoxLayout()
         # 创建标签和滑动条
         self.move_step_label = QLabel("单次水平移动像素:" + str(self.config.move_step), self.main_window)
