@@ -167,7 +167,7 @@ class MouseConfigLayout:
         self.mouse_move_frequency_switch.setChecked(self.config.mouse_move_frequency_switch)  # 初始化开关的值
         self.mouse_move_frequency_switch.toggled.connect(self.main_window.handle_toggled)
 
-        self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后以下鼠标参数都不生效）")
+        self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后以下鼠标参数才生效）")
         self.mouse_smoothing_switch.setObjectName("mouse_smoothing_switch")
         self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
         self.mouse_smoothing_switch.toggled.connect(self.main_window.handle_toggled)
