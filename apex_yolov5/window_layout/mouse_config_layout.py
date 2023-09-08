@@ -198,7 +198,7 @@ class MouseConfigLayout:
         self.parent_layout.addWidget(self.label)
         self.parent_layout.addLayout(self.aim_button_layout)
         self.parent_layout.addLayout(mouse_model_layout)
-        self.parent_layout.addWidget(self.mouse_move_frequency_switch)
+        self.parent_layout.addWidget(self.mouse_smoothing_switch)
         self.parent_layout.addLayout(move_step_layout)
         self.parent_layout.addLayout(move_step_y_layout)
         self.parent_layout.addLayout(move_path_nx_layout)
@@ -209,8 +209,8 @@ class MouseConfigLayout:
         self.parent_layout.addLayout(aim_move_path_nx_layout)
         self.parent_layout.addLayout(aim_move_path_ny_layout)
 
+        self.parent_layout.addWidget(self.mouse_move_frequency_switch)
         self.parent_layout.addLayout(mouse_move_frequency_layout)
-        self.parent_layout.addWidget(self.mouse_smoothing_switch)
 
         self.parent_layout.addLayout(cross_layout)
 

@@ -86,8 +86,7 @@
         "长弓"
     ],
     "aim_button": [
-        "x1&!x2",
-        "right"
+        "x1&!x2"
     ],
     "move_path_ny": 0.8,
     "move_step_y": 1,
@@ -108,12 +107,12 @@
     "aim_move_path_ny": 0.8,
     "mouse_move_frequency": 0.001,
     "mouse_move_frequency_switch": false,
-    "mouse_model": "win32api",
+    "mouse_model": "kmbox",
     "available_mouse_models": {
         "win32api": {},
         "kmbox": {
             "VID/PID": "66882021"
         }
     },
-    "mouse_smoothing_switch": false
+    "mouse_smoothing_switch": true
 }
