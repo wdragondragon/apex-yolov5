@@ -3,7 +3,7 @@
     320,
     320
   ],
-  "weights": ".\\apex_model\\apex2.pt",
+  "weights": ".\\apex_model\\apex_one.onnx",
   "data": ".\\apex_model\\1w2\\mydata.yaml",
   "half": true,
   "device": 0,

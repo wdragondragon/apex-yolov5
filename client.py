@@ -86,7 +86,7 @@ def main():
                     now = time.time()
                     if now - compute_time > 1:
                         print("一秒识别[{}]次:".format(print_count))
-                        log_util.print_time(print_count)
+                        # log_util.print_time(print_count)
                         threading.Thread(target=save_rescreen_and_aims_to_file, args=(screenshot, None, aims)).start()
                         print_count = 0
                         compute_time = now

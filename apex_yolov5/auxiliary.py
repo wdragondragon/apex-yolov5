@@ -21,7 +21,10 @@ def set_intention(x, y):
     # print("set_intention: {}".format((x, y)))
     (current_x, current_y) = get_mouse_position()
     # intention = ((x - current_x) * lock_move_speed, (y - current_y) * lock_move_speed)
-    intention = ((x - current_x) * global_config.move_path_nx, (y - current_y) * global_config.move_path_ny)
+    if apex_mouse_listener.is_press(Button.right):
+        intention = ((x - current_x) * global_config.aim_move_path_nx, (y - current_y) * global_config.aim_move_path_ny)
+    else:
+        intention = ((x - current_x) * global_config.move_path_nx, (y - current_y) * global_config.move_path_ny)
     change_coordinates_num += 1
 
 
@@ -34,7 +37,11 @@ def get_lock_mode():
     lock_mode = (("left" in global_config.aim_button and apex_mouse_listener.is_press(Button.left)) or
                  ("right" in global_config.aim_button and apex_mouse_listener.is_press(Button.right)) or
                  ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)) or
-                 ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)))
+                 ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)) or
+                 ("x1&!x2" in global_config.aim_button and (
+                         apex_mouse_listener.is_press(Button.left) and not apex_mouse_listener.is_press(
+                     Button.right)))
+                 )
     return lock_mode and apex_mouse_listener.middle_toggle
 
 
@@ -53,25 +60,33 @@ def start():
         if get_lock_mode() and intention is not None:
             t0 = time.time()
             (x, y) = intention
-            print("开始移动，移动距离:{}".format((x, y)))
-            while x != 0 or y != 0:
-                (x, y) = intention
-                move_up = min(global_config.move_step, abs(x)) * (1 if x > 0 else -1)
-                move_down = min(global_config.move_step, abs(y)) * (1 if y > 0 else -1)
-                if x == 0:
-                    move_up = 0
-                elif y == 0:
-                    move_down = 0
-                x -= move_up
-                y -= move_down
-                intention = (x, y)
-                set_mouse_position(int(move_up), int(move_down))
-                time.sleep(0.001)
-                if not apex_mouse_listener.middle_toggle:
-                    break
+            if global_config.mouse_model != "kmbox":
+                print("开始移动，移动距离:{}".format((x, y)))
+                while x != 0 or y != 0:
+                    (x, y) = intention
+                    move_step_temp = global_config.aim_move_step if apex_mouse_listener.is_press(
+                        Button.right) else global_config.move_step
+                    move_step_y_temp = global_config.aim_move_step_y if apex_mouse_listener.is_press(
+                        Button.right) else global_config.move_step_y
+                    move_up = min(move_step_temp, abs(x)) * (1 if x > 0 else -1)
+                    move_down = min(move_step_y_temp, abs(y)) * (1 if y > 0 else -1)
+                    if x == 0:
+                        move_up = 0
+                    elif y == 0:
+                        move_down = 0
+                    x -= move_up
+                    y -= move_down
+                    intention = (x, y)
+                    set_mouse_position(int(move_up), int(move_down))
+                    if not apex_mouse_listener.middle_toggle:
+                        break
+                    if not global_config.mouse_move_frequency_switch:
+                        time.sleep(global_config.mouse_move_frequency)
+                print(
+                    "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
+            else:
+                set_mouse_position(int(x), int(y))
             intention = None
-            print(
-                "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
         elif not get_lock_mode():
             intention = None
         time.sleep(0.01)

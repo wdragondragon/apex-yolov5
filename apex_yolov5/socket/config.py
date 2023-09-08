@@ -48,11 +48,31 @@ class Config:
         self.is_show_debug_window = self.get_config(self.config_data, "is_show_debug_window")  # 可修改为True，会出现调试窗口
         # self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
         # 最终鼠标移动单次像素
+
+        self.mouse_model = self.get_config(self.config_data, "mouse_model", "kmbox")
+        self.available_mouse_models = self.get_config(self.config_data, "available_mouse_models", {
+            "win32api": {},
+            "kmbox": {
+                "VID/PID": "66882021"
+            }
+        })
+
         self.move_step = self.get_config(self.config_data, "move_step")
         self.move_step_y = self.get_config(self.config_data, "move_step_y", self.move_step)
         # 移动路径倍率
         self.move_path_nx = self.get_config(self.config_data, "move_path_nx")  # 锁定模式下鼠标移动速度
         self.move_path_ny = self.get_config(self.config_data, "move_path_ny", self.move_path_nx)  # 锁定模式下鼠标移动速度
+
+        self.aim_move_step = self.get_config(self.config_data, "aim_move_step", self.move_step)
+        self.aim_move_step_y = self.get_config(self.config_data, "aim_move_step_y", self.move_step_y)
+        # 移动路径倍率
+        self.aim_move_path_nx = self.get_config(self.config_data, "aim_move_path_nx", self.move_path_nx)  # 锁定模式下鼠标移动速度
+        self.aim_move_path_ny = self.get_config(self.config_data, "aim_move_path_ny", self.move_path_ny)  # 锁定模式下鼠标移动速度
+
+        self.mouse_move_frequency = self.get_config(self.config_data, "mouse_move_frequency", 0.001)  # 锁定模式下鼠标移动速度
+        self.mouse_move_frequency_switch = self.get_config(self.config_data, "mouse_move_frequency_switch",
+                                                           False)
+
         self.lock_index = self.get_config(self.config_data, "lock_index")  # 锁定目标的索引
         self.aim_type = self.get_config(self.config_data, "aim_type")  # 锁定目标的索引
         self.refresh_button = self.get_config(self.config_data, "refresh_button")  # 刷新按钮

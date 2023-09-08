@@ -1,5 +1,8 @@
 from ctypes import windll, Structure, c_ulong, byref
 
+import km_test
+from apex_yolov5.socket.config import global_config
+
 # API常量
 MOUSEEVENTF_LEFTDOWN = 0x2
 MOUSEEVENTF_LEFTUP = 0x4
@@ -24,12 +27,19 @@ def get_mouse_position():
 
 
 def set_mouse_position(x, y):
-    user32.mouse_event(MOUSEEVENTF_MOVE, x, y)
+    if global_config.mouse_model == "kmbox":
+        km_test.get().move(x, y)
+    else:
+        user32.mouse_event(MOUSEEVENTF_MOVE, x, y)
 
 
 def left_click():
-    user32.mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-    user32.mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+    if global_config.mouse_model == "kmbox":
+        km_test.get().right(0)
+        km_test.get().right(1)
+    else:
+        user32.mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+        user32.mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
 
 
 def is_numlock_locked():
