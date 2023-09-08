@@ -167,6 +167,11 @@ class MouseConfigLayout:
         self.mouse_move_frequency_switch.setChecked(self.config.mouse_move_frequency_switch)  # 初始化开关的值
         self.mouse_move_frequency_switch.toggled.connect(self.main_window.handle_toggled)
 
+        self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后以下鼠标参数都不生效）")
+        self.mouse_smoothing_switch.setObjectName("mouse_smoothing_switch")
+        self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
+        self.mouse_smoothing_switch.toggled.connect(self.main_window.handle_toggled)
+
         cross_layout = QHBoxLayout()
         self.cross_label = QLabel("瞄准高度：", self.main_window)
         self.human_pixmap = QPixmap("images/human.jpg").scaled(100, 200, Qt.KeepAspectRatio)
@@ -193,6 +198,7 @@ class MouseConfigLayout:
         self.parent_layout.addWidget(self.label)
         self.parent_layout.addLayout(self.aim_button_layout)
         self.parent_layout.addLayout(mouse_model_layout)
+        self.parent_layout.addWidget(self.mouse_move_frequency_switch)
         self.parent_layout.addLayout(move_step_layout)
         self.parent_layout.addLayout(move_step_y_layout)
         self.parent_layout.addLayout(move_path_nx_layout)
@@ -204,7 +210,7 @@ class MouseConfigLayout:
         self.parent_layout.addLayout(aim_move_path_ny_layout)
 
         self.parent_layout.addLayout(mouse_move_frequency_layout)
-        self.parent_layout.addWidget(self.mouse_move_frequency_switch)
+        self.parent_layout.addWidget(self.mouse_smoothing_switch)
 
         self.parent_layout.addLayout(cross_layout)
 

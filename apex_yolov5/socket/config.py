@@ -72,6 +72,7 @@ class Config:
         self.mouse_move_frequency = self.get_config(self.config_data, "mouse_move_frequency", 0.001)  # 锁定模式下鼠标移动速度
         self.mouse_move_frequency_switch = self.get_config(self.config_data, "mouse_move_frequency_switch",
                                                            False)
+        self.mouse_smoothing_switch = self.get_config(self.config_data, "mouse_smoothing_switch", True)
 
         self.lock_index = self.get_config(self.config_data, "lock_index")  # 锁定目标的索引
         self.aim_type = self.get_config(self.config_data, "aim_type")  # 锁定目标的索引

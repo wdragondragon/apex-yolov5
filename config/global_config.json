@@ -87,7 +87,6 @@
     ],
     "aim_button": [
         "x1&!x2",
-        "left",
         "right"
     ],
     "move_path_ny": 0.8,
@@ -109,11 +108,12 @@
     "aim_move_path_ny": 0.8,
     "mouse_move_frequency": 0.001,
     "mouse_move_frequency_switch": false,
-    "mouse_model": "kmbox",
+    "mouse_model": "win32api",
     "available_mouse_models": {
         "win32api": {},
         "kmbox": {
             "VID/PID": "66882021"
         }
-    }
+    },
+    "mouse_smoothing_switch": false
 }
