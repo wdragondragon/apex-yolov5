@@ -32,7 +32,7 @@ class AutoChargedEnergyLayout:
         auto_charged_energy_layout.addLayout(storage_interval_layout)
 
         auto_charged_energy_toggle_layout = QHBoxLayout()
-        self.auto_charged_energy_toggle_label = QLabel("存止开关:", self.main_window)
+        self.auto_charged_energy_toggle_label = QLabel("寸止开关:", self.main_window)
         self.auto_charged_energy_toggle = QLineEdit(self.main_window)
         self.auto_charged_energy_toggle.setText(str(self.config.auto_charged_energy_toggle))
         auto_charged_energy_toggle_layout.addWidget(self.auto_charged_energy_toggle_label)

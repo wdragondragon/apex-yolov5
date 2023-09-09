@@ -26,6 +26,7 @@ def get_CPU_info():
                 "CoreNum": u.NumberOfCores
             }
         )
+    print("cpu info", cpu)
     return cpu
 
 
@@ -90,7 +91,7 @@ def check_permission(machine_code):
 
 
 def check():
-    machine_code = get_machine_code()
+    machine_code = get_CPU_info()[0]["Serial Number"]
 
     if not check_permission(machine_code):
         print("没有运行权限")

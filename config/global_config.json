@@ -86,7 +86,8 @@
         "长弓"
     ],
     "aim_button": [
-        "x1&!x2"
+        "x1&!x2",
+        "right"
     ],
     "move_path_ny": 0.8,
     "move_step_y": 1,

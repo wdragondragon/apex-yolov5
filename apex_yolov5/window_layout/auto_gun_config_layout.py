@@ -38,7 +38,7 @@ class AutoGunConfigLayout:
         self.available_guns = [item for item in self.config.available_guns if item not in self.config.click_gun]
         self.available_guns_list = QListWidget(self.main_window)
         self.available_guns_list.addItems(self.available_guns)  # 假设config.available_guns是一个包含所有可用枪支的列表
-        self.available_guns_list.setMinimumSize(150, 200)
+        self.available_guns_list.setMinimumSize(100, 150)
         available_layout.addWidget(self.available_guns_label)
         available_layout.addWidget(self.available_guns_list)
         list_layout.addLayout(available_layout)
@@ -56,7 +56,7 @@ class AutoGunConfigLayout:
         self.add_guns_label = QLabel("已选择枪支", self.main_window)
         self.selected_guns_list = QListWidget(self.main_window)
         self.selected_guns_list.addItems(self.config.click_gun)  # 假设config.click_gun是一个包含已选择枪支的列表
-        self.selected_guns_list.setMinimumSize(150, 200)
+        self.selected_guns_list.setMinimumSize(100, 150)
         add_guns_layout.addWidget(self.add_guns_label)
         add_guns_layout.addWidget(self.selected_guns_list)
         list_layout.addLayout(add_guns_layout)

@@ -18,11 +18,12 @@ class ConfigWindow(QMainWindow):
         self.config_layout_1 = QVBoxLayout()
         self.config_layout_2 = QVBoxLayout()
         self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
-        self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_1)
+        self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_1)
         self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_2)
+        self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_2)
         self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_2)
         self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_2)
-        self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_2)
+
         self.initUI()
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         # self.installEventFilter(self)
@@ -31,11 +32,11 @@ class ConfigWindow(QMainWindow):
         self.setWindowTitle("Config Window")
         self.setGeometry(0, 0, 250, 200)
         self.mouse_config_layout.add_layout()
-        self.auto_gun_config_layout.add_layout()
+        self.screenshot_layout.add_layout()
         self.model_config_layout.add_layout()
+        self.auto_gun_config_layout.add_layout()
         self.auto_save_config_layout.add_layout()
         self.auto_charge_energy_layout.add_layout()
-        self.screenshot_layout.add_layout()
 
         # 创建保存按钮
         self.save_button = QPushButton("Save", self)

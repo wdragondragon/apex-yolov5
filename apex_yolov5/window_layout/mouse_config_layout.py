@@ -27,6 +27,11 @@ class MouseConfigLayout:
         mouse_model_layout.addWidget(mouse_model_label)
         mouse_model_layout.addWidget(self.mouse_model_combo_box)
 
+        self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后单词移动像素才生效）")
+        self.mouse_smoothing_switch.setObjectName("mouse_smoothing_switch")
+        self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
+        self.mouse_smoothing_switch.toggled.connect(self.disable_silder_toggled)
+
         self.aim_button_layout = QHBoxLayout()
         self.aim_button_label = QLabel("自动标准触发按键:")
         self.left_aim = QCheckBox("左键")
@@ -67,6 +72,7 @@ class MouseConfigLayout:
         self.move_step_slider.setMaximum(30)  # 最大值
         self.move_step_slider.setValue(self.config.move_step)  # 初始化值
         self.move_step_slider.valueChanged.connect(self.update_move_step_label)
+        self.move_step_slider.setEnabled(self.config.mouse_smoothing_switch)
         move_step_layout.addWidget(self.move_step_label)
         move_step_layout.addWidget(self.move_step_slider)
 
@@ -78,6 +84,7 @@ class MouseConfigLayout:
         self.move_step_y_slider.setMaximum(30)  # 最大值
         self.move_step_y_slider.setValue(self.config.move_step_y)  # 初始化值
         self.move_step_y_slider.valueChanged.connect(self.update_move_step_y_label)
+        self.move_step_y_slider.setEnabled(self.config.mouse_smoothing_switch)
         move_step_y_layout.addWidget(self.move_step_y_label)
         move_step_y_layout.addWidget(self.move_step_y_slider)
 
@@ -111,6 +118,7 @@ class MouseConfigLayout:
         self.aim_move_step_slider.setMaximum(30)  # 最大值
         self.aim_move_step_slider.setValue(self.config.aim_move_step)  # 初始化值
         self.aim_move_step_slider.valueChanged.connect(self.update_aim_move_step_label)
+        self.aim_move_step_slider.setEnabled(self.config.mouse_smoothing_switch)
         aim_move_step_layout.addWidget(self.aim_move_step_label)
         aim_move_step_layout.addWidget(self.aim_move_step_slider)
 
@@ -122,6 +130,7 @@ class MouseConfigLayout:
         self.aim_move_step_y_slider.setMaximum(30)  # 最大值
         self.aim_move_step_y_slider.setValue(self.config.aim_move_step_y)  # 初始化值
         self.aim_move_step_y_slider.valueChanged.connect(self.update_aim_move_step_y_label)
+        self.aim_move_step_y_slider.setEnabled(self.config.mouse_smoothing_switch)
         aim_move_step_y_layout.addWidget(self.aim_move_step_y_label)
         aim_move_step_y_layout.addWidget(self.aim_move_step_y_slider)
 
@@ -149,6 +158,11 @@ class MouseConfigLayout:
         aim_move_path_ny_layout.addWidget(self.aim_move_path_ny_label)
         aim_move_path_ny_layout.addWidget(self.aim_move_path_ny_slider)
 
+        self.mouse_move_frequency_switch = QCheckBox("鼠标移动频率自适应（勾选后移动频率不生效）")
+        self.mouse_move_frequency_switch.setObjectName("mouse_move_frequency_switch")
+        self.mouse_move_frequency_switch.setChecked(self.config.mouse_move_frequency_switch)  # 初始化开关的值
+        self.mouse_move_frequency_switch.toggled.connect(self.disable_silder_toggled)
+
         mouse_move_frequency_layout = QHBoxLayout()
         self.mouse_move_frequency_label = QLabel("鼠标移动频率:" + str(int(1 / self.config.mouse_move_frequency)),
                                                  self.main_window)
@@ -158,19 +172,10 @@ class MouseConfigLayout:
         self.mouse_move_frequency_slider.setMaximum(1000)  # 最大值
         self.mouse_move_frequency_slider.setValue(int(1 / self.config.mouse_move_frequency))  # 初始化值
         self.mouse_move_frequency_slider.valueChanged.connect(self.update_mouse_move_frequency_label)
-
+        self.mouse_move_frequency_slider.setEnabled(
+            self.config.mouse_smoothing_switch and not self.config.mouse_move_frequency_switch)
         mouse_move_frequency_layout.addWidget(self.mouse_move_frequency_label)
         mouse_move_frequency_layout.addWidget(self.mouse_move_frequency_slider)
-
-        self.mouse_move_frequency_switch = QCheckBox("鼠标移动频率自适应（勾选后移动频率不生效）")
-        self.mouse_move_frequency_switch.setObjectName("mouse_move_frequency_switch")
-        self.mouse_move_frequency_switch.setChecked(self.config.mouse_move_frequency_switch)  # 初始化开关的值
-        self.mouse_move_frequency_switch.toggled.connect(self.main_window.handle_toggled)
-
-        self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后以下鼠标参数才生效）")
-        self.mouse_smoothing_switch.setObjectName("mouse_smoothing_switch")
-        self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
-        self.mouse_smoothing_switch.toggled.connect(self.main_window.handle_toggled)
 
         cross_layout = QHBoxLayout()
         self.cross_label = QLabel("瞄准高度：", self.main_window)
@@ -227,6 +232,17 @@ class MouseConfigLayout:
             self.config.aim_button.append(self.main_window.sender().objectName())
         elif not checked and self.main_window.sender().objectName() in self.config.aim_button:
             self.config.aim_button.remove(self.main_window.sender().objectName())
+
+    def disable_silder_toggled(self, checked):
+        self.main_window.handle_toggled(checked)
+        if self.main_window.sender().objectName() == 'mouse_smoothing_switch':
+            self.move_step_slider.setEnabled(checked)
+            self.move_step_y_slider.setEnabled(checked)
+            self.aim_move_step_slider.setEnabled(checked)
+            self.aim_move_step_y_slider.setEnabled(checked)
+            self.mouse_move_frequency_slider.setEnabled(checked and not self.mouse_move_frequency_switch.isChecked())
+        elif self.main_window.sender().objectName() == 'mouse_move_frequency_switch':
+            self.mouse_move_frequency_slider.setEnabled(not checked and self.mouse_smoothing_switch.isChecked())
 
     def update_move_step_label(self, value):
         self.move_step_label.setText("单次水平移动像素:" + str(value))
