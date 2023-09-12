@@ -161,11 +161,11 @@ def save_img_and_aims_to_file(img, aims):
             break
     if len(aims):
         if has_aim:
-            save_image_path = save_no_aim_image_path
-            save_label_path = save_no_aim_label_path
-        else:
             save_image_path = save_has_aim_image_path
             save_label_path = save_has_aim_label_path
+        else:
+            save_image_path = save_no_aim_image_path
+            save_label_path = save_no_aim_label_path
     else:
         print("no aims without save image")
         return

@@ -34,6 +34,63 @@ threading.Thread(target=start).start()
 log_util = LogUtil.LogUtil()
 
 
+def handle():
+    while True:
+        try:
+            # ...or, in a non-blocking fashion:
+            # 创建一个TCP/IP套接字
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # 服务器地址和端口
+            server_address = (global_config.listener_ip, global_config.listener_port+1)
+
+            # 连接服务器
+            client_socket.connect(server_address)
+            buffer_size = global_config.buffer_size
+            try:
+                print_count = 0
+                compute_time = time.time()
+                while True:
+                    if not Tools.is_apex_windows():
+                        print("不是apex窗口")
+                        time.sleep(1)
+                        continue
+                    if not apex_mouse_listener.middle_toggle:
+                        time.sleep(0.1)
+                        continue
+                    print_count += 1
+                    t3 = time.time()
+                    mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
+                    log_util.set_time("接收鼠标数据", time.time() - t3)
+                    if not mouse_data:
+                        continue
+                    t4 = time.time()
+                    aims = pickle.loads(mouse_data)
+                    if len(aims) and not global_config.only_save:
+                        lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
+                             shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
+                    log_util.set_time("处理鼠标数据", time.time() - t4)
+                    now = time.time()
+                    if now - compute_time > 1:
+                        print("一秒识别[{}]次:".format(print_count))
+                        # log_util.print_time(print_count)
+                        # threading.Thread(target=save_rescreen_and_aims_to_file, args=(screenshot, None, aims)).start()
+                        print_count = 0
+                        compute_time = now
+            except Exception as e:
+                print(e)
+                traceback.print_exc()
+                pass
+            finally:
+                # 关闭连接
+                client_socket.close()
+        except:
+            pass
+        finally:
+            time.sleep(1)
+            print("连接断开，等待重连...")
+            pass
+
 def main():
     while True:
         try:
@@ -72,26 +129,6 @@ def main():
                     t2 = time.time()
                     socket_util.send(client_socket, screenshot.rgb, buffer_size=buffer_size)
                     log_util.set_time("发送图片", time.time() - t2)
-                    t3 = time.time()
-                    mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
-                    log_util.set_time("接收鼠标数据", time.time() - t3)
-                    if not mouse_data:
-                        continue
-                    t4 = time.time()
-                    aims = pickle.loads(mouse_data)
-                    if len(aims) and not global_config.only_save:
-                        lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
-                             shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
-                    log_util.set_time("处理鼠标数据", time.time() - t4)
-                    now = time.time()
-                    if now - compute_time > 1:
-                        print("一秒识别[{}]次:".format(print_count))
-                        # log_util.print_time(print_count)
-                        threading.Thread(target=save_rescreen_and_aims_to_file, args=(screenshot, None, aims)).start()
-                        print_count = 0
-                        compute_time = now
-                    if global_config.only_save:
-                        time.sleep(1)
             except Exception as e:
                 print(e)
                 traceback.print_exc()
@@ -114,4 +151,5 @@ if __name__ == "__main__":
     if global_config.is_show_debug_window:
         log_window.show()
     threading.Thread(target=main).start()
+    threading.Thread(target=handle).start()
     sys.exit(app.exec_())
