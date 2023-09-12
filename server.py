@@ -50,7 +50,7 @@ def main():
                 total_size += len(img_data)
                 # 将接收到的数据转换为图像
                 img0 = np.frombuffer(img_data, dtype='uint8')
-                img0 = img0.reshape((global_config.monitor["width"], global_config.monitor["height"], 3))
+                img0 = img0.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
                 img0 = cv2.cvtColor(img0, cv2.COLOR_BGRA2BGR)
 
                 log_util.set_time("转换图片", time.time() - t2)
