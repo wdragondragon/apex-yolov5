@@ -16,10 +16,10 @@
     "screen_height": 1440,
     "offset_shot_screen_x": 10,
     "offset_shot_screen_y": 15,
-    "shot_width": 210,
-    "shot_height": 270,
+    "shot_width": 256,
+    "shot_height": 320,
     "is_show_debug_window": true,
-    "move_step": 1,
+    "move_step": 2,
     "move_path_nx": 0.8,
     "lock_index": [
         "0",
@@ -42,10 +42,7 @@
             255
         ]
     },
-    "refresh_button": [
-        "1",
-        "2"
-    ],
+    "refresh_button": [],
     "click_gun": [],
     "auto_save": false,
     "auto_save_path": "./apex_model/save/",
@@ -86,11 +83,11 @@
         "长弓"
     ],
     "aim_button": [
-        "x1&!x2",
-        "right"
+        "right",
+        "x1&!x2"
     ],
     "move_path_ny": 0.8,
-    "move_step_y": 1,
+    "move_step_y": 2,
     "current_model": "apex区分敌我",
     "available_models": {
         "apex标准": {
@@ -102,13 +99,13 @@
             "data": "./apex_model/data.yaml"
         }
     },
-    "aim_move_step": 1,
-    "aim_move_step_y": 1,
-    "aim_move_path_nx": 0.8,
-    "aim_move_path_ny": 0.8,
+    "aim_move_step": 4,
+    "aim_move_step_y": 2,
+    "aim_move_path_nx": 1.0,
+    "aim_move_path_ny": 1.0,
     "mouse_move_frequency": 0.001,
     "mouse_move_frequency_switch": false,
-    "mouse_model": "kmbox",
+    "mouse_model": "win32api",
     "available_mouse_models": {
         "win32api": {},
         "kmbox": {

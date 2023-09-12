@@ -69,7 +69,7 @@ class MouseConfigLayout:
         self.move_step_label = QLabel("单次水平移动像素:" + str(self.config.move_step), self.main_window)
         self.move_step_slider = QSlider(Qt.Horizontal, self.main_window)
         self.move_step_slider.setMinimum(1)  # 最小值
-        self.move_step_slider.setMaximum(30)  # 最大值
+        self.move_step_slider.setMaximum(100)  # 最大值
         self.move_step_slider.setValue(self.config.move_step)  # 初始化值
         self.move_step_slider.valueChanged.connect(self.update_move_step_label)
         self.move_step_slider.setEnabled(self.config.mouse_smoothing_switch)
@@ -81,7 +81,7 @@ class MouseConfigLayout:
         self.move_step_y_label = QLabel("单次垂直移动像素:" + str(self.config.move_step_y), self.main_window)
         self.move_step_y_slider = QSlider(Qt.Horizontal, self.main_window)
         self.move_step_y_slider.setMinimum(1)  # 最小值
-        self.move_step_y_slider.setMaximum(30)  # 最大值
+        self.move_step_y_slider.setMaximum(100)  # 最大值
         self.move_step_y_slider.setValue(self.config.move_step_y)  # 初始化值
         self.move_step_y_slider.valueChanged.connect(self.update_move_step_y_label)
         self.move_step_y_slider.setEnabled(self.config.mouse_smoothing_switch)
@@ -115,7 +115,7 @@ class MouseConfigLayout:
         self.aim_move_step_label = QLabel("瞄准时水平移动像素:" + str(self.config.aim_move_step), self.main_window)
         self.aim_move_step_slider = QSlider(Qt.Horizontal, self.main_window)
         self.aim_move_step_slider.setMinimum(1)  # 最小值
-        self.aim_move_step_slider.setMaximum(30)  # 最大值
+        self.aim_move_step_slider.setMaximum(100)  # 最大值
         self.aim_move_step_slider.setValue(self.config.aim_move_step)  # 初始化值
         self.aim_move_step_slider.valueChanged.connect(self.update_aim_move_step_label)
         self.aim_move_step_slider.setEnabled(self.config.mouse_smoothing_switch)
@@ -127,7 +127,7 @@ class MouseConfigLayout:
         self.aim_move_step_y_label = QLabel("瞄准时垂直移动像素:" + str(self.config.aim_move_step_y), self.main_window)
         self.aim_move_step_y_slider = QSlider(Qt.Horizontal, self.main_window)
         self.aim_move_step_y_slider.setMinimum(1)  # 最小值
-        self.aim_move_step_y_slider.setMaximum(30)  # 最大值
+        self.aim_move_step_y_slider.setMaximum(100)  # 最大值
         self.aim_move_step_y_slider.setValue(self.config.aim_move_step_y)  # 初始化值
         self.aim_move_step_y_slider.valueChanged.connect(self.update_aim_move_step_y_label)
         self.aim_move_step_y_slider.setEnabled(self.config.mouse_smoothing_switch)

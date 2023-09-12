@@ -38,7 +38,7 @@ def main():
             aims = get_aims(img)
             bboxes = []
             if len(aims):
-                if get_lock_mode() and not global_config.only_save:
+                if not global_config.only_save:
                     lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
                          shot_width=global_config.shot_width,
                          shot_height=global_config.shot_height)  # x y 是分辨率

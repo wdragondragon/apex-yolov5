@@ -42,6 +42,7 @@ def get_lock_mode():
                          apex_mouse_listener.is_press(Button.left) and not apex_mouse_listener.is_press(
                      Button.right)))
                  )
+    lock_mode = lock_mode or len(global_config.aim_button) == 0
     return lock_mode and apex_mouse_listener.middle_toggle
 
 
