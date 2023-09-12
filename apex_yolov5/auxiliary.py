@@ -8,7 +8,6 @@ from apex_yolov5.mouse_controller import get_mouse_position, set_mouse_position,
 from apex_yolov5.socket.config import global_config
 
 intention = None
-intention_handler = False
 change_coordinates_num = 0
 
 last_click_time = 0
@@ -47,7 +46,7 @@ def get_lock_mode():
 
 
 def start():
-    global intention, intention_handler, change_coordinates_num, last_click_time, click_sign
+    global intention, change_coordinates_num, last_click_time, click_sign
     while True:
         if click_sign and time.time() - last_click_time > click_interval and select_gun.current_gun in global_config.click_gun:
             left_click()
