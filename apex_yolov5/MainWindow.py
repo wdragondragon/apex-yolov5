@@ -21,8 +21,8 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.config_window = None
-        self.magnifying_glass_window = None
+        self.config_window = ConfigWindow(global_config)
+        self.magnifying_glass_window = MagnifyingGlassWindows()
         if not hasattr(self, 'image_label'):
             self.image_label = None
             self.init_ui()

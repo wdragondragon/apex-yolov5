@@ -57,7 +57,7 @@ def main():
                         print("不是apex窗口")
                         time.sleep(1)
                         continue
-                    if not apex_mouse_listener.middle_toggle:
+                    if not global_config.ai_toggle:
                         time.sleep(0.1)
                         continue
                     print_count += 1

@@ -42,7 +42,7 @@ def get_lock_mode():
                      Button.right)))
                  )
     lock_mode = lock_mode or len(global_config.aim_button) == 0
-    return lock_mode and apex_mouse_listener.middle_toggle
+    return lock_mode and global_config.ai_toggle
 
 
 def start():
@@ -78,7 +78,7 @@ def start():
                     y -= move_down
                     intention = (x, y)
                     set_mouse_position(int(move_up), int(move_down))
-                    if not apex_mouse_listener.middle_toggle:
+                    if not global_config.ai_toggle:
                         break
                     if not global_config.mouse_move_frequency_switch:
                         time.sleep(global_config.mouse_move_frequency)

@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout
 
+from apex_yolov5.window_layout.ai_toggle_layout import AiToggleLayout
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
 from apex_yolov5.window_layout.auto_gun_config_layout import AutoGunConfigLayout
 from apex_yolov5.window_layout.auto_save_config_layout import AutoSaveConfigLayout
@@ -17,6 +18,7 @@ class ConfigWindow(QMainWindow):
         self.config_layout = QHBoxLayout()
         self.config_layout_1 = QVBoxLayout()
         self.config_layout_2 = QVBoxLayout()
+        self.ai_toggle_layout = AiToggleLayout(self.config, self, self.config_layout_1)
         self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
         self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_1)
         self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_2)
@@ -31,6 +33,7 @@ class ConfigWindow(QMainWindow):
     def initUI(self):
         self.setWindowTitle("Config Window")
         self.setGeometry(0, 0, 250, 200)
+        self.ai_toggle_layout.add_layout()
         self.mouse_config_layout.add_layout()
         self.screenshot_layout.add_layout()
         self.model_config_layout.add_layout()
@@ -66,5 +69,5 @@ class ConfigWindow(QMainWindow):
         self.mouse_config_layout.save_config()
         self.screenshot_layout.save_config()
         self.auto_charge_energy_layout.save_config()
+        self.ai_toggle_layout.save_config()
         self.config.save_config()
-        self.destroy()
