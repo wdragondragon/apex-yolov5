@@ -61,8 +61,8 @@ def start():
             t0 = time.time()
             (x, y) = intention
             if global_config.mouse_model != "kmbox" and global_config.mouse_smoothing_switch:
-                print("开始移动，移动距离:{}".format((x, y)))
-                while x != 0 or y != 0:
+                # print("开始移动，移动距离:{}".format((x, y)))
+                while (x != 0 or y != 0) and get_lock_mode():
                     (x, y) = intention
                     move_step_temp = global_config.aim_move_step if apex_mouse_listener.is_press(
                         Button.right) else global_config.move_step
@@ -82,8 +82,8 @@ def start():
                         break
                     if not global_config.mouse_move_frequency_switch:
                         time.sleep(global_config.mouse_move_frequency)
-                print(
-                    "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
+                # print(
+                #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             else:
                 set_mouse_position(int(x), int(y))
             intention = None
