@@ -23,7 +23,7 @@ class ScreenshotAreaLayout:
         self.width_input.setText(str(int(self.config.shot_width)))
         self.height_input.setText(str(int(self.config.shot_height)))
 
-        self.mouse_moving_radius_label = QLabel("移动直径：")
+        self.mouse_moving_radius_label = QLabel("移动半径：")
         self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
         # 连接信号和槽
         self.width_input.textChanged.connect(self.update_inner_rect_size)
