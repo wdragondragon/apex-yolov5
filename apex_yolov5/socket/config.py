@@ -107,6 +107,8 @@ class Config:
 
         self.ai_available_toggle_type = self.get_config(self.config_data, "ai_available_toggle_type", ['m', 'k'])
 
+        self.mouse_moving_radius = self.get_config(self.config_data, "mouse_moving_radius")
+
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640

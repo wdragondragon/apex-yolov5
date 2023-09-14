@@ -52,7 +52,8 @@ def handle():
         if now - compute_time > 1:
             image_text = "一秒识别[{}]次:".format(print_count)
             print(image_text)
-            threading.Thread(target=save_rescreen_and_aims_to_file, args=(img_origin, img, aims)).start()
+            if global_config.auto_save:
+                threading.Thread(target=save_rescreen_and_aims_to_file, args=(img_origin, img, aims)).start()
             print_count = 0
             compute_time = now
         if global_config.is_show_debug_window:
