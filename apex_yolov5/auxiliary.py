@@ -20,7 +20,7 @@ def set_intention(x, y):
     # print("set_intention: {}".format((x, y)))
     (current_x, current_y) = get_mouse_position()
     # intention = ((x - current_x) * lock_move_speed, (y - current_y) * lock_move_speed)
-    if apex_mouse_listener.is_press(Button.right):
+    if apex_mouse_listener.get_aim_status():
         intention = ((x - current_x) * global_config.aim_move_path_nx, (y - current_y) * global_config.aim_move_path_ny)
     else:
         intention = ((x - current_x) * global_config.move_path_nx, (y - current_y) * global_config.move_path_ny)

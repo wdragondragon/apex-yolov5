@@ -17,7 +17,7 @@ class MouseConfigLayout:
         self.label.setAlignment(Qt.AlignCenter)
 
         mouse_model_layout = QHBoxLayout()
-        mouse_model_label = QLabel("选择鼠标模式:")
+        mouse_model_label = QLabel("选择自瞄鼠标模式:")
         self.mouse_model_combo_box = QComboBox()
 
         for key in self.config.available_mouse_models.keys():
@@ -26,6 +26,16 @@ class MouseConfigLayout:
         self.mouse_model_combo_box.currentIndexChanged.connect(self.selection_changed)
         mouse_model_layout.addWidget(mouse_model_label)
         mouse_model_layout.addWidget(self.mouse_model_combo_box)
+
+        aim_model_layout = QHBoxLayout()
+        aim_model_label = QLabel("选择开镜瞄准模式")
+        self.aim_model_combo_box = QComboBox()
+        for key in self.config.aim_models:
+            self.aim_model_combo_box.addItem(key)
+            self.aim_model_combo_box.setCurrentText(self.config.aim_model)
+            self.aim_model_combo_box.currentIndexChanged.connect(self.selection_aim_model_changed)
+        aim_model_layout.addWidget(aim_model_label)
+        aim_model_layout.addWidget(self.aim_model_combo_box)
 
         self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后单词移动像素才生效）")
         self.mouse_smoothing_switch.setObjectName("mouse_smoothing_switch")
@@ -202,6 +212,7 @@ class MouseConfigLayout:
 
         self.parent_layout.addWidget(self.label)
         self.parent_layout.addLayout(self.aim_button_layout)
+        self.parent_layout.addLayout(aim_model_layout)
         self.parent_layout.addLayout(mouse_model_layout)
         self.parent_layout.addWidget(self.mouse_smoothing_switch)
         self.parent_layout.addLayout(move_step_layout)
@@ -226,6 +237,9 @@ class MouseConfigLayout:
         if selected_key == "kmbox":
             km_test.load()
         self.mouse_model_combo_box.setEnabled(True)
+
+    def selection_aim_model_changed(self, index):
+        self.config.set_config("aim_model", self.aim_model_combo_box.currentText())
 
     def handle_toggled(self, checked):
         if checked and not self.main_window.sender().objectName() in self.config.aim_button:

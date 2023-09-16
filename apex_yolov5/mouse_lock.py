@@ -1,3 +1,5 @@
+from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
+from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import set_intention, set_click
 from apex_yolov5.mouse_controller import left_click
 from apex_yolov5.socket.config import global_config
@@ -34,7 +36,12 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     targetRealX = left_top_x + targetShotX  # 目标在屏幕的坐标
     targetRealY = left_top_y + targetShotY - int(global_config.cross_hair / 2 * height)
 
-    if (global_config.mouse_moving_radius ** 2 >
+    if apex_mouse_listener.get_aim_status():
+        mouse_moving_radius = global_config.aim_mouse_moving_radius
+    else:
+        mouse_moving_radius = global_config.mouse_moving_radius
+
+    if (mouse_moving_radius ** 2 >
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
         set_intention(targetRealX, targetRealY)
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))

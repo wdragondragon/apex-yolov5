@@ -94,6 +94,12 @@ class MouseListener:
         else:
             return 0
 
+    def get_aim_status(self):
+        if global_config.aim_model == "按住":
+            return self.is_press(Button.right)
+        elif global_config.aim_model == "切换":
+            return self.is_toggle(Button.right)
+
 
 class KMCallBack:
     toggle_call_back = []

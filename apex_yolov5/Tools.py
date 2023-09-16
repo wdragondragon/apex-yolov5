@@ -1,12 +1,13 @@
+import os
 import time
 import tkinter
 from io import BytesIO
-import os
+from shutil import copyfile
+
 import cv2
 import numpy as np
 import win32gui
 from skimage.metrics import structural_similarity
-from shutil import copyfile
 
 
 class Tools:
