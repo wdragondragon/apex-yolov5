@@ -11,7 +11,7 @@ intention = None
 change_coordinates_num = 0
 
 last_click_time = 0
-click_interval = 0.1
+click_interval = 0.01
 click_sign = False
 
 

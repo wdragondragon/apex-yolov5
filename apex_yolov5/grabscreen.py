@@ -1,5 +1,6 @@
 import io
 import os
+import threading
 import time
 import traceback
 from datetime import datetime
@@ -123,34 +124,38 @@ def save_screen_to_file():
     image.save(save_manual_operation_path + formatted_date + ".png", 'PNG')
 
 
-def save_rescreen_and_aims_to_file(img_origin, img, aims):
+def save_rescreen_and_aims_to_file_with_thread(img_origin, img, aims):
     try:
         global last_save_time, save_sign
         if not global_config.auto_save or time.time() - last_save_time < 1 or save_sign:
             return
         save_sign = True
         last_save_time = time.time()
-        img_origin_size = img_origin.size
-        if not (img_origin_size.width == global_config.auto_save_monitor['width'] and
-                img_origin_size.height == global_config.auto_save_monitor['height']):
-            with mss.mss() as sct:
-                screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
-            rgb = screenshot.rgb
-            img = np.frombuffer(rgb, dtype='uint8')
-            img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
-            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-            aims = get_aims(img)
-        elif img is None:
-            img = np.frombuffer(img_origin.rgb, dtype='uint8')
-            img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
-            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-        # img = cv2.resize(img, (global_config.imgsz, global_config.imgszy))
-        save_img_and_aims_to_file(img, aims)
+        threading.Thread(target=save_rescreen_and_aims_to_file, args=(img_origin, img, aims)).start()
     except Exception as e:
         print(e)
         traceback.print_exc()
         pass
     save_sign = False
+
+
+def save_rescreen_and_aims_to_file(img_origin, img, aims):
+    img_origin_size = img_origin.size
+    if not (img_origin_size.width == global_config.auto_save_monitor['width'] and
+            img_origin_size.height == global_config.auto_save_monitor['height']):
+        with mss.mss() as sct:
+            screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
+        rgb = screenshot.rgb
+        img = np.frombuffer(rgb, dtype='uint8')
+        img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
+        img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+        aims = get_aims(img)
+    elif img is None:
+        img = np.frombuffer(img_origin.rgb, dtype='uint8')
+        img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
+        img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+        # img = cv2.resize(img, (global_config.imgsz, global_config.imgszy))
+    save_img_and_aims_to_file(img, aims)
 
 
 def save_img_and_aims_to_file(img, aims):

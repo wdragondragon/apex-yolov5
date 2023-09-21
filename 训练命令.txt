@@ -1,3 +1,3 @@
-python train.py --weights .\apex_model\apex2.pt --data .\apex_model\1w2\1w.yaml --workers 8 --batch-size 16
+python train.py --weights .\apex_model\apex2.pt --data .\apex_model\1w2\1w.yaml --workers 8 --batch-size 16 --epochs 1000
 
-python export.py --imgsz (320,320) --weights .\apex_model\1w2\best.pt --data .\apex_model\1w2\1w.yaml --include engine --device 0 --half
+python export.py --imgsz (320,320) --weights .\apex_model\1w2\best_20230918.pt --data .\apex_model\1w2\1w.yaml --include engine --device 0 --half

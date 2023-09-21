@@ -16,7 +16,7 @@ from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listen
 from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_rescreen_and_aims_to_file
+from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 from client_mult import GetBlockQueue
