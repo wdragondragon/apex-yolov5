@@ -9,7 +9,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     # shot_width 截图高度，shot_height 截图区域高度
     # x,y 是分辨率
     # mouse_x,mouse_y = mouse.position
-    current_mouse_x, current_mouse_y = mouse.position
+    # current_mouse_x, current_mouse_y = mouse.position
+    current_mouse_x, current_mouse_y = global_config.screen_width // 2, global_config.screen_height // 2
     dist_list = []
     aims_copy = aims.copy()
     # print(aims_copy)
@@ -43,7 +44,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
     if (mouse_moving_radius ** 2 >
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
-        set_intention(targetRealX, targetRealY)
+        set_intention(targetRealX, targetRealY,current_mouse_x,current_mouse_y)
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
         if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
