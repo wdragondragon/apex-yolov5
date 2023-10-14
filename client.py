@@ -86,6 +86,7 @@ def main():
                     now = time.time()
                     if now - compute_time > 1:
                         print("一秒识别[{}]次:".format(print_count))
+                        log_window.update_frame_rate_plot(print_count)
                         # log_util.print_time(print_count)
                         save_rescreen_and_aims_to_file_with_thread(screenshot, None, aims)
                         print_count = 0

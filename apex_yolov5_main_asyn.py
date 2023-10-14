@@ -51,6 +51,7 @@ def handle():
         now = time.time()
         if now - compute_time > 1:
             image_text = "一秒识别[{}]次:".format(print_count)
+            log_window.update_frame_rate_plot(print_count)
             print(image_text)
             if global_config.auto_save:
                 save_rescreen_and_aims_to_file_with_thread(img_origin, img, aims)

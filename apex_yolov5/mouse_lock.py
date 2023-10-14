@@ -9,8 +9,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     # shot_width 截图高度，shot_height 截图区域高度
     # x,y 是分辨率
     # mouse_x,mouse_y = mouse.position
-    # current_mouse_x, current_mouse_y = mouse.position
-    current_mouse_x, current_mouse_y = global_config.screen_width // 2, global_config.screen_height // 2
+    current_mouse_x, current_mouse_y = mouse.position
+    # current_mouse_x, current_mouse_y = global_config.screen_width // 2, global_config.screen_height // 2
     dist_list = []
     aims_copy = aims.copy()
     # print(aims_copy)
