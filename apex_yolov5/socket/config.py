@@ -100,6 +100,20 @@ class Config:
             }
         })
         self.current_model = self.get_config(self.config_data, "current_model", "apex区分敌我")
+        self.ai_middle_toggle = self.get_config(self.config_data, "ai_middle_toggle", True)
+        self.ai_toggle = self.get_config(self.config_data, "ai_toggle", False)
+        self.ai_toggle_type = self.get_config(self.config_data, "ai_toggle_type", 'm')
+        self.ai_toggle_key = self.get_config(self.config_data, "ai_toggle_key", 'middle')
+
+        self.ai_available_toggle_type = self.get_config(self.config_data, "ai_available_toggle_type", ['m', 'k'])
+
+        self.mouse_moving_radius = self.get_config(self.config_data, "mouse_moving_radius")
+        self.aim_mouse_moving_radius = self.get_config(self.config_data, "aim_mouse_moving_radius",
+                                                       self.mouse_moving_radius)
+
+        self.aim_model = self.get_config(self.config_data, "aim_model", "按住")
+        self.aim_models = self.get_config(self.config_data, "aim_models", ["按住", "切换"])
+
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640

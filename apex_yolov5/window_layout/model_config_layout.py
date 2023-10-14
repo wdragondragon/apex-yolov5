@@ -13,6 +13,9 @@ class ModelConfigLayout:
     def add_layout(self):
         model_config_layout = QVBoxLayout()
 
+        self.label = QLabel("模型设置")
+        self.label.setAlignment(Qt.AlignCenter)
+
         model_combo_box_layout = QHBoxLayout()
         label = QLabel("选择模型:")
         self.model_combo_box = QComboBox()
@@ -47,6 +50,7 @@ class ModelConfigLayout:
         iou_thres_layout.addWidget(self.iou_thres_label)
         iou_thres_layout.addWidget(self.iou_thres_slider)
 
+        model_config_layout.addWidget(self.label)
         model_config_layout.addLayout(model_combo_box_layout)
         model_config_layout.addLayout(conf_thres_layout)
         model_config_layout.addLayout(iou_thres_layout)
@@ -56,6 +60,7 @@ class ModelConfigLayout:
     def selection_changed(self, index):
         selected_key = self.model_combo_box.currentText()
         self.model_combo_box.setEnabled(False)
+        self.config.set_config("current_model", selected_key)
         self.config.current_model = selected_key
         yolov5_handler.reload_model()
         self.model_combo_box.setEnabled(True)

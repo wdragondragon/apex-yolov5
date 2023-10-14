@@ -5,6 +5,7 @@ from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QApplication
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
 
+from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.config_window import ConfigWindow
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
 from apex_yolov5.socket.config import global_config
@@ -21,8 +22,9 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.config_window = None
-        self.magnifying_glass_window = None
+        self.config_window = ConfigWindow(global_config)
+        self.magnifying_glass_window = MagnifyingGlassWindows()
+        self.open_frame_rate_monitor_window = FrameRateMonitor()
         if not hasattr(self, 'image_label'):
             self.image_label = None
             self.init_ui()
@@ -49,6 +51,9 @@ class MainWindow(QMainWindow):
         magnifying_glass_action = QAction("magnifying_glass", self)
         magnifying_glass_action.triggered.connect(self.open_magnifying_glass_window)
 
+        magnifying_glass_action = QAction("识别频率监控", self)
+        magnifying_glass_action.triggered.connect(self.open_frame_rate_monitor)
+
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("File")
         file_menu.addAction(config_action)
@@ -63,6 +68,15 @@ class MainWindow(QMainWindow):
         if self.magnifying_glass_window is None:
             self.magnifying_glass_window = MagnifyingGlassWindows()
         self.magnifying_glass_window.show()
+
+    def open_frame_rate_monitor(self):
+        if self.open_frame_rate_monitor_window is None:
+            self.open_frame_rate_monitor_window = FrameRateMonitor()
+        self.open_frame_rate_monitor_window.show()
+
+    def update_frame_rate_plot(self, frame_rate):
+        if self.open_frame_rate_monitor_window is not None:
+            self.open_frame_rate_monitor_window.update_frame_rate_plot(frame_rate)
 
     def set_image(self, img_data, bboxes):
         if not global_config.is_show_debug_window:

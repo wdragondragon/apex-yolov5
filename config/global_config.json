@@ -18,7 +18,7 @@
     "screen_height": 1440,
     "offset_shot_screen_x": 10,
     "offset_shot_screen_y": 15,
-    "shot_width": 256,
+    "shot_width": 250,
     "shot_height": 320,
     "is_show_debug_window": true,
     "move_step": 2,
@@ -85,8 +85,8 @@
         "长弓"
     ],
     "aim_button": [
-        "right",
-        "x1&!x2"
+        "x1&!x2",
+        "right"
     ],
     "move_path_ny": 0.8,
     "move_step_y": 2,
@@ -101,10 +101,10 @@
             "data": "./apex_model/1w2/1w.yaml"
         }
     },
-    "aim_move_step": 4,
-    "aim_move_step_y": 2,
-    "aim_move_path_nx": 1.0,
-    "aim_move_path_ny": 1.0,
+    "aim_move_step": 2,
+    "aim_move_step_y": 1,
+    "aim_move_path_nx": 0.6,
+    "aim_move_path_ny": 0.6,
     "mouse_move_frequency": 0.001,
     "mouse_move_frequency_switch": false,
     "mouse_model": "win32api",

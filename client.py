@@ -16,7 +16,7 @@ from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listen
 from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_rescreen_and_aims_to_file
+from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 
@@ -57,7 +57,7 @@ def main():
                         print("不是apex窗口")
                         time.sleep(1)
                         continue
-                    if not apex_mouse_listener.middle_toggle:
+                    if not global_config.ai_toggle:
                         time.sleep(0.1)
                         continue
                     print_count += 1
@@ -86,8 +86,9 @@ def main():
                     now = time.time()
                     if now - compute_time > 1:
                         print("一秒识别[{}]次:".format(print_count))
+                        log_window.update_frame_rate_plot(print_count)
                         # log_util.print_time(print_count)
-                        threading.Thread(target=save_rescreen_and_aims_to_file, args=(screenshot, None, aims)).start()
+                        save_rescreen_and_aims_to_file_with_thread(screenshot, None, aims)
                         print_count = 0
                         compute_time = now
                     if global_config.only_save:

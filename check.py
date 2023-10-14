@@ -62,8 +62,8 @@ def class_change():
 # 首先，我要将txt中内容为空的文件删除，然后我需要将这两个文件夹的文件名做交集，确保每个txt与每个png相对应。
 def check_label_image():
     # 定义labels和images文件夹路径
-    labels_folder = './apex_model/save/labels/2023-08-12-16-13-09'
-    images_folder = './apex_model/save/images/2023-08-12-16-13-09'
+    labels_folder = 'D:/Desktop/模型/数据集/训练场沙漠/labels/'
+    images_folder = 'D:/Desktop/模型/数据集/训练场沙漠/images/'
 
     # 获取labels文件夹中所有txt文件的文件名（不带后缀）
     labels_files = [os.path.splitext(filename)[0] for filename in os.listdir(labels_folder) if
@@ -103,3 +103,65 @@ def check_label_image():
         png_file_path = os.path.join(images_folder, filename + '.png')
         # 在这里可以进行进一步的处理，例如将txt和png文件进行匹配操作
         print(f"Matched: {txt_file_path} - {png_file_path}")
+
+# 删除多余label
+def delete_label():
+    # 定义labels和images文件夹路径
+    labels_folder = './apex_model/save/labels/2023-09-19-20-56-54'
+    images_folder = './apex_model/save/images/2023-09-19-20-56-54'
+
+    # 获取labels文件夹中所有txt文件的文件名（不带后缀）
+    labels_files = [os.path.splitext(filename)[0] for filename in os.listdir(labels_folder) if
+                    filename.endswith('.txt')]
+
+    # 获取images文件夹中所有png文件的文件名（不带后缀）
+    images_files = [os.path.splitext(filename)[0] for filename in os.listdir(images_folder) if
+                    filename.endswith('.png')]
+
+    # 删除labels文件夹中不在图片中的txt文件
+    for filename in labels_files:
+        if filename not in images_files and filename != 'classes':
+            txt_file_path = os.path.join(labels_folder, filename + '.txt')
+            os.remove(txt_file_path)
+            print(f"remove label：{txt_file_path}")
+
+
+# 切分
+def split_label_image():
+    # 定义labels和images文件夹路径
+    labels_folder = 'D:/Desktop/yolo_model/data/已处理/靶场烟镜_20230919_658张/labels/'
+    images_folder = 'D:/Desktop/yolo_model/data/已处理/靶场烟镜_20230919_658张/images/'
+    # 获取images文件夹中所有png文件的文件名（不带后缀）
+    images_files = [os.path.splitext(filename)[0] for filename in os.listdir(images_folder) if
+                    filename.endswith('.png')]
+    labels_files = [os.path.splitext(filename)[0] for filename in os.listdir(labels_folder) if
+                    filename.endswith('.txt')]
+
+    count = 0
+    # 删除images文件夹中不在交集中的png文件
+    for filename in images_files:
+        count += 1
+        png_file_path = os.path.join(images_folder, filename + '.png')
+        labels_file_path = os.path.join(labels_folder, filename + ".txt")
+        if count == 9:
+            images_folder_new = images_folder + "test"
+            labels_folder_new = labels_folder + "test"
+        elif count == 10:
+            images_folder_new = images_folder + "val"
+            labels_folder_new = labels_folder + "val"
+            count = 0
+        else:
+            images_folder_new = images_folder + "train"
+            labels_folder_new = labels_folder + "train"
+
+        os.makedirs(images_folder_new, exist_ok=True)
+        os.makedirs(labels_folder_new, exist_ok=True)
+        png_file_new_path = os.path.join(images_folder_new, filename + '.png')
+        labels_file_new_path = os.path.join(labels_folder_new, filename + '.txt')
+        shutil.copy(png_file_path, png_file_new_path)
+        print(f"image path：{filename}")
+        if filename in labels_files:
+            shutil.copy(labels_file_path, labels_file_new_path)
+            print(f"labels path：{filename}")
+
+split_label_image()
