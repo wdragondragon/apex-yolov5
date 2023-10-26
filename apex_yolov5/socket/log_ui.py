@@ -5,8 +5,16 @@ import cv2
 from apex_yolov5.MainWindow import MainWindow
 from apex_yolov5.socket.config import global_config
 
+showCount = 0
+
 
 def show(aims, img0):
+    global showCount
+    if showCount == 5:
+        showCount = 0
+    if showCount != 0:
+        showCount += 1
+        return
     bboxes = []
     if len(aims):
         for i, det in enumerate(aims):
@@ -18,6 +26,7 @@ def show(aims, img0):
             bboxes.append((tag, top_left, bottom_right))
     if global_config.is_show_debug_window:
         MainWindow().set_image(img0, bboxes=bboxes)
+    showCount += 1
     return True
 
 

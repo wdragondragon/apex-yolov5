@@ -68,9 +68,9 @@ class ModelConfigLayout:
     def update_slieder_value(self, value):
         self.conf_thres_label.setText("置信度阈值:" + str(value / 100))
         self.conf_thres_label.adjustSize()
-        self.config.conf_thresh = value / 100
+        self.config.set_config("conf_thres", value / 100)
 
     def update_iou_thres_value(self, value):
         self.iou_thres_label.setText("交并比阈值:" + str(value / 100))
         self.iou_thres_label.adjustSize()
-        self.config.iou_thres = value / 100
+        self.config.set_config("iou_thres", value / 100)

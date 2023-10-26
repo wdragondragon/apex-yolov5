@@ -62,8 +62,10 @@ def main():
                 aims_data = pickle.dumps(aims)
                 socket_util.send(client_socket, aims_data, buffer_size=buffer_size)
                 log_util.set_time("发送坐标", time.time() - t4)
+                t5 = time.time()
                 if global_config.is_show_debug_window:
                     log_ui.show(aims, img0)
+                log_util.set_time("展示图像", time.time() - t5)
                 print_count += 1
                 now = time.time()
                 if now - compute_time > 1:
@@ -89,8 +91,7 @@ def main():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     log_window = MainWindow()
-    if global_config.is_show_debug_window:
-        log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
-        log_window.show()
+    log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
+    log_window.show()
     threading.Thread(target=main).start()
     sys.exit(app.exec_())
