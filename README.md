@@ -15,6 +15,9 @@
 - [x] [自动下载/更新](https://github.com/wdragondragon/ag_auto_update.git)
 - [x] 识别到目标时，1秒频率的自动标注，供反喂数据优化学习
 
+## 使用说明
+本项目的权重文件并未开源，可以参考文章[(yolov5从零开始，自动瞄准不再是天方夜谭)](https://www.jianshu.com/p/84ad94250172)去训练自己的模型。
+
 ## 其他项目
 
 [罗技抖枪宏大全](https://github.com/wdragondragon/apex-shake-gun.git)
