@@ -1,5 +1,3 @@
-import time
-
 import cv2
 
 from apex_yolov5.DebugWindow import DebugWindow

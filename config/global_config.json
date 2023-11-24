@@ -1,4 +1,6 @@
 {
+    "weights": "./apex_model/1w2/best-320-320.engine",
+    "data": "./apex_model/1w2/1w.yaml",
     "listener_ip": "192.168.10.3",
     "listener_port": 8888,
     "listener_ports": [
@@ -91,12 +93,12 @@
     "current_model": "apex区分敌我",
     "available_models": {
         "apex标准": {
-            "weights": "./apex_model/best2.engine",
-            "data": "./apex_model/data2.yaml"
+            "weights": "./apex_model/1w2/best-320-320.engine",
+            "data": "./apex_model/1w2/1w.yaml"
         },
         "apex区分敌我": {
-            "weights": "./apex_model/best.engine",
-            "data": "./apex_model/data.yaml"
+            "weights": "./apex_model/1w2/best-320-320.engine",
+            "data": "./apex_model/1w2/1w.yaml"
         }
     },
     "aim_move_step": 2,
