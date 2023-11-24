@@ -13,7 +13,8 @@ class AiToggleLayout:
             KMCallBack(self.config.ai_toggle_type, self.config.ai_toggle_key, self.handle_middle_toggled))
 
     def add_layout(self):
-        layout = QVBoxLayout(self.main_window)
+        layout = QVBoxLayout()
+        layout.setObjectName("Ai_toggle_layout")
         self.label = QLabel("启动设置")
         self.label.setAlignment(Qt.AlignCenter)
         toggle_layout = QHBoxLayout(self.main_window)

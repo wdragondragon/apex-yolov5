@@ -9,8 +9,8 @@ class AutoSaveConfigLayout:
         self.parent_layout = parent_layout
 
     def add_layout(self):
-        toggle_layout = QVBoxLayout(self.main_window)
-
+        toggle_layout = QVBoxLayout()
+        toggle_layout.setObjectName("toggle_layout")
         self.label = QLabel("自动保存设置")
         self.label.setAlignment(Qt.AlignCenter)
         toggle_layout.addWidget(self.label)

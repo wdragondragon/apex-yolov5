@@ -17,6 +17,7 @@ class MouseConfigLayout:
         self.label.setAlignment(Qt.AlignCenter)
 
         mouse_model_layout = QHBoxLayout()
+        mouse_model_layout.setObjectName("add_layout")
         mouse_model_label = QLabel("选择自瞄鼠标模式:")
         self.mouse_model_combo_box = QComboBox()
 

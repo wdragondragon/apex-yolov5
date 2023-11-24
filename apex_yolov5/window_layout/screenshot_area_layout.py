@@ -10,8 +10,9 @@ class ScreenshotAreaLayout:
         self.parent_layout = parent_layout
 
     def add_layout(self):
-        screenshot_area_layout = QVBoxLayout(self.main_window)
-        resolution_layout = QHBoxLayout(self.main_window)
+        screenshot_area_layout = QVBoxLayout()
+        screenshot_area_layout.setObjectName("screenshot_area_layout")
+        resolution_layout = QHBoxLayout()
         self.screenshot_area_title_label = QLabel("识别范围设置")
         self.screenshot_area_title_label.setAlignment(Qt.AlignCenter)
         self.screenshot_area_label = QLabel("识别区域：", self.main_window)
@@ -31,7 +32,7 @@ class ScreenshotAreaLayout:
         resolution_layout.addWidget(self.screenshot_area_x_label)
         resolution_layout.addWidget(self.height_input)
 
-        aim_radius_layout = QHBoxLayout(self.main_window)
+        aim_radius_layout = QHBoxLayout()
         self.mouse_moving_radius_label = QLabel("腰射自瞄半径：")
         self.mouse_moving_radius_input = QLineEdit(self.main_window)
         self.mouse_moving_radius_input.setObjectName("mouse_moving_radius")

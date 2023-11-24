@@ -12,7 +12,7 @@ class ModelConfigLayout:
 
     def add_layout(self):
         model_config_layout = QVBoxLayout()
-
+        model_config_layout.setObjectName("model_config_layout")
         self.label = QLabel("模型设置")
         self.label.setAlignment(Qt.AlignCenter)
 

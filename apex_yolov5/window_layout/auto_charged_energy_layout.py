@@ -10,6 +10,7 @@ class AutoChargedEnergyLayout:
 
     def add_layout(self):
         auto_charged_energy_layout = QVBoxLayout()
+        auto_charged_energy_layout.setObjectName("auto_charged_energy_layout")
         self.auto_charged_energy_label = QLabel("充能枪自动寸止设置", self.main_window)
         self.auto_charged_energy_label.setAlignment(Qt.AlignCenter)
         self.auto_charged_energy_switch = QCheckBox("充能枪自动寸止")

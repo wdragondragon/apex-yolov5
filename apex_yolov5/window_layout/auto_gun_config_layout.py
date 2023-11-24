@@ -10,6 +10,7 @@ class AutoGunConfigLayout:
 
     def add_layout(self):
         add_refresh_button_title_layout = QVBoxLayout()
+        add_refresh_button_title_layout.setObjectName("add_refresh_button_title_layout")
         add_refresh_button_layout = QHBoxLayout()
         add_refresh_button_input_layout = QVBoxLayout()
         self.refresh_button_title = QLabel("触发枪械识别按键列表", self.main_window)
@@ -31,8 +32,10 @@ class AutoGunConfigLayout:
         add_refresh_button_title_layout.addLayout(add_refresh_button_layout)
 
         list_layout = QHBoxLayout()
-        list_layout_label = QLabel("自动开枪枪械识别列表", self.main_window)
+        list_layout.setObjectName("list_layout")
+        list_layout_label = QLabel("自动开枪枪械识别列表")
         list_layout_label.setAlignment(Qt.AlignCenter)
+        list_layout_label.setObjectName("list_layout_label")
         available_layout = QVBoxLayout()
         self.available_guns_label = QLabel("可用枪支", self.main_window)
         self.available_guns = [item for item in self.config.available_guns if item not in self.config.click_gun]
@@ -44,6 +47,7 @@ class AutoGunConfigLayout:
         list_layout.addLayout(available_layout)
 
         button_layout = QVBoxLayout()
+
         self.add_button = QPushButton("Add >>")
         self.add_button.clicked.connect(self.addGun)
         button_layout.addWidget(self.add_button)
