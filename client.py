@@ -13,10 +13,11 @@ from PyQt5.QtWidgets import QApplication
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5 import LogUtil, check_run
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
-from apex_yolov5.MainWindow import MainWindow
+from apex_yolov5.DebugWindow import DebugWindow
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
+from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, \
+    save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 
@@ -86,8 +87,10 @@ def main():
                     now = time.time()
                     if now - compute_time > 1:
                         print("一秒识别[{}]次:".format(print_count))
+                        t5 = time.time()
                         log_window.update_frame_rate_plot(print_count)
-                        # log_util.print_time(print_count)
+                        log_util.set_time("帧率监控", time.time() - t5)
+                        log_util.print_time(print_count)
                         save_rescreen_and_aims_to_file_with_thread(screenshot, None, aims)
                         print_count = 0
                         compute_time = now
@@ -111,7 +114,7 @@ def main():
 if __name__ == "__main__":
     check_run.check()
     app = QApplication(sys.argv)
-    log_window = MainWindow()
+    log_window = DebugWindow()
     if global_config.is_show_debug_window:
         log_window.show()
     threading.Thread(target=main).start()

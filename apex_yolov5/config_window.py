@@ -1,6 +1,11 @@
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout
+import os
 
+from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication
+
+from apex_yolov5.FrameRateMonitor import FrameRateMonitor
+from apex_yolov5.DebugWindow import DebugWindow
+from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
 from apex_yolov5.window_layout.ai_toggle_layout import AiToggleLayout
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
 from apex_yolov5.window_layout.auto_gun_config_layout import AutoGunConfigLayout
@@ -13,6 +18,9 @@ from apex_yolov5.window_layout.screenshot_area_layout import ScreenshotAreaLayou
 class ConfigWindow(QMainWindow):
     def __init__(self, config):
         super().__init__()
+        self.main_window = DebugWindow()
+        self.magnifying_glass_window = MagnifyingGlassWindows()
+        self.open_frame_rate_monitor_window = FrameRateMonitor()
         self.config = config
         self.config_layout_main = QVBoxLayout()
         self.config_layout = QHBoxLayout()
@@ -30,9 +38,44 @@ class ConfigWindow(QMainWindow):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         # self.installEventFilter(self)
 
+    def create_menus(self):
+        config_action = QAction("实时锁定人物展示", self)
+        config_action.triggered.connect(self.open_config_window)
+
+        magnifying_glass_action = QAction("magnifying_glass", self)
+        magnifying_glass_action.triggered.connect(self.open_magnifying_glass_window)
+
+        magnifying_glass_action = QAction("识别频率监控", self)
+        magnifying_glass_action.triggered.connect(self.open_frame_rate_monitor)
+
+        menu_bar = self.menuBar()
+        file_menu = menu_bar.addMenu("功能")
+        file_menu.addAction(config_action)
+        file_menu.addAction(magnifying_glass_action)
+
+    def open_config_window(self):
+        if self.main_window is None:
+            self.main_window = DebugWindow()
+        self.main_window.show()
+
+    def open_magnifying_glass_window(self):
+        if self.magnifying_glass_window is None:
+            self.magnifying_glass_window = MagnifyingGlassWindows()
+        self.magnifying_glass_window.show()
+
+    def open_frame_rate_monitor(self):
+        if self.open_frame_rate_monitor_window is None:
+            self.open_frame_rate_monitor_window = FrameRateMonitor()
+        self.open_frame_rate_monitor_window.show()
+
+    def update_frame_rate_plot(self, frame_rate):
+        if self.open_frame_rate_monitor_window is not None:
+            self.open_frame_rate_monitor_window.update_frame_rate_plot(frame_rate)
+
     def initUI(self):
-        self.setWindowTitle("Config Window")
+        self.setWindowTitle("Apex gun")
         self.setGeometry(0, 0, 250, 200)
+        self.create_menus()
         self.ai_toggle_layout.add_layout()
         self.mouse_config_layout.add_layout()
         self.screenshot_layout.add_layout()
@@ -57,6 +100,9 @@ class ConfigWindow(QMainWindow):
     def handle_toggled(self, checked):
         self.config.set_config(self.sender().objectName(), checked)
 
+    def set_image(self, img_data, bboxes):
+        self.main_window.set_image(img_data, bboxes)
+
     def eventFilter(self, obj, event):
         if event.type() == QEvent.WindowDeactivate:
             self.setWindowOpacity(0.1)  # Set window opacity to 90% when focus is lost
@@ -71,3 +117,7 @@ class ConfigWindow(QMainWindow):
         self.auto_charge_energy_layout.save_config()
         self.ai_toggle_layout.save_config()
         self.config.save_config()
+
+    def closeEvent(self, event):
+        QApplication.quit()
+        os._exit(0)

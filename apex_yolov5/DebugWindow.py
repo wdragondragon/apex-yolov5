@@ -1,17 +1,12 @@
-import os
-
 from PyQt5.QtCore import QPoint, QRect, QEvent
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor
-from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QApplication
+from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
 
-from apex_yolov5.FrameRateMonitor import FrameRateMonitor
-from apex_yolov5.config_window import ConfigWindow
-from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
 from apex_yolov5.socket.config import global_config
 
 
-class MainWindow(QMainWindow):
+class DebugWindow(QMainWindow):
     # 类变量用于保存单例实例
     _instance = None
 
@@ -22,18 +17,15 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.config_window = ConfigWindow(global_config)
-        self.magnifying_glass_window = MagnifyingGlassWindows()
-        self.open_frame_rate_monitor_window = FrameRateMonitor()
         if not hasattr(self, 'image_label'):
             self.image_label = None
             self.init_ui()
         # self.installEventFilter(self)
 
     def init_ui(self):
-        self.setWindowTitle("Apex gun")
+        self.setWindowTitle("实时锁定人物展示")
         self.setGeometry(100, 100, 400, 300)
-        self.create_menus()
+        # self.create_menus()
 
         self.image_label = QLabel(self)
         # 添加 QTextEdit 组件到主窗口
@@ -43,40 +35,6 @@ class MainWindow(QMainWindow):
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
-
-    def create_menus(self):
-        config_action = QAction("Config", self)
-        config_action.triggered.connect(self.open_config_window)
-
-        magnifying_glass_action = QAction("magnifying_glass", self)
-        magnifying_glass_action.triggered.connect(self.open_magnifying_glass_window)
-
-        magnifying_glass_action = QAction("识别频率监控", self)
-        magnifying_glass_action.triggered.connect(self.open_frame_rate_monitor)
-
-        menu_bar = self.menuBar()
-        file_menu = menu_bar.addMenu("File")
-        file_menu.addAction(config_action)
-        file_menu.addAction(magnifying_glass_action)
-
-    def open_config_window(self):
-        if self.config_window is None:
-            self.config_window = ConfigWindow(global_config)
-        self.config_window.show()
-
-    def open_magnifying_glass_window(self):
-        if self.magnifying_glass_window is None:
-            self.magnifying_glass_window = MagnifyingGlassWindows()
-        self.magnifying_glass_window.show()
-
-    def open_frame_rate_monitor(self):
-        if self.open_frame_rate_monitor_window is None:
-            self.open_frame_rate_monitor_window = FrameRateMonitor()
-        self.open_frame_rate_monitor_window.show()
-
-    def update_frame_rate_plot(self, frame_rate):
-        if self.open_frame_rate_monitor_window is not None:
-            self.open_frame_rate_monitor_window.update_frame_rate_plot(frame_rate)
 
     def set_image(self, img_data, bboxes):
         if not global_config.is_show_debug_window:
@@ -103,16 +61,9 @@ class MainWindow(QMainWindow):
         self.image_label.setPixmap(pixmap)
         self.image_label.update()
 
-        if self.magnifying_glass_window is not None and self.magnifying_glass_window.isVisible():
-            self.magnifying_glass_window.set_image(img_data)
-
     def eventFilter(self, obj, event):
         if event.type() == QEvent.WindowDeactivate:
             self.setWindowOpacity(0.1)  # Set window opacity to 90% when focus is lost
         elif event.type() == QEvent.WindowActivate:
             self.setWindowOpacity(1.0)  # Set window opacity to fully opaque when focus is regained
         return super().eventFilter(obj, event)
-
-    def closeEvent(self, event):
-        QApplication.quit()
-        os._exit(0)

@@ -12,14 +12,13 @@ from PyQt5.QtWidgets import QApplication
 
 from apex_yolov5 import check_run
 from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listener
-from apex_yolov5.MainWindow import MainWindow
-from apex_yolov5.Tools import Tools
-from apex_yolov5.auxiliary import get_lock_mode, start
+from apex_yolov5.DebugWindow import DebugWindow
+from apex_yolov5.auxiliary import start
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 from apex_yolov5.socket.yolov5_handler import model, get_aims
-
+from apex_yolov5.config_window import ConfigWindow
 
 def main():
     sct = mss.mss()
@@ -92,7 +91,7 @@ if __name__ == "__main__":
     threading.Thread(target=start).start()
 
     app = QApplication(sys.argv)
-    log_window = MainWindow()
+    log_window = ConfigWindow(global_config)
     log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
     log_window.show()
 

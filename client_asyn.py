@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QApplication
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5 import LogUtil, check_run
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
-from apex_yolov5.MainWindow import MainWindow
+from apex_yolov5.DebugWindow import DebugWindow
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import get_lock_mode, start
 from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
@@ -156,7 +156,7 @@ def main():
 if __name__ == "__main__":
     check_run.check()
     app = QApplication(sys.argv)
-    log_window = MainWindow()
+    log_window = DebugWindow()
     if global_config.is_show_debug_window:
         log_window.show()
     aims_data_block_queue = GetBlockQueue("aims_data_block_queue", maxsize=1)
