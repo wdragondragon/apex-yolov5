@@ -26,21 +26,20 @@ class GetBlockQueue:
         self.queue = queue.Queue(maxsize=maxsize)
 
     def get(self):
-        # print("[{}]get操作前队列大小：{}".format(self.name, self.queue.qsize()))
         o = self.queue.get()
-        # print("[{}]get操作后队列大小：{}".format(self.name, self.queue.qsize()))
         return o
 
     def put(self, data):
-        while True:
-            try:
-                self.queue.put(data, block=False)
-                break
-            except queue.Full:
+        with self.lock:
+            while True:
                 try:
-                    self.queue.get_nowait()
-                except queue.Empty:
-                    pass
+                    self.queue.put(data, block=False)
+                    break
+                except queue.Full:
+                    try:
+                        self.queue.get_nowait()
+                    except queue.Empty:
+                        pass
         # print("[{}]put操作后队列大小：{}".format(self.name, self.queue.qsize()))
 
     def clear(self):

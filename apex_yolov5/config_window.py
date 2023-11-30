@@ -3,9 +3,9 @@ import os
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication
 
-from apex_yolov5.SystemTrayApp import SystemTrayApp
-from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.DebugWindow import DebugWindow
+from apex_yolov5.FrameRateMonitor import FrameRateMonitor
+from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
 from apex_yolov5.window_layout.ai_toggle_layout import AiToggleLayout
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
@@ -17,29 +17,37 @@ from apex_yolov5.window_layout.screenshot_area_layout import ScreenshotAreaLayou
 
 
 class ConfigWindow(QMainWindow):
+    # 类变量用于保存单例实例
+    _instance = None
+    init_sign = False
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, config):
         super().__init__()
-        self.config = config
-        self.system_tray = SystemTrayApp(self, self.config)
-        self.main_window = DebugWindow()
-        self.magnifying_glass_window = MagnifyingGlassWindows()
-        self.open_frame_rate_monitor_window = FrameRateMonitor()
-        self.config_layout_main = QVBoxLayout()
-        self.config_layout = QHBoxLayout()
-        self.config_layout_1 = QVBoxLayout()
-        self.config_layout_2 = QVBoxLayout()
-        self.ai_toggle_layout = AiToggleLayout(self.config, self, self.config_layout_1, self.system_tray)
-        self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
-        self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_1)
-        self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_2)
-        self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_2)
-        self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_2)
-        self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_2)
-
-        self.initUI()
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
-
-        # self.installEventFilter(self)
+        if not self.init_sign:
+            self.config = config
+            self.system_tray = SystemTrayApp(self, self.config)
+            self.main_window = DebugWindow()
+            self.magnifying_glass_window = MagnifyingGlassWindows()
+            self.open_frame_rate_monitor_window = FrameRateMonitor()
+            self.config_layout_main = QVBoxLayout()
+            self.config_layout = QHBoxLayout()
+            self.config_layout_1 = QVBoxLayout()
+            self.config_layout_2 = QVBoxLayout()
+            self.ai_toggle_layout = AiToggleLayout(self.config, self, self.config_layout_1, self.system_tray)
+            self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
+            self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_1)
+            self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_2)
+            self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_2)
+            self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_2)
+            self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_2)
+            self.initUI()
+            self.setWindowFlags(Qt.WindowStaysOnTopHint)
+            self.init_sign = True
 
     def create_menus(self):
         config_action = QAction("实时锁定人物展示", self)
@@ -74,6 +82,10 @@ class ConfigWindow(QMainWindow):
     def update_frame_rate_plot(self, frame_rate):
         if self.open_frame_rate_monitor_window is not None:
             self.open_frame_rate_monitor_window.update_frame_rate_plot(frame_rate)
+
+    def update_frame_rate_plot_2(self, frame_rate):
+        if self.open_frame_rate_monitor_window is not None:
+            self.open_frame_rate_monitor_window.update_frame_rate_plot_2(frame_rate)
 
     def initUI(self):
         self.setWindowTitle("Apex gun")

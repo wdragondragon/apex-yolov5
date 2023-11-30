@@ -1,26 +1,17 @@
-import sys
-import threading
 import time
 import traceback
 
 import cv2
 import mss
 import numpy as np
-import pynput.mouse
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
 
-from apex_yolov5 import check_run
-from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listener
-from apex_yolov5.auxiliary import start
-from apex_yolov5.config_window import ConfigWindow
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
-from apex_yolov5.socket.yolov5_handler import model, get_aims
+from apex_yolov5.socket.yolov5_handler import get_aims
 
 
-def main():
+def main(log_window):
     sct = mss.mss()
     print_count = 0
     compute_time = time.time()
@@ -71,29 +62,3 @@ def main():
             print(e)
             traceback.print_exc()
             pass
-
-
-# main()
-if __name__ == "__main__":
-    # ...or, in a non-blocking fashion:
-    check_run.check()
-    listener = pynput.mouse.Listener(
-        on_click=apex_mouse_listener.on_click)
-    listener.start()
-
-    key_listener = pynput.keyboard.Listener(
-        on_press=apex_key_listener.on_press, on_release=apex_key_listener.on_release
-    )
-    key_listener.start()
-
-    names = model.module.names if hasattr(model, 'module') else model.names
-
-    threading.Thread(target=start).start()
-
-    app = QApplication(sys.argv)
-    log_window = ConfigWindow(global_config)
-    log_window.setWindowFlags(Qt.WindowStaysOnTopHint)
-    log_window.show()
-
-    threading.Thread(target=main).start()
-    sys.exit(app.exec_())

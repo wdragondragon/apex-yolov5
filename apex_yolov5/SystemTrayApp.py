@@ -12,7 +12,7 @@ class SystemTrayApp:
             print("系统托盘不可用")
             return
 
-        icon = QIcon("../images/ag.ico")
+        icon = QIcon("images/ag.ico")
         if icon.isNull():
             print("无效的图标")
             return
@@ -48,9 +48,9 @@ class SystemTrayApp:
     def change_icon(self, open_status):
         # 在这里更改图标，例如，切换到另一个图标
         if open_status:
-            self.tray_icon.setIcon(QIcon("../images/ag.ico"))  # 切换到第二个图标
+            self.tray_icon.setIcon(QIcon("images/ag.ico"))  # 切换到第二个图标
         else:
-            self.tray_icon.setIcon(QIcon("../images/close.ico"))  # 切换回第一个图标
+            self.tray_icon.setIcon(QIcon("images/close.ico"))  # 切换回第一个图标
 
     def exit_app(self):
         self.tray_icon.hide()

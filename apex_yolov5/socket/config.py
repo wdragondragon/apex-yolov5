@@ -114,6 +114,9 @@ class Config:
         self.aim_model = self.get_config(self.config_data, "aim_model", "按住")
         self.aim_models = self.get_config(self.config_data, "aim_models", ["按住", "切换"])
 
+        # 同步syn  异步asyn
+        self.screenshot_frequency_mode = self.get_config(self.config_data, "screenshot_frequency_mode", "asyn")
+
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640

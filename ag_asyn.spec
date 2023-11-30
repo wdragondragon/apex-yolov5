@@ -28,7 +28,7 @@ hiddenimports = ['models.yolo',
 ]
 
 a = Analysis(
-    ['apex_yolov5_main_asyn.py'],
+    ['main.py'],
     pathex=pathex,
     binaries=[(r'./utils/general.pyc',r'./utils')],
     datas=[(r'./config/global_config.json',r'./config')],
