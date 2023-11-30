@@ -3,6 +3,7 @@ import os
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication
 
+from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.DebugWindow import DebugWindow
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
@@ -18,15 +19,16 @@ from apex_yolov5.window_layout.screenshot_area_layout import ScreenshotAreaLayou
 class ConfigWindow(QMainWindow):
     def __init__(self, config):
         super().__init__()
+        self.config = config
+        self.system_tray = SystemTrayApp(self, self.config)
         self.main_window = DebugWindow()
         self.magnifying_glass_window = MagnifyingGlassWindows()
         self.open_frame_rate_monitor_window = FrameRateMonitor()
-        self.config = config
         self.config_layout_main = QVBoxLayout()
         self.config_layout = QHBoxLayout()
         self.config_layout_1 = QVBoxLayout()
         self.config_layout_2 = QVBoxLayout()
-        self.ai_toggle_layout = AiToggleLayout(self.config, self, self.config_layout_1)
+        self.ai_toggle_layout = AiToggleLayout(self.config, self, self.config_layout_1, self.system_tray)
         self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
         self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_1)
         self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_2)
@@ -36,6 +38,7 @@ class ConfigWindow(QMainWindow):
 
         self.initUI()
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
+
         # self.installEventFilter(self)
 
     def create_menus(self):

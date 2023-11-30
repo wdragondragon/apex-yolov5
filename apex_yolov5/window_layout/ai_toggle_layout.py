@@ -5,10 +5,11 @@ from apex_yolov5.KeyAndMouseListener import KMCallBack
 
 
 class AiToggleLayout:
-    def __init__(self, config, main_window, parent_layout):
+    def __init__(self, config, main_window, parent_layout, system_tray):
         self.config = config
         self.main_window = main_window
         self.parent_layout = parent_layout
+        self.system_tray = system_tray
         KMCallBack.connect(
             KMCallBack(self.config.ai_toggle_type, self.config.ai_toggle_key, self.handle_middle_toggled))
 
@@ -63,6 +64,7 @@ class AiToggleLayout:
         self.ai_toggle_switch.setChecked(toggle)
         self.config.set_config("ai_toggle", toggle)
         self.config.ai_toggle = toggle
+        self.system_tray.change_icon(toggle)
 
     def save_config(self):
         selected_key = self.ai_toggle_type_combo_box.currentText()

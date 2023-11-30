@@ -65,6 +65,8 @@ def handle():
 
 def main():
     sct = mss.mss()
+    print_count = 0
+    compute_time = time.time()
     while True:
         try:
             img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
@@ -72,6 +74,13 @@ def main():
             img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             image_block_queue.put({"img": img, "img_origin": img_origin})
+            print_count += 1
+            now = time.time()
+            if now - compute_time > 1:
+                image_text = "一秒截图[{}]次:".format(print_count)
+                print(image_text)
+                print_count = 0
+                compute_time = now
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -107,4 +116,5 @@ if __name__ == "__main__":
     # p_b = mp.Process(target=main)
     # p_b.daemon = True
     # p_b.start()
+
     sys.exit(app.exec_())
