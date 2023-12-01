@@ -17,7 +17,7 @@ class AutoGunConfigLayout:
         self.refresh_button_title.setAlignment(Qt.AlignCenter)
         self.fresh_button_list = QListWidget(self.main_window)
         self.refresh_button_input = QLineEdit()
-        self.fresh_button_list.addItems(self.config.refresh_button)
+
         self.add_refresh_button = QPushButton("Add")
         self.add_refresh_button.clicked.connect(self.add_refresh_button_item)
         self.remove_refresh_button = QPushButton("Remove")
@@ -38,9 +38,8 @@ class AutoGunConfigLayout:
         list_layout_label.setObjectName("list_layout_label")
         available_layout = QVBoxLayout()
         self.available_guns_label = QLabel("可用枪支", self.main_window)
-        self.available_guns = [item for item in self.config.available_guns if item not in self.config.click_gun]
+
         self.available_guns_list = QListWidget(self.main_window)
-        self.available_guns_list.addItems(self.available_guns)  # 假设config.available_guns是一个包含所有可用枪支的列表
         self.available_guns_list.setMinimumSize(100, 150)
         available_layout.addWidget(self.available_guns_label)
         available_layout.addWidget(self.available_guns_list)
@@ -59,7 +58,7 @@ class AutoGunConfigLayout:
         add_guns_layout = QVBoxLayout()
         self.add_guns_label = QLabel("已选择枪支", self.main_window)
         self.selected_guns_list = QListWidget(self.main_window)
-        self.selected_guns_list.addItems(self.config.click_gun)  # 假设config.click_gun是一个包含已选择枪支的列表
+
         self.selected_guns_list.setMinimumSize(100, 150)
         add_guns_layout.addWidget(self.add_guns_label)
         add_guns_layout.addWidget(self.selected_guns_list)
@@ -67,6 +66,16 @@ class AutoGunConfigLayout:
         self.parent_layout.addLayout(add_refresh_button_title_layout)
         self.parent_layout.addWidget(list_layout_label)
         self.parent_layout.addLayout(list_layout)
+
+        self.init_form_config()
+
+    def init_form_config(self):
+        self.fresh_button_list.addItems(self.config.refresh_button)
+        self.available_guns = [item for item in self.config.available_guns if item not in self.config.click_gun]
+        self.available_guns_list.clear()
+        self.available_guns_list.addItems(self.available_guns)  # 假设config.available_guns是一个包含所有可用枪支的列表
+        self.selected_guns_list.clear()
+        self.selected_guns_list.addItems(self.config.click_gun)  # 假设config.click_gun是一个包含已选择枪支的列表
 
     def add_refresh_button_item(self):
         new_item = self.refresh_button_input.text()

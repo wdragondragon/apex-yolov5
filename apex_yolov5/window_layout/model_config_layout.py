@@ -20,9 +20,6 @@ class ModelConfigLayout:
         label = QLabel("选择模型:")
         self.model_combo_box = QComboBox()
 
-        for key in self.config.available_models.keys():
-            self.model_combo_box.addItem(key)
-        self.model_combo_box.setCurrentText(self.config.current_model)
         self.model_combo_box.currentIndexChanged.connect(self.selection_changed)
 
         model_combo_box_layout.addWidget(label)
@@ -30,22 +27,22 @@ class ModelConfigLayout:
 
         conf_thres_layout = QHBoxLayout()
         # 创建标签和滑动条
-        self.conf_thres_label = QLabel("置信度阈值:" + str(self.config.conf_thres), self.main_window)
+        self.conf_thres_label = QLabel("置信度阈值:", self.main_window)
         self.conf_thres_slider = QSlider(Qt.Horizontal, self.main_window)
         self.conf_thres_slider.setMinimum(1)  # 最小值
         self.conf_thres_slider.setMaximum(100)  # 最大值
-        self.conf_thres_slider.setValue(int(self.config.conf_thres * 100))  # 初始化值
+
         self.conf_thres_slider.valueChanged.connect(self.update_slieder_value)
         conf_thres_layout.addWidget(self.conf_thres_label)
         conf_thres_layout.addWidget(self.conf_thres_slider)
 
         iou_thres_layout = QHBoxLayout()
         # 创建标签和滑动条
-        self.iou_thres_label = QLabel("交并比阈值:" + str(self.config.iou_thres), self.main_window)
+        self.iou_thres_label = QLabel("交并比阈值:", self.main_window)
         self.iou_thres_slider = QSlider(Qt.Horizontal, self.main_window)
         self.iou_thres_slider.setMinimum(1)  # 最小值
         self.iou_thres_slider.setMaximum(100)  # 最大值
-        self.iou_thres_slider.setValue(int(self.config.iou_thres * 100))  # 初始化值
+
         self.iou_thres_slider.valueChanged.connect(self.update_iou_thres_value)
         iou_thres_layout.addWidget(self.iou_thres_label)
         iou_thres_layout.addWidget(self.iou_thres_slider)
@@ -56,9 +53,24 @@ class ModelConfigLayout:
         model_config_layout.addLayout(iou_thres_layout)
 
         self.parent_layout.addLayout(model_config_layout)
+        self.init_form_config()
+
+    def init_form_config(self):
+        self.model_combo_box.clear()
+        for key in self.config.available_models.keys():
+            self.model_combo_box.addItem(key)
+
+        if not self.model_combo_box.currentText() == self.config.current_model:
+            self.model_combo_box.setCurrentText(self.config.current_model)
+        self.conf_thres_label.setText("置信度阈值:" + str(self.config.conf_thres))
+        self.conf_thres_slider.setValue(int(self.config.conf_thres * 100))  # 初始化值
+        self.iou_thres_label.setText("交并比阈值:" + str(self.config.iou_thres))
+        self.iou_thres_slider.setValue(int(self.config.iou_thres * 100))  # 初始化值
 
     def selection_changed(self, index):
         selected_key = self.model_combo_box.currentText()
+        if selected_key == '':
+            return
         self.model_combo_box.setEnabled(False)
         self.config.set_config("current_model", selected_key)
         self.config.current_model = selected_key

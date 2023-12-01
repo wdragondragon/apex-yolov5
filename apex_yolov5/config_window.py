@@ -1,12 +1,14 @@
 import os
 
 from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication, QDialog, \
+    QComboBox, QLineEdit
 
 from apex_yolov5.DebugWindow import DebugWindow
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
+from apex_yolov5.socket import config
 from apex_yolov5.window_layout.ai_toggle_layout import AiToggleLayout
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
 from apex_yolov5.window_layout.auto_gun_config_layout import AutoGunConfigLayout
@@ -59,10 +61,92 @@ class ConfigWindow(QMainWindow):
         magnifying_glass_action = QAction("识别频率监控", self)
         magnifying_glass_action.triggered.connect(self.open_frame_rate_monitor)
 
+        read_ref_glass_action = QAction("读取配置", self)
+        read_ref_glass_action.triggered.connect(self.open_read_ref_glass_window)
+
+        writer_ref_glass_action = QAction("新建配置", self)
+        writer_ref_glass_action.triggered.connect(self.open_new_ref_glass_window)
+
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("功能")
         file_menu.addAction(config_action)
         file_menu.addAction(magnifying_glass_action)
+        file_menu.addAction(read_ref_glass_action)
+        file_menu.addAction(writer_ref_glass_action)
+
+    def open_read_ref_glass_window(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("读取配置窗口")
+
+        layout = QVBoxLayout(dialog)
+
+        # 添加下拉框
+        combo_box = QComboBox(dialog)
+
+        combo_box.addItems(config.get_all_config_file_name())
+        combo_box.setCurrentText(config.read_config_file_name())
+        layout.addWidget(combo_box)
+
+        # 添加确定按钮
+        ok_button = QPushButton("确定", dialog)
+        ok_button.clicked.connect(dialog.accept)
+        layout.addWidget(ok_button)
+
+        # 添加取消按钮
+        cancel_button = QPushButton("取消", dialog)
+        cancel_button.clicked.connect(dialog.reject)
+        layout.addWidget(cancel_button)
+
+        # 显示对话框
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            selected_option = combo_box.currentText()
+            config.writer_config_file_name(content=selected_option)
+            self.config.update()
+            self.init_form_config()
+            print(f"选中的选项是: {selected_option}")
+        else:
+            print("用户取消操作")
+
+    def open_new_ref_glass_window(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("新建配置窗口")
+
+        layout = QVBoxLayout(dialog)
+
+        new_config_name = QLineEdit(dialog)
+        layout.addWidget(new_config_name)
+
+        # 添加确定按钮
+        ok_button = QPushButton("确定", dialog)
+        ok_button.clicked.connect(dialog.accept)
+        layout.addWidget(ok_button)
+
+        # 添加取消按钮
+        cancel_button = QPushButton("取消", dialog)
+        cancel_button.clicked.connect(dialog.reject)
+        layout.addWidget(cancel_button)
+
+        # 显示对话框
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            selected_option = new_config_name.text()
+            config.copy_config(selected_option)
+            config.writer_config_file_name(content=selected_option)
+            self.config.update()
+            self.init_form_config()
+            print(f"选中的选项是: {selected_option}")
+        else:
+            print("用户取消操作")
+
+    def init_form_config(self):
+        self.ai_toggle_layout.init_form_config()
+        self.mouse_config_layout.init_form_config()
+        self.screenshot_layout.init_form_config()
+        self.model_config_layout.init_form_config()
+        self.auto_gun_config_layout.init_form_config()
+        self.auto_save_config_layout.init_form_config()
+        self.auto_charge_energy_layout.init_form_config()
 
     def open_config_window(self):
         if self.main_window is None:

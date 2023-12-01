@@ -1,3 +1,6 @@
+import os
+import shutil
+
 import pynput
 from torch.cuda import is_available
 import os.path as op
@@ -15,16 +18,87 @@ screenshot_resolution = {
 }
 (x, y) = Tools.get_resolution()
 
-config_data = dict()
 global_config_path = 'config\\global_config.json'
-if op.exists(global_config_path):
-    with open(global_config_path, 'r', encoding='utf-8') as global_file:
-        config_data = json.load(global_file)
+config_ref_path = 'config\\ref\\'
+use_ref_path = 'config\\ref.txt'
+
+
+def get_all_config_file_name(directory=config_ref_path):
+    # 获取指定目录下的所有文件和子目录
+    files = os.listdir(directory)
+    files_name = []
+    # 遍历所有文件和子目录
+    for file in files:
+        # 使用 os.path.join() 构建文件的完整路径
+        file_path = os.path.join(directory, file)
+
+        # 检查是否为文件
+        if os.path.isfile(file_path):
+            # 使用 os.path.splitext 分离文件名和扩展名
+            filename, _ = os.path.splitext(file)
+            files_name.append(filename)
+
+    return files_name
+
+
+def read_config_file_name(file_path=use_ref_path, default="global_config"):
+    try:
+        if not os.path.exists(file_path):
+            return default
+        # 使用 open 函数打开文件
+        with open(file_path) as file:
+            # 读取文件内容
+            return file.read()
+    except FileNotFoundError:
+        print(f"文件 '{file_path}' 不存在.")
+    except Exception as e:
+        print(f"发生错误: {e}")
+
+
+def writer_config_file_name(file_path=use_ref_path, content="global_config"):
+    try:
+        # 使用 open 函数以写入模式打开文件
+        with open(file_path, 'w') as file:
+            # 将内容写入文件
+            file.write(content)
+        print(f"成功写入文件: {file_path}")
+    except Exception as e:
+        print(f"写入文件时发生错误: {e}")
+
+
+def read_config():
+    global global_config_path
+    all_config_name = get_all_config_file_name()
+    ref_config_name = read_config_file_name()
+    if ref_config_name in all_config_name:
+        print("读取预设配置：{0}".format(ref_config_name))
+        global_config_path = '{0}{1}.json'.format(config_ref_path, ref_config_name)
+
+    if op.exists(global_config_path):
+        with open(global_config_path, encoding='utf-8') as global_file:
+            return json.load(global_file)
+    return None
+
+
+def copy_config(target):
+    try:
+        source_path = '{0}{1}.json'.format(config_ref_path, read_config_file_name())
+        target_path = '{0}{1}.json'.format(config_ref_path, target)
+        # 使用 shutil.copy 复制文件
+        shutil.copy(source_path, target_path)
+        print(f"成功复制文件: {source_path} 到 {target_path}")
+
+    except Exception as e:
+        print(f"复制文件时发生错误: {e}")
 
 
 class Config:
-    def __init__(self, data):
-        self.config_data = data
+    def __init__(self):
+        self.config_data = read_config()
+        self.init()
+
+    def update(self):
+        self.config_data = read_config()
         self.init()
 
     def init(self):
@@ -178,7 +252,20 @@ class Config:
     def save_config(self):
         with open(global_config_path, "w", encoding="utf8") as f:
             json.dump(self.config_data, f, ensure_ascii=False, indent=4)
+        print("保存配置文件到:{0}".format(global_config_path))
         self.init()
 
 
-global_config = Config(config_data)
+# 检查配置文件夹是否存在
+if not os.path.exists(config_ref_path):
+    try:
+        print("识别到使用的是旧版配置系统，进行升级")
+        # 使用 os.makedirs 创建文件夹（可以递归创建多层文件夹）
+        os.makedirs(config_ref_path)
+        new_path = '{0}{1}.json'.format(config_ref_path, "global_config")
+        shutil.copy(global_config_path, new_path)
+        writer_config_file_name()
+        print(f"新版默认配置文件已移动到：{new_path}")
+    except Exception as e:
+        print(f"创建文件夹时发生错误: {e}")
+global_config = Config()

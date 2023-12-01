@@ -63,6 +63,16 @@ class ScreenshotAreaLayout:
         screenshot_area_layout.addWidget(self.view)
         self.parent_layout.addLayout(screenshot_area_layout)
 
+        self.init_form_config()
+
+    def init_form_config(self):
+        self.width_input.setText(str(int(self.config.shot_width)))
+        self.height_input.setText(str(int(self.config.shot_height)))
+        self.width_input.setValidator(QIntValidator(0, self.config.screen_width))
+        self.height_input.setValidator(QIntValidator(0, self.config.screen_height))
+        self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
+        self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
+
     def update_inner_rect_size(self):
         # 当输入框的内容改变时，更新内部框的大小
         width = int(self.width_input.text()) if self.width_input.text() else 0
