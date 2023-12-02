@@ -81,7 +81,7 @@ def main():
                     t4 = time.time()
                     aims = pickle.loads(mouse_data)
                     if len(aims) and not global_config.only_save:
-                        lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
+                        lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
                              shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
                     log_util.set_time("处理鼠标数据", time.time() - t4)
                     now = time.time()

@@ -6,17 +6,16 @@ import time
 import traceback
 
 import mss
-import numpy as np
 import pynput
 from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5 import LogUtil, check_run
-from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.DebugWindow import DebugWindow
+from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.Tools import Tools
-from apex_yolov5.auxiliary import get_lock_mode, start
-from apex_yolov5.grabscreen import grab_screen_int_array, grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
+from apex_yolov5.auxiliary import start
+from apex_yolov5.grabscreen import grab_screen_int_array2
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 from client_mult import GetBlockQueue
@@ -127,7 +126,7 @@ def main():
                     t4 = time.time()
                     aims = aims_data_block_queue.get()
                     if len(aims) and not global_config.only_save:
-                        lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
+                        lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
                              shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
                     log_util.set_time("处理鼠标数据", time.time() - t4)
                     print_count += 1

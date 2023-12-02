@@ -56,10 +56,11 @@ class ModelConfigLayout:
         self.init_form_config()
 
     def init_form_config(self):
+        self.model_combo_box.blockSignals(True)
         self.model_combo_box.clear()
         for key in self.config.available_models.keys():
             self.model_combo_box.addItem(key)
-
+        self.model_combo_box.blockSignals(False)
         if not self.model_combo_box.currentText() == self.config.current_model:
             self.model_combo_box.setCurrentText(self.config.current_model)
         self.conf_thres_label.setText("置信度阈值:" + str(self.config.conf_thres))

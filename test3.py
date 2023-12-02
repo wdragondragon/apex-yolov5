@@ -19,8 +19,8 @@ from apex_yolov5.socket.config import global_config
 # 参数 1 表示打开 usb 摄像头或者加入路径表示打开指定的视屏文件
 
 cap = cv2.VideoCapture(0)  # 视频流
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, global_config.screen_width)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, global_config.screen_height)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, global_config.desktop_width)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, global_config.desktop_height)
 
 
 def get_img_from_cap(monitor):

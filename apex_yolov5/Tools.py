@@ -1,6 +1,6 @@
+import ctypes
 import os
 import time
-import tkinter
 from io import BytesIO
 from shutil import copyfile
 
@@ -13,10 +13,14 @@ from skimage.metrics import structural_similarity
 class Tools:
     @staticmethod
     def get_resolution():
-        screen = tkinter.Tk()
-        xw = screen.winfo_screenwidth()
-        yh = screen.winfo_screenheight()
-        screen.destroy()
+        # screen = tkinter.Tk()
+        # xw = screen.winfo_screenwidth()
+        # yh = screen.winfo_screenheight()
+        # screen.destroy()
+
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware(2)
+        [xw, yh] = [user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)]
         return xw, yh
 
     @staticmethod

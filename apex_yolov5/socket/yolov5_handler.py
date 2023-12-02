@@ -2,6 +2,7 @@ import time
 import numpy as np
 from torch import from_numpy, tensor
 
+from apex_yolov5 import apex_model
 from apex_yolov5.apex_model import load_model
 from apex_yolov5.socket.config import global_config
 from utils.augmentations import letterbox
@@ -10,11 +11,11 @@ from utils.general import non_max_suppression, scale_boxes, xyxy2xywh
 model = load_model()
 names = model.module.names if hasattr(model, 'module') else model.names
 
-
 def reload_model():
     global model, names
-    model = load_model()
-    names = model.module.names if hasattr(model, 'module') else model.names
+    if not apex_model.current_model_name == global_config.current_model:
+        model = load_model()
+        names = model.module.names if hasattr(model, 'module') else model.names
 
 
 def get_aims(img0):

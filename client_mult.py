@@ -128,7 +128,7 @@ def consumption_mouse_data():
         # aims = pickle.loads(mouse_data)
         print_count += 1
         if len(aims) and get_lock_mode():
-            lock(aims, global_config.mouse, global_config.screen_width, global_config.screen_height,
+            lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
                  shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
         now = time.time()
         if now - compute_time > 1:

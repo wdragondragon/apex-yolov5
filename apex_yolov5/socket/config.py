@@ -14,7 +14,8 @@ screenshot_resolution = {
     (2560, 1440): (2093, 1281, 2275, 1332),
     # (2560, 1440): (1905, 1092, 2087, 1143),
     (3440, 1440): (2093, 1281, 2275, 1332),
-    (1920, 1200): (1539, 1142, 1728, 1142)
+    (1920, 1200): (1539, 1142, 1728, 1142),
+    (2048, 1152): (1927, 1172, 2089, 1208)
 }
 (x, y) = Tools.get_resolution()
 
@@ -114,8 +115,12 @@ class Config:
         self.conf_thres = self.get_config(self.config_data, 'conf_thres')
         self.iou_thres = self.get_config(self.config_data, 'iou_thres')
         # 分辨率
-        self.screen_width = self.get_config(self.config_data, 'screen_width')
-        self.screen_height = self.get_config(self.config_data, 'screen_height')
+        self.desktop_width = x
+        self.desktop_height = y
+        print(f"识别到桌面分辨率为:{self.desktop_width}x{self.desktop_height}")
+
+        self.game_width = self.get_config(self.config_data, 'screen_width')
+        self.game_height = self.get_config(self.config_data, 'screen_height')
         # 截屏区域
         self.offset_shot_screen_x = self.get_config(self.config_data, 'offset_shot_screen_x')
         self.offset_shot_screen_y = self.get_config(self.config_data, 'offset_shot_screen_y')
@@ -198,7 +203,7 @@ class Config:
         self.half = self.device != 'cpu'
         # 默认16：9, 1920x1080 , 960, 540是屏幕中心，根据自己的屏幕修改
         # 屏幕中心坐标
-        self.screen_center_x, self.screen_center_y = self.screen_width // 2, self.screen_height // 2
+        self.screen_center_x, self.screen_center_y = self.desktop_width // 2, self.desktop_height // 2
         if self.shot_width == 0 and self.shot_height == 0:
             # 截屏区域的实际大小需要乘以2，因为是计算的中心点
             self.half_shot_width, self.half_shot_height = (self.offset_shot_screen_x * 16,
@@ -221,11 +226,12 @@ class Config:
                                   "height": 640}
 
         self.window_name = "apex-gun"
-        if (self.screen_width, self.screen_height) in screenshot_resolution:
-            self.select_gun_bbox = screenshot_resolution[(self.screen_width, self.screen_height)]  # 选择枪械的区域
+        self.game_solution = (self.game_width, self.game_height)
+        if self.game_solution in screenshot_resolution:
+            self.select_gun_bbox = screenshot_resolution[self.game_solution]  # 选择枪械的区域
         else:
             self.select_gun_bbox = screenshot_resolution[(1920, 1080)]
-        self.image_path = 'images/' + '{}x{}/'.format(self.screen_width, self.screen_height)  # 枪械图片路径
+        self.image_path = 'images/' + '{}x{}/'.format(*self.game_solution)  # 枪械图片路径
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 

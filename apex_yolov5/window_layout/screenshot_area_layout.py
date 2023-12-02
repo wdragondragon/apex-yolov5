@@ -25,8 +25,8 @@ class ScreenshotAreaLayout:
         # 连接信号和槽
         self.width_input.textChanged.connect(self.update_inner_rect_size)
         self.height_input.textChanged.connect(self.update_inner_rect_size)
-        self.width_input.setValidator(QIntValidator(0, self.config.screen_width))
-        self.height_input.setValidator(QIntValidator(0, self.config.screen_height))
+        self.width_input.setValidator(QIntValidator(0, self.config.desktop_width))
+        self.height_input.setValidator(QIntValidator(0, self.config.desktop_height))
         resolution_layout.addWidget(self.screenshot_area_label)
         resolution_layout.addWidget(self.width_input)
         resolution_layout.addWidget(self.screenshot_area_x_label)
@@ -52,7 +52,7 @@ class ScreenshotAreaLayout:
 
         self.view = RectView(self.main_window,
                              outer_rect_size=(
-                                 int(self.config.screen_width / 10), int(self.config.screen_height / 10)),
+                                 int(self.config.desktop_width / 10), int(self.config.desktop_height / 10)),
                              inner_rect_size=(
                                  int(self.config.shot_width / 10), int(self.config.shot_height / 10)),
                              radius=int(self.config.mouse_moving_radius / 10),
@@ -68,8 +68,8 @@ class ScreenshotAreaLayout:
     def init_form_config(self):
         self.width_input.setText(str(int(self.config.shot_width)))
         self.height_input.setText(str(int(self.config.shot_height)))
-        self.width_input.setValidator(QIntValidator(0, self.config.screen_width))
-        self.height_input.setValidator(QIntValidator(0, self.config.screen_height))
+        self.width_input.setValidator(QIntValidator(0, self.config.desktop_width))
+        self.height_input.setValidator(QIntValidator(0, self.config.desktop_height))
         self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
 

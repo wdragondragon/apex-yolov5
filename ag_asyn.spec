@@ -31,7 +31,7 @@ a = Analysis(
     ['main.py'],
     pathex=pathex,
     binaries=[(r'./utils/general.pyc',r'./utils')],
-    datas=[(r'./config/global_config.json',r'./config')],
+    datas=[(r'./config/ref/global_config.json',r'./config/ref'),(r'./config/ref.txt',r'./config')],
     hiddenimports=['models.yolo'],
     hookspath=[],
     hooksconfig={},
