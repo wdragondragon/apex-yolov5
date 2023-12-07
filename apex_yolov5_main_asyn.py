@@ -13,6 +13,8 @@ from client_mult import GetBlockQueue
 
 screen_count = 0
 image_block_queue = GetBlockQueue("image_queue", maxsize=1)
+
+
 def handle(log_window):
     global screen_count
     print_count = 0

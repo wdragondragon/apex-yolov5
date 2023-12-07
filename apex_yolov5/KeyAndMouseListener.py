@@ -67,7 +67,7 @@ class MouseListener:
             else:
                 self.toggle_mouse_key_map.append(button.name)
             for cb in KMCallBack.toggle_call_back:
-                if cb.type == 'm' and cb.key == button.name:
+                if cb.type == 'm' and cb.key == button.name and cb.is_press:
                     cb.call_back(pressed, cb.key in self.toggle_mouse_key_map)
             # print("左键按下")
         elif not pressed:
@@ -75,6 +75,9 @@ class MouseListener:
                 return
             # print("左键释放, 持续时间: {}".format(Tools.current_milli_time() - self.on_mouse_key_map[button]))
             self.on_mouse_key_map.pop(button)
+            for cb in KMCallBack.toggle_call_back:
+                if cb.type == 'm' and cb.key == button.name and not cb.is_press:
+                    cb.call_back(pressed, cb.key in self.toggle_mouse_key_map)
 
     def on_scroll(self, x, y, dx, dy):
         pass
@@ -104,11 +107,12 @@ class MouseListener:
 class KMCallBack:
     toggle_call_back = []
 
-    def __init__(self, type, key, call_back):
+    def __init__(self, type, key, call_back, is_press=True):
         super().__init__()
         self.type = type
         self.key = key
         self.call_back = call_back
+        self.is_press = is_press
 
     @staticmethod
     def connect(callback):

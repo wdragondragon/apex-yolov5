@@ -196,6 +196,9 @@ class Config:
         # 同步syn  异步asyn
         self.screenshot_frequency_mode = self.get_config(self.config_data, "screenshot_frequency_mode", "asyn")
 
+        self.show_circle = self.get_config(self.config_data, "show_circle", False)
+        self.show_config = self.get_config(self.config_data, "show_config", True)
+
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640

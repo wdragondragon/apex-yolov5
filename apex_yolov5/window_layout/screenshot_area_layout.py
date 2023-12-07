@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QIntValidator, QColor
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGraphicsView, QGraphicsScene
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGraphicsView, QGraphicsScene, QCheckBox
 
 
 class ScreenshotAreaLayout:
@@ -12,6 +12,12 @@ class ScreenshotAreaLayout:
     def add_layout(self):
         screenshot_area_layout = QVBoxLayout()
         screenshot_area_layout.setObjectName("screenshot_area_layout")
+
+        self.show_circle_toggle_switch = QCheckBox("展示瞄准范围")
+        self.show_circle_toggle_switch.setObjectName("show_circle_toggle_switch")
+        self.show_circle_toggle_switch.toggled.connect(self.show_circle_toggle)
+        self.show_circle_toggle_switch.setChecked(self.config.show_circle)
+
         resolution_layout = QHBoxLayout()
         self.screenshot_area_title_label = QLabel("识别范围设置")
         self.screenshot_area_title_label.setAlignment(Qt.AlignCenter)
@@ -58,6 +64,7 @@ class ScreenshotAreaLayout:
                              radius=int(self.config.mouse_moving_radius / 10),
                              aim_radius=int(self.config.aim_mouse_moving_radius / 10))
         screenshot_area_layout.addWidget(self.screenshot_area_title_label)
+        screenshot_area_layout.addWidget(self.show_circle_toggle_switch)
         screenshot_area_layout.addLayout(resolution_layout)
         screenshot_area_layout.addLayout(aim_radius_layout)
         screenshot_area_layout.addWidget(self.view)
@@ -72,6 +79,15 @@ class ScreenshotAreaLayout:
         self.height_input.setValidator(QIntValidator(0, self.config.desktop_height))
         self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
+
+    def show_circle_toggle(self, checked):
+        from apex_yolov5.circle_window import circle_window
+        self.config.set_config("show_circle", checked)
+        self.config.show_circle = checked
+        if self.config.show_circle:
+            circle_window.show()
+        else:
+            circle_window.hide()
 
     def update_inner_rect_size(self):
         # 当输入框的内容改变时，更新内部框的大小

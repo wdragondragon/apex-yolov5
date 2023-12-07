@@ -20,6 +20,7 @@ class AiToggleLayout:
         self.ai_toggle_switch = QCheckBox("AI开关")
         self.ai_toggle_switch.setObjectName("ai_toggle")
         self.ai_toggle_switch.toggled.connect(self.handle_ai_toggled)
+        self.ai_toggle_switch.setChecked(self.config.ai_toggle)
         toggle_layout.addWidget(self.ai_toggle_switch)
 
         self.ai_toggle_type_label = QLabel("开关键配置")

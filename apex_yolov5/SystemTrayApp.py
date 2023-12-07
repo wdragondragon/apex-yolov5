@@ -40,9 +40,13 @@ class SystemTrayApp:
         self.tray_icon.show()
 
     def show_app(self):
+        self.config.set_config("show_config", True)
+        self.config.save_config()
         self.main_window.show()
 
     def hide_app(self):
+        self.config.set_config("show_config", False)
+        self.config.save_config()
         self.main_window.hide()
 
     def change_icon(self, open_status):

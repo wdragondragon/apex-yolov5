@@ -6,8 +6,10 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5_main
 import apex_yolov5_main_asyn
+
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
+
 from apex_yolov5.config_window import ConfigWindow
 from apex_yolov5.socket.config import global_config
 
@@ -28,7 +30,12 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     log_window = ConfigWindow(global_config)
-    log_window.show()
+    if global_config.show_config:
+        log_window.show()
+    from apex_yolov5.circle_window import circle_window
+
+    if global_config.show_circle:
+        circle_window.show()
 
     if global_config.screenshot_frequency_mode == "asyn":
         threading.Thread(target=apex_yolov5_main_asyn.main).start()
