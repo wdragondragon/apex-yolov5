@@ -58,8 +58,6 @@ class ScreenshotAreaLayout:
         self.multi_stage_aiming_speed_input = QLineEdit(self.main_window)
         self.multi_stage_aiming_speed_input.setObjectName("multi_stage_aiming_speed")
 
-        self.multi_stage_aiming_speed_input.setText(
-            " ".join([f"{start}-{end}" for start, end in self.config.multi_stage_aiming_speed]))
         # 连接信号和槽
         multi_stage_aiming_speed_layout.addWidget(self.multi_stage_aiming_speed_label)
         multi_stage_aiming_speed_layout.addWidget(self.multi_stage_aiming_speed_input)
@@ -68,8 +66,7 @@ class ScreenshotAreaLayout:
         self.aim_multi_stage_aiming_speed_label = QLabel("瞄准多级瞄速：")
         self.aim_multi_stage_aiming_speed_input = QLineEdit(self.main_window)
         self.aim_multi_stage_aiming_speed_input.setObjectName("aim_multi_stage_aiming_speed")
-        self.aim_multi_stage_aiming_speed_input.setText(
-            " ".join([f"{start}-{end}" for start, end in self.config.aim_multi_stage_aiming_speed]))
+
         # 连接信号和槽
         aim_multi_stage_aiming_speed_layout.addWidget(self.aim_multi_stage_aiming_speed_label)
         aim_multi_stage_aiming_speed_layout.addWidget(self.aim_multi_stage_aiming_speed_input)
@@ -98,6 +95,10 @@ class ScreenshotAreaLayout:
         self.height_input.setValidator(QIntValidator(0, self.config.desktop_height))
         self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
+        self.multi_stage_aiming_speed_input.setText(
+            " ".join([f"{start}-{end}" for start, end in self.config.multi_stage_aiming_speed]))
+        self.aim_multi_stage_aiming_speed_input.setText(
+            " ".join([f"{start}-{end}" for start, end in self.config.aim_multi_stage_aiming_speed]))
 
     def update_inner_rect_size(self):
         # 当输入框的内容改变时，更新内部框的大小
