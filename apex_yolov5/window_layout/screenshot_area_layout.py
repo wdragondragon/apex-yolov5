@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QIntValidator, QColor
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGraphicsView, QGraphicsScene, QCheckBox
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGraphicsView, QGraphicsScene, QCheckBox, \
+    QMessageBox
 
 
 class ScreenshotAreaLayout:
@@ -12,11 +13,6 @@ class ScreenshotAreaLayout:
     def add_layout(self):
         screenshot_area_layout = QVBoxLayout()
         screenshot_area_layout.setObjectName("screenshot_area_layout")
-
-        self.show_circle_toggle_switch = QCheckBox("展示瞄准范围")
-        self.show_circle_toggle_switch.setObjectName("show_circle_toggle_switch")
-        self.show_circle_toggle_switch.toggled.connect(self.show_circle_toggle)
-        self.show_circle_toggle_switch.setChecked(self.config.show_circle)
 
         resolution_layout = QHBoxLayout()
         self.screenshot_area_title_label = QLabel("识别范围设置")
@@ -51,10 +47,32 @@ class ScreenshotAreaLayout:
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
         # 连接信号和槽
         self.aim_mouse_moving_radius_input.textChanged.connect(self.update_inner_circle_size)
+
         aim_radius_layout.addWidget(self.mouse_moving_radius_label)
         aim_radius_layout.addWidget(self.mouse_moving_radius_input)
         aim_radius_layout.addWidget(self.aim_mouse_moving_radius_label)
         aim_radius_layout.addWidget(self.aim_mouse_moving_radius_input)
+
+        multi_stage_aiming_speed_layout = QHBoxLayout()
+        self.multi_stage_aiming_speed_label = QLabel("腰射多级瞄速：")
+        self.multi_stage_aiming_speed_input = QLineEdit(self.main_window)
+        self.multi_stage_aiming_speed_input.setObjectName("multi_stage_aiming_speed")
+
+        self.multi_stage_aiming_speed_input.setText(
+            " ".join([f"{start}-{end}" for start, end in self.config.multi_stage_aiming_speed]))
+        # 连接信号和槽
+        multi_stage_aiming_speed_layout.addWidget(self.multi_stage_aiming_speed_label)
+        multi_stage_aiming_speed_layout.addWidget(self.multi_stage_aiming_speed_input)
+
+        aim_multi_stage_aiming_speed_layout = QHBoxLayout()
+        self.aim_multi_stage_aiming_speed_label = QLabel("瞄准多级瞄速：")
+        self.aim_multi_stage_aiming_speed_input = QLineEdit(self.main_window)
+        self.aim_multi_stage_aiming_speed_input.setObjectName("aim_multi_stage_aiming_speed")
+        self.aim_multi_stage_aiming_speed_input.setText(
+            " ".join([f"{start}-{end}" for start, end in self.config.aim_multi_stage_aiming_speed]))
+        # 连接信号和槽
+        aim_multi_stage_aiming_speed_layout.addWidget(self.aim_multi_stage_aiming_speed_label)
+        aim_multi_stage_aiming_speed_layout.addWidget(self.aim_multi_stage_aiming_speed_input)
 
         self.view = RectView(self.main_window,
                              outer_rect_size=(
@@ -64,9 +82,10 @@ class ScreenshotAreaLayout:
                              radius=int(self.config.mouse_moving_radius / 10),
                              aim_radius=int(self.config.aim_mouse_moving_radius / 10))
         screenshot_area_layout.addWidget(self.screenshot_area_title_label)
-        screenshot_area_layout.addWidget(self.show_circle_toggle_switch)
         screenshot_area_layout.addLayout(resolution_layout)
         screenshot_area_layout.addLayout(aim_radius_layout)
+        screenshot_area_layout.addLayout(multi_stage_aiming_speed_layout)
+        screenshot_area_layout.addLayout(aim_multi_stage_aiming_speed_layout)
         screenshot_area_layout.addWidget(self.view)
         self.parent_layout.addLayout(screenshot_area_layout)
 
@@ -79,15 +98,6 @@ class ScreenshotAreaLayout:
         self.height_input.setValidator(QIntValidator(0, self.config.desktop_height))
         self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
-
-    def show_circle_toggle(self, checked):
-        from apex_yolov5.circle_window import circle_window
-        self.config.set_config("show_circle", checked)
-        self.config.show_circle = checked
-        if self.config.show_circle:
-            circle_window.show()
-        else:
-            circle_window.hide()
 
     def update_inner_rect_size(self):
         # 当输入框的内容改变时，更新内部框的大小
@@ -104,11 +114,44 @@ class ScreenshotAreaLayout:
             radius = int(self.aim_mouse_moving_radius_input.text()) if self.aim_mouse_moving_radius_input.text() else 0
             self.view.resize_inner_circle_aim(radius)
 
+    def check_multi_stage_aiming_speed(self, speed_up, multi_stage_aiming_speed_str):
+        if multi_stage_aiming_speed_str is None or multi_stage_aiming_speed_str == "":
+            return []
+        multi_stage_aiming_speed_arr = multi_stage_aiming_speed_str.split(" ")
+        number_array = []
+        for num_str in multi_stage_aiming_speed_arr:
+            try:
+                num_str_arr = num_str.split("-")
+                num_one = int(num_str_arr[0])
+                num_two = int(num_str_arr[1])
+                if not (len(num_str_arr) == 2 and num_two >= num_one):
+                    QMessageBox.warning(self.main_window, "不符合条件",
+                                        f"{num_str_arr} 格式错误，格式为 数字-数字，且前一位大于后一位")
+
+                if not 0 <= num_two <= speed_up:
+                    QMessageBox.warning(self.main_window, "不符合条件", f"{num_two} 数字不允许比瞄准范围大")
+                    return []
+                else:
+                    number_array.append((num_one, num_two))
+            except ValueError:
+                QMessageBox.critical(self.main_window, "错误", f"{num_str} 格式错误")
+                return []
+        return number_array
+
     def save_config(self):
         self.config.set_config("shot_width", int(self.view.inner_rect.rect().width() * 10))
         self.config.set_config("shot_height", int(self.view.inner_rect.rect().height() * 10))
         self.config.set_config("mouse_moving_radius", int(self.mouse_moving_radius_input.text()))
         self.config.set_config("aim_mouse_moving_radius", int(self.aim_mouse_moving_radius_input.text()))
+
+        multi_stage_aiming_speed_arr = self.check_multi_stage_aiming_speed(self.config.mouse_moving_radius,
+                                                                           self.multi_stage_aiming_speed_input.text())
+        self.config.set_config("multi_stage_aiming_speed", multi_stage_aiming_speed_arr)
+
+        aim_multi_stage_aiming_speed_arr = self.check_multi_stage_aiming_speed(self.config.aim_mouse_moving_radius,
+                                                                               self.aim_multi_stage_aiming_speed_input
+                                                                               .text())
+        self.config.set_config("aim_multi_stage_aiming_speed", aim_multi_stage_aiming_speed_arr)
 
 
 class RectView(QGraphicsView):

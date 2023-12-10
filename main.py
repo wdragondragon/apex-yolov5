@@ -32,10 +32,6 @@ if __name__ == "__main__":
     log_window = ConfigWindow(global_config)
     if global_config.show_config:
         log_window.show()
-    from apex_yolov5.circle_window import circle_window
-
-    if global_config.show_circle:
-        circle_window.show()
 
     if global_config.screenshot_frequency_mode == "asyn":
         threading.Thread(target=apex_yolov5_main_asyn.main).start()

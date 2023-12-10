@@ -1,3 +1,4 @@
+import math
 import time
 
 from pynput.mouse import Button
@@ -68,6 +69,14 @@ def start():
                         Button.right) else global_config.move_step
                     move_step_y_temp = global_config.aim_move_step_y if apex_mouse_listener.is_press(
                         Button.right) else global_config.move_step_y
+
+                    # 多级瞄速计算
+                    # distance = calculate_distance(x, y)
+                    multi_stage_aiming_speed = global_config.aim_multi_stage_aiming_speed \
+                        if apex_mouse_listener.is_press(Button.right) else global_config.multi_stage_aiming_speed
+                    move_step_temp = calculate_percentage_value(multi_stage_aiming_speed, x, move_step_temp)
+                    move_step_y_temp = calculate_percentage_value(multi_stage_aiming_speed, y, move_step_y_temp)
+                    # print(str(move_step_temp) + ":" + str(move_step_y_temp))
                     move_up = min(move_step_temp, abs(x)) * (1 if x > 0 else -1)
                     move_down = min(move_step_y_temp, abs(y)) * (1 if y > 0 else -1)
                     if x == 0:
@@ -94,3 +103,31 @@ def start():
             intention = None
         time.sleep(0.01)
         change_coordinates_num = 0
+
+
+def calculate_distance(x, y):
+    distance = math.sqrt(x ** 2 + y ** 2)
+    # 将结果取整，如果为0则取1
+    return max(1, round(distance))
+
+
+def find_range_index(ranges, num):
+    for i, (start_num, end) in enumerate(ranges):
+        if start_num <= num <= end:
+            return i
+    return None
+
+
+def calculate_percentage_value(arr, m, n):
+    if not arr:
+        return n
+    arr_length = len(arr)
+    index = find_range_index(arr, m)
+    if index is not None:
+        # 计算 m 在数组中的下标 i 占整个数组长度的百分比
+        percentage = (index + 1) / arr_length
+        # 用 n 乘以百分比
+        result = round(n * percentage)
+        return max(1, result)
+    else:
+        return n
