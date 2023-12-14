@@ -21,6 +21,9 @@ def handle(log_window):
     compute_time = time.time()
     while True:
         try:
+            if not global_config.ai_toggle:
+                time.sleep(6)
+                continue
             data = image_block_queue.get()
             img = data["img"]
             img_origin = data["img_origin"]
@@ -46,10 +49,6 @@ def handle(log_window):
             print_count += 1
             now = time.time()
             if now - compute_time > 1:
-                image_text = "一秒识别[{}]次:".format(print_count)
-                print(image_text)
-                image_text = "一秒截图[{}]次:".format(screen_count)
-                print(image_text)
                 log_window.update_frame_rate_plot_2(screen_count)
                 log_window.update_frame_rate_plot(print_count)
                 if global_config.auto_save:

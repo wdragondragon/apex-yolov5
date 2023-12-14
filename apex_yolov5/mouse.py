@@ -3,7 +3,7 @@ from os import path
 
 
 basedir = path.dirname(path.abspath(__file__))
-dlldir = path.join(basedir, 'ghub_mouse.dll')
+dlldir = path.join(basedir, '../ghub_mouse.dll')
 
 # ↓↓↓↓↓↓↓↓↓ 简易鼠标行为模拟,使用SendInput函数或者调用ghub驱动 ↓↓↓↓↓↓↓↓↓
 LONG = c_long

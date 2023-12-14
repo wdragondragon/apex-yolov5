@@ -1,6 +1,7 @@
 from ctypes import windll, Structure, c_ulong, byref
 
 import km_test
+import lg
 from apex_yolov5.socket.config import global_config
 
 # API常量
@@ -29,6 +30,8 @@ def get_mouse_position():
 def set_mouse_position(x, y):
     if global_config.mouse_model == "kmbox":
         km_test.get().move(x, y)
+    elif global_config.mouse_model == "logitech":
+        lg.mouse_xy(x, y)
     else:
         user32.mouse_event(MOUSEEVENTF_MOVE, x, y)
 
@@ -37,6 +40,8 @@ def left_click():
     if global_config.mouse_model == "kmbox":
         km_test.get().right(0)
         km_test.get().right(1)
+    elif global_config.mouse_model == "logitech":
+        lg.click_mouse_button(1)
     else:
         user32.mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
         user32.mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
