@@ -59,9 +59,10 @@ def start():
             last_click_time = time.time()
 
         if get_lock_mode() and intention is not None:
-            t0 = time.time()
+            # t0 = time.time()
             (x, y) = intention
-            if global_config.mouse_model != "kmbox" and global_config.mouse_smoothing_switch:
+            if (global_config.mouse_model in global_config.available_mouse_smoothing
+                    and global_config.mouse_smoothing_switch):
                 # print("开始移动，移动距离:{}".format((x, y)))
                 while (x != 0 or y != 0) and get_lock_mode():
                     (x, y) = intention

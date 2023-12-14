@@ -134,8 +134,14 @@ class Config:
             "kmbox": {
                 "VID/PID": "66882021"
             },
-            "logitech": {}
+            "logitech": {},
+            "ty": {
+                "VID/PID": "26121701"
+            }
         })
+
+        self.available_mouse_smoothing = self.get_config(self.config_data, "available_mouse_smoothing",
+                                                                ["win32api", "ty"])
 
         self.move_step = self.get_config(self.config_data, "move_step")
         self.move_step_y = self.get_config(self.config_data, "move_step_y", self.move_step)
