@@ -1,11 +1,13 @@
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
-from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import set_intention, set_click
-from apex_yolov5.mouse_controller import left_click
 from apex_yolov5.socket.config import global_config
+
+lock_time = 0
+no_lock_time = 0
 
 
 def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
+    global lock_time, no_lock_time
     # shot_width 截图高度，shot_height 截图区域高度
     # x,y 是分辨率
     # mouse_x,mouse_y = mouse.position
@@ -44,13 +46,26 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
     if (mouse_moving_radius ** 2 >
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
-        set_intention(targetRealX, targetRealY,current_mouse_x,current_mouse_y)
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
-        if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
-            set_click()
-
-    # if(dist < 100000):
-    # if (dist < 20000):
-    #     mouse_To1(des_X=targetRealX, des_Y=targetRealY, current_mouse_x=current_mouse_x,
-    #               current_mouse_y=current_mouse_y)
+        if not global_config.intention_deviation_toggle:
+            set_intention(targetRealX, targetRealY, current_mouse_x, current_mouse_y)
+            if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
+                set_click()
+        else:
+            # 先判断漏枪周期是否达到
+            if lock_time < global_config.intention_deviation_interval:
+                lock_time += 1
+                # 正常追踪
+                set_intention(targetRealX, targetRealY, current_mouse_x, current_mouse_y)
+                if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
+                    set_click()
+            elif no_lock_time < global_config.intention_deviation_duration:
+                no_lock_time += 1
+                print("漏枪")
+                if global_config.intention_deviation_force:
+                    set_intention(x1 if float(target_x) > 0.5 else x2, targetRealY, current_mouse_x, current_mouse_y)
+            # 重置标记
+            if lock_time == global_config.intention_deviation_interval and no_lock_time == global_config.intention_deviation_duration:
+                lock_time = 0
+                no_lock_time = 0
