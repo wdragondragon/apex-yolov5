@@ -62,7 +62,6 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                     set_click()
             elif no_lock_time < global_config.intention_deviation_duration:
                 no_lock_time += 1
-                print("漏枪")
                 if global_config.intention_deviation_force:
                     set_intention(x1 if float(target_x) > 0.5 else x2, targetRealY, current_mouse_x, current_mouse_y)
             # 重置标记
