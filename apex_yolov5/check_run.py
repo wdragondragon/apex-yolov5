@@ -1,3 +1,5 @@
+import hashlib
+import json
 import sys
 
 import requests
@@ -42,7 +44,7 @@ def get_disk_info():
                 "size": str(int(float(pd.Size) / 1024 / 1024 / 1024)) + "G"
             }
         )
-    return disk
+    return sorted(disk, key=lambda x: x['ID'])
 
 
 # mac 地址（包括虚拟机的）
@@ -91,8 +93,15 @@ def check_permission(machine_code):
 
 
 def check():
-    machine_code = get_CPU_info()[0]["Serial Number"]
+    main_board_info = get_mainboard_info()
+    disk_info = get_disk_info()
 
+    main_board_info_str = json.dumps(main_board_info, sort_keys=True)
+    disk_info_str = json.dumps(disk_info, sort_keys=True)
+
+    main_board_info_hash = hashlib.sha256(main_board_info_str.encode()).hexdigest()
+    disk_info_hash = hashlib.sha256(disk_info_str.encode()).hexdigest()
+    machine_code = hashlib.sha256((main_board_info_hash + "_" + disk_info_hash).encode()).hexdigest()
     if not check_permission(machine_code):
         print("没有运行权限")
         sys.exit(1)
