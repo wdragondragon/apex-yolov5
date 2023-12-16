@@ -18,7 +18,7 @@ from apex_yolov5.auxiliary import start
 from apex_yolov5.grabscreen import grab_screen_int_array2
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
-from client_mult import GetBlockQueue
+from apex_yolov5.GetBlockQueue import GetBlockQueue
 
 listener = pynput.mouse.Listener(
     on_click=apex_mouse_listener.on_click)

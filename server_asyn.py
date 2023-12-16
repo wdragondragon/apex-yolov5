@@ -7,7 +7,6 @@ import traceback
 
 import cv2
 import numpy as np
-from PIL import Image
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
@@ -15,7 +14,7 @@ from apex_yolov5 import LogUtil
 from apex_yolov5.DebugWindow import DebugWindow
 from apex_yolov5.socket import socket_util, yolov5_handler, log_ui
 from apex_yolov5.socket.config import global_config
-from client_mult import GetBlockQueue
+from apex_yolov5.GetBlockQueue import GetBlockQueue
 
 
 def handle():
