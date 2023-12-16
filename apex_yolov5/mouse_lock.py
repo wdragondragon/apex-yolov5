@@ -55,15 +55,18 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
         else:
             # 先判断漏枪周期是否达到
             if lock_time < global_config.intention_deviation_interval:
-                lock_time += 1
+                if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
+                    lock_time += 1
                 # 正常追踪
                 set_intention(targetRealX, targetRealY, current_mouse_x, current_mouse_y)
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     set_click()
             elif no_lock_time < global_config.intention_deviation_duration:
                 no_lock_time += 1
+                if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
+                    targetRealX = x1 if float(target_x) > 0.5 else x2
                 if global_config.intention_deviation_force:
-                    set_intention(x1 if float(target_x) > 0.5 else x2, targetRealY, current_mouse_x, current_mouse_y)
+                    set_intention(targetRealX, targetRealY, current_mouse_x, current_mouse_y)
             # 重置标记
             if lock_time == global_config.intention_deviation_interval and no_lock_time == global_config.intention_deviation_duration:
                 lock_time = 0
