@@ -141,7 +141,7 @@ class Config:
         })
 
         self.available_mouse_smoothing = self.get_config(self.config_data, "available_mouse_smoothing",
-                                                                ["win32api", "ty"])
+                                                         ["win32api", "ty"])
 
         self.move_step = self.get_config(self.config_data, "move_step")
         self.move_step_y = self.get_config(self.config_data, "move_step_y", self.move_step)
@@ -212,6 +212,9 @@ class Config:
         self.intention_deviation_interval = self.get_config(self.config_data, "intention_deviation_interval", 100)
         self.intention_deviation_duration = self.get_config(self.config_data, "intention_deviation_duration", 10)
         self.intention_deviation_force = self.get_config(self.config_data, "intention_deviation_force", False)
+        self.random_aim_toggle = self.get_config(self.config_data, "random_aim_toggle", False)
+        self.random_coefficient = self.get_config(self.config_data, "random_coefficient", 0.3)
+        self.random_change_frequency = self.get_config(self.config_data, "random_change_frequency", 20)
 
         if self.only_save:
             self.shot_height = 640

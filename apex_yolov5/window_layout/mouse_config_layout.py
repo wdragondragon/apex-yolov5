@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QPixmap, QPainter, QIntValidator
+from PyQt5.QtGui import QPixmap, QPainter, QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSlider, QWidget, QCheckBox, QComboBox, QLineEdit, QVBoxLayout
 
 import km_test
@@ -184,27 +184,6 @@ class MouseConfigLayout:
         cross_layout.addWidget(self.slider)
         cross_layout.addWidget(self.image_widget)
 
-        intention_deviation_layout = QVBoxLayout()
-        self.intention_deviation_toggle = QCheckBox("是否启动漏枪（根据配置周期性停止瞄准）")
-        self.intention_deviation_toggle.setObjectName("intention_deviation_toggle")
-
-        intention_deviation_interval_layout = QHBoxLayout()
-        self.intention_deviation_interval_label = QLabel("漏枪周期", self.main_window)
-        self.intention_deviation_interval = QLineEdit(self.main_window)
-        self.intention_deviation_interval.setValidator(QIntValidator())
-        intention_deviation_interval_layout.addWidget(self.intention_deviation_interval_label)
-        intention_deviation_interval_layout.addWidget(self.intention_deviation_interval)
-        self.intention_deviation_duration_label = QLabel("持续次数", self.main_window)
-        self.intention_deviation_duration = QLineEdit(self.main_window)
-        self.intention_deviation_duration.setValidator(QIntValidator())
-        intention_deviation_interval_layout.addWidget(self.intention_deviation_duration_label)
-        intention_deviation_interval_layout.addWidget(self.intention_deviation_duration)
-
-        self.intention_deviation_force = QCheckBox("强制漏枪（将停止瞄准改变为强制将移动到人物外）")
-        self.intention_deviation_force.setObjectName("intention_deviation_force")
-        intention_deviation_layout.addWidget(self.intention_deviation_toggle)
-        intention_deviation_layout.addLayout(intention_deviation_interval_layout)
-        intention_deviation_layout.addWidget(self.intention_deviation_force)
 
         self.parent_layout.addWidget(self.label)
         self.parent_layout.addLayout(self.aim_button_layout)
@@ -225,7 +204,6 @@ class MouseConfigLayout:
         self.parent_layout.addLayout(mouse_move_frequency_layout)
 
         self.parent_layout.addLayout(cross_layout)
-        self.parent_layout.addLayout(intention_deviation_layout)
         self.init_form_config()
 
     def init_form_config(self):
@@ -296,11 +274,6 @@ class MouseConfigLayout:
         self.crosshair_position = QPoint(
             self.human_pixmap.size().width() // 2 - self.crosshair_pixmap.size().width() // 2,
             cross_position_height - self.crosshair_pixmap.size().height() // 2)
-
-        self.intention_deviation_toggle.setChecked(self.config.intention_deviation_toggle)
-        self.intention_deviation_interval.setText(str(self.config.intention_deviation_interval))
-        self.intention_deviation_duration.setText(str(self.config.intention_deviation_duration))
-        self.intention_deviation_force.setChecked(self.config.intention_deviation_force)
 
         self.image_widget.update()
 
@@ -394,8 +367,3 @@ class MouseConfigLayout:
 
         self.config.set_config("cross_hair", (self.slider.value() / (
                 self.slider.maximum() // 2)) - 1)
-
-        self.config.set_config("intention_deviation_toggle", self.intention_deviation_toggle.isChecked())
-        self.config.set_config("intention_deviation_interval", int(self.intention_deviation_interval.text()))
-        self.config.set_config("intention_deviation_duration", int(self.intention_deviation_duration.text()))
-        self.config.set_config("intention_deviation_force", self.intention_deviation_force.isChecked())

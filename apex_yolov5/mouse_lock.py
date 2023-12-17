@@ -1,3 +1,6 @@
+import math
+import random
+
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
 from apex_yolov5.auxiliary import set_intention, set_click
 from apex_yolov5.socket.config import global_config
@@ -5,9 +8,12 @@ from apex_yolov5.socket.config import global_config
 lock_time = 0
 no_lock_time = 0
 
+random_time = 0
+random_float = 0.0
+
 
 def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
-    global lock_time, no_lock_time
+    global lock_time, no_lock_time, random_time, random_float
     # shot_width 截图高度，shot_height 截图区域高度
     # x,y 是分辨率
     # mouse_x,mouse_y = mouse.position
@@ -48,8 +54,23 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
+        random_coefficient = global_config.random_coefficient
+        random_change_frequency = global_config.random_change_frequency
+        if random_time > random_change_frequency:
+            # 生成在 -random_x_deviation 到 random_x_deviation 之间的随机小数
+            random_float = random.uniform(-random_coefficient, random_coefficient)
+            random_time = 0
+        else:
+            random_time += 1
+
+        # 保留小数点后两位
+        random_float = round(random_float, 2)
+        random_deviation = min(width / 2.0, height / 2.0)
+        random_deviation = math.floor(random_float * random_deviation)
+
         if not global_config.intention_deviation_toggle:
-            set_intention(targetRealX, targetRealY, current_mouse_x, current_mouse_y)
+            set_intention(targetRealX + random_deviation, targetRealY + random_deviation, current_mouse_x,
+                          current_mouse_y)
             if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                 set_click()
         else:
@@ -58,7 +79,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     lock_time += 1
                 # 正常追踪
-                set_intention(targetRealX, targetRealY, current_mouse_x, current_mouse_y)
+                set_intention(targetRealX + random_deviation, targetRealY + random_deviation, current_mouse_x,
+                              current_mouse_y)
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     set_click()
             elif no_lock_time < global_config.intention_deviation_duration:

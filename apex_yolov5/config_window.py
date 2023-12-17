@@ -10,6 +10,7 @@ from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
 from apex_yolov5.socket import config
 from apex_yolov5.window_layout.ai_toggle_layout import AiToggleLayout
+from apex_yolov5.window_layout.anthropomorphic_config_layout import AnthropomorphicConfigLayout
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
 from apex_yolov5.window_layout.auto_gun_config_layout import AutoGunConfigLayout
 from apex_yolov5.window_layout.auto_save_config_layout import AutoSaveConfigLayout
@@ -42,8 +43,10 @@ class ConfigWindow(QMainWindow):
             self.config_layout_2 = QVBoxLayout()
             self.ai_toggle_layout = AiToggleLayout(self.config, self, self.config_layout_1, self.system_tray)
             self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
-            self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_1)
+            self.anthropomorphic_config_layout = AnthropomorphicConfigLayout(self.config, self, self.config_layout_1)
             self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_2)
+            self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_2)
+
             self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_2)
             self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_2)
             self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_2)
@@ -147,6 +150,7 @@ class ConfigWindow(QMainWindow):
         self.auto_gun_config_layout.init_form_config()
         self.auto_save_config_layout.init_form_config()
         self.auto_charge_energy_layout.init_form_config()
+        self.anthropomorphic_config_layout.init_form_config()
 
     def open_config_window(self):
         if self.main_window is None:
@@ -177,8 +181,9 @@ class ConfigWindow(QMainWindow):
         self.create_menus()
         self.ai_toggle_layout.add_layout()
         self.mouse_config_layout.add_layout()
-        self.screenshot_layout.add_layout()
+        self.anthropomorphic_config_layout.add_layout()
         self.model_config_layout.add_layout()
+        self.screenshot_layout.add_layout()
         self.auto_gun_config_layout.add_layout()
         self.auto_save_config_layout.add_layout()
         self.auto_charge_energy_layout.add_layout()
@@ -215,6 +220,7 @@ class ConfigWindow(QMainWindow):
         self.screenshot_layout.save_config()
         self.auto_charge_energy_layout.save_config()
         self.ai_toggle_layout.save_config()
+        self.anthropomorphic_config_layout.save_config()
         self.config.save_config()
 
     def closeEvent(self, event):
