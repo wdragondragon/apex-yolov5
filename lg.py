@@ -1,15 +1,18 @@
 from ctypes import CDLL
 
 gmok = False
-try:
-    gm = CDLL(r'./ghub_device1.dll')
-    gmok = gm.device_open() == 1
-    if not gmok:
-        print('未安装ghub或者lgs驱动!!!')
-    else:
-        print('初始化成功!')
-except FileNotFoundError:
-    print('缺少文件')
+gm = None
+
+
+# try:
+#     gm = CDLL(r'./ghub_device1.dll')
+#     gmok = gm.device_open() == 1
+#     if not gmok:
+#         print('未安装ghub或者lgs驱动!!!')
+#     else:
+#         print('初始化成功!')
+# except FileNotFoundError:
+#     print('缺少文件')
 
 
 # 按下鼠标按键
