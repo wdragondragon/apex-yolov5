@@ -13,13 +13,15 @@ from apex_yolov5.socket.config import global_config
 class KeyMouseSimulation():
     # 初始化
     # dll地址
-    kmboxA = ctypes.cdll.LoadLibrary(r".\kmbox_dll_64bit.dll")
-    kmboxA.KM_init.argtypes = [ctypes.c_ushort, ctypes.c_ushort]
-    kmboxA.KM_init.restype = ctypes.c_ushort
-    kmboxA.KM_move.argtypes = [ctypes.c_short, ctypes.c_short]
-    kmboxA.KM_move.restype = ctypes.c_int
+    kmboxA = None
 
     def __init__(self, id):
+        if KeyMouseSimulation.kmboxA is None:
+            KeyMouseSimulation.kmboxA = ctypes.cdll.LoadLibrary(r".\kmbox_dll_64bit.dll")
+            KeyMouseSimulation.kmboxA.KM_init.argtypes = [ctypes.c_ushort, ctypes.c_ushort]
+            KeyMouseSimulation.kmboxA.KM_init.restype = ctypes.c_ushort
+            KeyMouseSimulation.kmboxA.KM_move.argtypes = [ctypes.c_short, ctypes.c_short]
+            KeyMouseSimulation.kmboxA.KM_move.restype = ctypes.c_int
         vid = int(id[:4], 16)
         pid = int(id[4:], 16)
         # vid = hex(part1)
