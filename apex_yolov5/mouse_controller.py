@@ -28,17 +28,25 @@ def get_mouse_position():
     return int(po.x), int(po.y)
 
 
+def set_mouse_position_rp(x, y):
+    if global_config.mouse_model == "kmbox":
+        km_test.get().move(x, y)
+    elif global_config.mouse_model == "logitech":
+        lg.mouse_xy(x, y)
+    elif global_config.mouse_model == "ty":
+        wyhkm.get_ty().moveRP(x, y)
+    else:
+        user32.mouse_event(MOUSEEVENTF_MOVE, x, y)
+
 def set_mouse_position(x, y):
     if global_config.mouse_model == "kmbox":
         km_test.get().move(x, y)
     elif global_config.mouse_model == "logitech":
         lg.mouse_xy(x, y)
     elif global_config.mouse_model == "ty":
-        wyhkm.get_ty().move(x, y)
+        wyhkm.get_ty().moveR(x, y)
     else:
         user32.mouse_event(MOUSEEVENTF_MOVE, x, y)
-
-
 def left_click():
     if global_config.mouse_model == "kmbox":
         km_test.get().right(0)

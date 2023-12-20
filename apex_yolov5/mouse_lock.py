@@ -54,20 +54,25 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
-        random_coefficient = global_config.random_coefficient
-        random_change_frequency = global_config.random_change_frequency
-        if random_time > random_change_frequency:
-            # 生成在 -random_x_deviation 到 random_x_deviation 之间的随机小数
-            random_float = random.uniform(-random_coefficient, random_coefficient)
-            random_time = 0
+        # 随机弹道计算
+        if global_config.random_aim_toggle:
+            random_coefficient = global_config.random_coefficient
+            random_change_frequency = global_config.random_change_frequency
+            if random_time > random_change_frequency:
+                # 生成在 -random_x_deviation 到 random_x_deviation 之间的随机小数
+                random_float = random.uniform(-random_coefficient, random_coefficient)
+                random_time = 0
+            else:
+                random_time += 1
+
+            # 保留小数点后两位
+            random_float = round(random_float, 2)
+            random_deviation = min(width / 2.0, height / 2.0)
+            random_deviation = math.floor(random_float * random_deviation)
         else:
-            random_time += 1
+            random_deviation = 0
 
-        # 保留小数点后两位
-        random_float = round(random_float, 2)
-        random_deviation = min(width / 2.0, height / 2.0)
-        random_deviation = math.floor(random_float * random_deviation)
-
+        # 漏枪逻辑cc
         if not global_config.intention_deviation_toggle:
             set_intention(targetRealX + random_deviation, targetRealY + random_deviation, current_mouse_x,
                           current_mouse_y)

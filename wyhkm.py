@@ -27,8 +27,11 @@ class TianYaKeyMouseSimulation:
         if not self.wyhkm.Open(DevId, 0):
             print("打开无涯键鼠盒子失败")
 
-    def move(self, short_x: int, short_y: int):
+    def moveRP(self, short_x: int, short_y: int):
         self.wyhkm.MoveRP(short_x, short_y)
+
+    def moveR(self, short_x: int, short_y: int):
+        self.wyhkm.MoveR(short_x, short_y)
 
     def left_click(self):
         self.wyhkm.LeftClick()

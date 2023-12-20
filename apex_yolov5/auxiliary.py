@@ -5,7 +5,7 @@ from pynput.mouse import Button
 
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.ScreenUtil import select_gun
-from apex_yolov5.mouse_controller import get_mouse_position, set_mouse_position, left_click
+from apex_yolov5.mouse_controller import set_mouse_position,set_mouse_position_rp, left_click
 from apex_yolov5.socket.config import global_config
 
 intention = None
@@ -87,7 +87,7 @@ def start():
                     x -= move_up
                     y -= move_down
                     intention = (x, y)
-                    set_mouse_position(int(move_up), int(move_down))
+                    set_mouse_position_rp(int(move_up), int(move_down))
                     if not global_config.ai_toggle:
                         break
                     if not global_config.mouse_move_frequency_switch:
