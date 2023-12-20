@@ -176,7 +176,7 @@ class ConfigWindow(QMainWindow):
             self.open_frame_rate_monitor_window.update_frame_rate_plot_2(frame_rate)
 
     def initUI(self):
-        self.setWindowTitle("ag")
+        self.setWindowTitle("Apex Gun " + self.config.version)
         self.setGeometry(0, 0, 250, 200)
         self.create_menus()
         self.ai_toggle_layout.add_layout()

@@ -16,7 +16,7 @@ class AiToggleLayout:
         layout.setObjectName("Ai_toggle_layout")
         self.label = QLabel("启动设置")
         self.label.setAlignment(Qt.AlignCenter)
-        toggle_layout = QHBoxLayout(self.main_window)
+        toggle_layout = QHBoxLayout()
         self.ai_toggle_switch = QCheckBox("AI开关")
         self.ai_toggle_switch.setObjectName("ai_toggle")
         self.ai_toggle_switch.toggled.connect(self.handle_ai_toggled)
