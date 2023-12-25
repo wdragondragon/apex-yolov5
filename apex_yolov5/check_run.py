@@ -82,7 +82,7 @@ def check_permission(machine_code):
     url = "http://1.15.138.227:8123/validate"
     payload = {"machine_code": machine_code}
     response = requests.post(url, data=payload)
-    print(response)
+    print(response.content.decode('unicode-escape'))
     # 检查服务器的响应
     if response.status_code == 200:
         server_response = response.json()

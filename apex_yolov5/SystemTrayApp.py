@@ -37,12 +37,14 @@ class SystemTrayApp:
         self.tray_icon = QSystemTrayIcon(self.main_window)
         self.change_icon(self.config.ai_toggle)
         self.tray_icon.setContextMenu(self.tray_menu)
+        # 添加 activated 信号的处理
+        self.tray_icon.activated.connect(self.tray_activated)
         self.tray_icon.show()
 
     def show_app(self):
         self.config.set_config("show_config", True)
         self.config.save_config()
-        self.main_window.show()
+        self.main_window.showNormal()
 
     def hide_app(self):
         self.config.set_config("show_config", False)
@@ -55,6 +57,14 @@ class SystemTrayApp:
             self.tray_icon.setIcon(QIcon("images/ag.ico"))  # 切换到第二个图标
         else:
             self.tray_icon.setIcon(QIcon("images/close.ico"))  # 切换回第一个图标
+
+    def tray_activated(self, reason):
+        # 处理双击事件
+        if reason == QSystemTrayIcon.DoubleClick:
+            if self.main_window.isHidden():
+                self.show_app()
+            else:
+                self.hide_app()
 
     def exit_app(self):
         self.tray_icon.hide()

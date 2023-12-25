@@ -8,6 +8,7 @@ import apex_yolov5_main
 import apex_yolov5_main_asyn
 
 from apex_yolov5 import check_run, auxiliary
+from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 
 from apex_yolov5.config_window import ConfigWindow
@@ -27,6 +28,9 @@ if __name__ == "__main__":
     # names = model.module.names if hasattr(model, 'module') else model.names
 
     threading.Thread(target=auxiliary.start).start()
+
+    if global_config.joy_move:
+        threading.Thread(target=joy_listener.start).start()
 
     app = QApplication(sys.argv)
     log_window = ConfigWindow(global_config)

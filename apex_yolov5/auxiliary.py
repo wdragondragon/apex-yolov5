@@ -3,9 +3,10 @@ import time
 
 from pynput.mouse import Button
 
+from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.ScreenUtil import select_gun
-from apex_yolov5.mouse_controller import set_mouse_position,set_mouse_position_rp, left_click
+from apex_yolov5.mouse_controller import set_mouse_position, set_mouse_position_rp, left_click
 from apex_yolov5.socket.config import global_config
 
 intention = None
@@ -34,13 +35,17 @@ def set_click():
 
 
 def get_lock_mode():
-    lock_mode = (("left" in global_config.aim_button and apex_mouse_listener.is_press(Button.left)) or
-                 ("right" in global_config.aim_button and apex_mouse_listener.is_press(Button.right)) or
+    lock_mode = (("left" in global_config.aim_button and (
+            apex_mouse_listener.is_press(Button.left) or joy_listener.is_press(4))) or
+                 ("right" in global_config.aim_button and (
+                         apex_mouse_listener.is_press(Button.right) or joy_listener.is_press(5))) or
                  ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)) or
                  ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)) or
-                 ("x1&!x2" in global_config.aim_button and (
-                         apex_mouse_listener.is_press(Button.left) and not apex_mouse_listener.is_press(
-                     Button.right)))
+                 ("x1&!x2" in global_config.aim_button and ((
+                                                                    apex_mouse_listener.is_press(
+                                                                        Button.left) and not apex_mouse_listener.is_press(
+                                                                Button.right)) or (joy_listener.is_press(
+                     4) and not joy_listener.is_press(5))))
                  )
     lock_mode = lock_mode or len(global_config.aim_button) == 0
     return lock_mode and global_config.ai_toggle

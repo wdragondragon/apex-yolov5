@@ -223,6 +223,12 @@ class ConfigWindow(QMainWindow):
         self.anthropomorphic_config_layout.save_config()
         self.config.save_config()
 
+    def changeEvent(self, event):
+        if event.type() == event.WindowStateChange and self.windowState() == Qt.WindowMinimized:
+            # 如果窗口状态变为最小化，则同时隐藏主窗口并显示系统托盘图标
+            self.hide()
+            # 在这里添加代码以显示系统托盘图标，可能是调用 SystemTrayApp 的相关方法
+
     def closeEvent(self, event):
         QApplication.quit()
         os._exit(0)

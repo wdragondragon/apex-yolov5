@@ -216,6 +216,7 @@ class Config:
         self.random_aim_toggle = self.get_config(self.config_data, "random_aim_toggle", False)
         self.random_coefficient = self.get_config(self.config_data, "random_coefficient", 0.3)
         self.random_change_frequency = self.get_config(self.config_data, "random_change_frequency", 20)
+        self.joy_move = self.get_config(self.config_data, "joy_move", False)
 
         if self.only_save:
             self.shot_height = 640
