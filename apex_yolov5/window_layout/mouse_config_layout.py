@@ -32,6 +32,10 @@ class MouseConfigLayout:
         aim_model_layout.addWidget(aim_model_label)
         aim_model_layout.addWidget(self.aim_model_combo_box)
 
+        self.joy_move = QCheckBox("手柄模式")
+        self.joy_move.setObjectName("joy_move")
+        self.joy_move.toggled.connect(self.joy_move_toggled)
+
         self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后单词移动像素才生效）")
         self.mouse_smoothing_switch.setObjectName("mouse_smoothing_switch")
         self.mouse_smoothing_switch.toggled.connect(self.disable_silder_toggled)
@@ -184,11 +188,11 @@ class MouseConfigLayout:
         cross_layout.addWidget(self.slider)
         cross_layout.addWidget(self.image_widget)
 
-
         self.parent_layout.addWidget(self.label)
         self.parent_layout.addLayout(self.aim_button_layout)
         self.parent_layout.addLayout(aim_model_layout)
         self.parent_layout.addLayout(mouse_model_layout)
+        self.parent_layout.addWidget(self.joy_move)
         self.parent_layout.addWidget(self.mouse_smoothing_switch)
         self.parent_layout.addLayout(move_step_layout)
         self.parent_layout.addLayout(move_step_y_layout)
@@ -218,6 +222,8 @@ class MouseConfigLayout:
             self.aim_model_combo_box.addItem(key)
         self.aim_model_combo_box.setCurrentText(self.config.aim_model)
         self.aim_model_combo_box.currentIndexChanged.connect(self.selection_aim_model_changed)
+
+        self.joy_move.setChecked(self.config.joy_move)  # 初始化开关的值
 
         self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
 
@@ -306,6 +312,13 @@ class MouseConfigLayout:
             self.mouse_move_frequency_slider.setEnabled(checked and not self.mouse_move_frequency_switch.isChecked())
         elif self.main_window.sender().objectName() == 'mouse_move_frequency_switch':
             self.mouse_move_frequency_slider.setEnabled(not checked and self.mouse_smoothing_switch.isChecked())
+
+    def joy_move_toggled(self, checked):
+        self.main_window.handle_toggled(checked)
+        self.config.joy_move = checked
+        if checked:
+            from apex_yolov5.JoyListener import joy_listener
+            joy_listener.start(self.main_window)
 
     def update_move_step_label(self, value):
         self.move_step_label.setText("单次水平移动像素:" + str(value))

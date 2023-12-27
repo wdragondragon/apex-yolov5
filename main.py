@@ -30,9 +30,6 @@ if __name__ == "__main__":
 
     threading.Thread(target=auxiliary.start).start()
 
-    if global_config.joy_move:
-        threading.Thread(target=joy_listener.start).start()
-
     log_window = ConfigWindow(global_config)
     check_run.check(log_window)
     if global_config.show_config:
@@ -41,6 +38,8 @@ if __name__ == "__main__":
     if global_config.show_circle:
         get_circle_window().show()
 
+    if global_config.joy_move:
+        joy_listener.start(log_window)
     if global_config.screenshot_frequency_mode == "asyn":
         threading.Thread(target=apex_yolov5_main_asyn.main).start()
         threading.Thread(target=apex_yolov5_main_asyn.handle, args=(log_window,)).start()
