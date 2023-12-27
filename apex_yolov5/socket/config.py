@@ -116,8 +116,8 @@ class Config:
         self.conf_thres = self.get_config(self.config_data, 'conf_thres')
         self.iou_thres = self.get_config(self.config_data, 'iou_thres')
         # 分辨率
-        self.desktop_width = x
-        self.desktop_height = y
+        self.desktop_width = self.get_config(self.config_data, 'desktop_width', x)
+        self.desktop_height = self.get_config(self.config_data, 'desktop_height', y)
         print(f"识别到桌面分辨率为:{self.desktop_width}x{self.desktop_height}")
 
         self.game_width = self.get_config(self.config_data, 'screen_width')
@@ -217,6 +217,8 @@ class Config:
         self.random_coefficient = self.get_config(self.config_data, "random_coefficient", 0.3)
         self.random_change_frequency = self.get_config(self.config_data, "random_change_frequency", 20)
         self.joy_move = self.get_config(self.config_data, "joy_move", False)
+
+        self.show_circle = self.get_config(self.config_data, "show_circle", False)
 
         if self.only_save:
             self.shot_height = 640
