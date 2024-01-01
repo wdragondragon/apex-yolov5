@@ -209,6 +209,11 @@ class Config:
         self.multi_stage_aiming_speed = self.get_config(self.config_data, "multi_stage_aiming_speed", [])
         self.aim_multi_stage_aiming_speed = self.get_config(self.config_data, "aim_multi_stage_aiming_speed", [])
 
+        self.multi_stage_aiming_speed_toggle = self.get_config(self.config_data, "multi_stage_aiming_speed_toggle",
+                                                               False)
+        self.based_on_character_box = self.get_config(self.config_data, "based_on_character_box",
+                                                      False)
+
         self.intention_deviation_toggle = self.get_config(self.config_data, "intention_deviation_toggle", False)
         self.intention_deviation_interval = self.get_config(self.config_data, "intention_deviation_interval", 100)
         self.intention_deviation_duration = self.get_config(self.config_data, "intention_deviation_duration", 10)

@@ -60,6 +60,16 @@ class ScreenshotAreaLayout:
         aim_radius_layout.addWidget(self.aim_mouse_moving_radius_label)
         aim_radius_layout.addWidget(self.aim_mouse_moving_radius_input)
 
+        stage_aiming_speed_toggle_layout = QHBoxLayout()
+        self.multi_stage_aiming_speed_toggle = QCheckBox("开启多级瞄速")
+        self.multi_stage_aiming_speed_toggle.setObjectName("multi_stage_aiming_speed_toggle")
+
+        self.based_on_character_box = QCheckBox("基于人物框倍率的多级瞄速")
+        self.based_on_character_box.setObjectName("based_on_character_box")
+
+        stage_aiming_speed_toggle_layout.addWidget(self.multi_stage_aiming_speed_toggle)
+        stage_aiming_speed_toggle_layout.addWidget(self.based_on_character_box)
+
         multi_stage_aiming_speed_layout = QHBoxLayout()
         self.multi_stage_aiming_speed_label = QLabel("腰射多级瞄速：")
         self.multi_stage_aiming_speed_input = QLineEdit(self.main_window)
@@ -89,6 +99,7 @@ class ScreenshotAreaLayout:
         screenshot_area_layout.addWidget(self.show_circle_toggle_switch)
         screenshot_area_layout.addLayout(resolution_layout)
         screenshot_area_layout.addLayout(aim_radius_layout)
+        screenshot_area_layout.addLayout(stage_aiming_speed_toggle_layout)
         screenshot_area_layout.addLayout(multi_stage_aiming_speed_layout)
         screenshot_area_layout.addLayout(aim_multi_stage_aiming_speed_layout)
         screenshot_area_layout.addWidget(self.view)
@@ -104,9 +115,20 @@ class ScreenshotAreaLayout:
         self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
         self.multi_stage_aiming_speed_input.setText(
-            " ".join([f"{start}-{end}" for start, end in self.config.multi_stage_aiming_speed]))
+            " ".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in
+                      self.config.multi_stage_aiming_speed]))
         self.aim_multi_stage_aiming_speed_input.setText(
-            " ".join([f"{start}-{end}" for start, end in self.config.aim_multi_stage_aiming_speed]))
+            " ".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in
+                      self.config.aim_multi_stage_aiming_speed]))
+
+        self.multi_stage_aiming_speed_toggle.setChecked(self.config.multi_stage_aiming_speed_toggle)
+        self.based_on_character_box.setChecked(self.config.based_on_character_box)
+
+    def delete_extra_zero(self, n):
+        """删除小数点后多余的0"""
+        n = '{:g}'.format(n)
+        n = float(n) if '.' in n else int(n)  # 含小数点转float否则int
+        return n
 
     def show_circle_toggle(self, checked):
         self.config.set_config("show_circle", checked)
@@ -139,8 +161,8 @@ class ScreenshotAreaLayout:
         for num_str in multi_stage_aiming_speed_arr:
             try:
                 num_str_arr = num_str.split("-")
-                num_one = int(num_str_arr[0])
-                num_two = int(num_str_arr[1])
+                num_one = float(num_str_arr[0])
+                num_two = float(num_str_arr[1])
                 if not (len(num_str_arr) == 2 and num_two >= num_one):
                     QMessageBox.warning(self.main_window, "不符合条件",
                                         f"{num_str_arr} 格式错误，格式为 数字-数字，且前一位大于后一位")
@@ -169,6 +191,9 @@ class ScreenshotAreaLayout:
                                                                                self.aim_multi_stage_aiming_speed_input
                                                                                .text())
         self.config.set_config("aim_multi_stage_aiming_speed", aim_multi_stage_aiming_speed_arr)
+
+        self.config.set_config("multi_stage_aiming_speed_toggle", self.multi_stage_aiming_speed_toggle.isChecked())
+        self.config.set_config("based_on_character_box", self.based_on_character_box.isChecked())
 
 
 class RectView(QGraphicsView):
