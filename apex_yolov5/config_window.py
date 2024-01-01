@@ -71,11 +71,13 @@ class ConfigWindow(QMainWindow):
         writer_ref_glass_action.triggered.connect(self.open_new_ref_glass_window)
 
         menu_bar = self.menuBar()
-        file_menu = menu_bar.addMenu("功能")
+        file_menu = menu_bar.addMenu("其他功能")
         file_menu.addAction(config_action)
         file_menu.addAction(magnifying_glass_action)
-        file_menu.addAction(read_ref_glass_action)
-        file_menu.addAction(writer_ref_glass_action)
+
+        config_menu = menu_bar.addMenu("管理配置")
+        config_menu.addAction(read_ref_glass_action)
+        config_menu.addAction(writer_ref_glass_action)
 
     def open_read_ref_glass_window(self):
         dialog = QDialog(self)
