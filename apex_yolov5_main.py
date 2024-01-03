@@ -9,18 +9,19 @@ from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aim
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 from apex_yolov5.socket.yolov5_handler import get_aims
+from apex_yolov5.windows.aim_show_window import get_aim_show_window
 
 
 def main(log_window):
+    screen_count = 0
     sct = mss.mss()
     print_count = 0
     compute_time = time.time()
     while True:
         try:
-            # if not Tools.is_apex_windows():
-            #     print("不是apex窗口")
-            #     time.sleep(1)
-            #     continue
+            if not global_config.ai_toggle:
+                time.sleep(6)
+                continue
             img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
             img = np.frombuffer(img_origin.rgb, dtype='uint8')
             img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
@@ -44,15 +45,19 @@ def main(log_window):
                         top_left = (int(x_center - width / 2.0), int(y_center - height / 2.0))
                         bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
                         bboxes.append((tag, top_left, bottom_right))
+            else:
+                if global_config.show_aim:
+                    get_aim_show_window().clear_box()
             print_count += 1
+            screen_count += 1
             now = time.time()
             if now - compute_time > 1:
-                image_text = "一秒识别[{}]次:".format(print_count)
+                log_window.update_frame_rate_plot_2(screen_count)
                 log_window.update_frame_rate_plot(print_count)
-                print(image_text)
                 if global_config.auto_save:
                     save_rescreen_and_aims_to_file_with_thread(img_origin, img, aims)
                 print_count = 0
+                screen_count = 0
                 compute_time = now
             if global_config.is_show_debug_window:
                 log_window.set_image(img, bboxes=bboxes)
