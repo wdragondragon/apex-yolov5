@@ -3,7 +3,8 @@ from PyQt5.QtGui import QIntValidator, QColor
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGraphicsView, QGraphicsScene, QCheckBox, \
     QMessageBox
 
-from apex_yolov5.circle_window import get_circle_window, destory_circle_window
+from apex_yolov5.windows.aim_show_window import get_aim_show_window, destory_aim_show_window
+from apex_yolov5.windows.circle_window import get_circle_window, destory_circle_window
 
 
 class ScreenshotAreaLayout:
@@ -15,11 +16,16 @@ class ScreenshotAreaLayout:
     def add_layout(self):
         screenshot_area_layout = QVBoxLayout()
         screenshot_area_layout.setObjectName("screenshot_area_layout")
-
+        show_circle_layout = QHBoxLayout()
         self.show_circle_toggle_switch = QCheckBox("展示瞄准范围")
         self.show_circle_toggle_switch.setObjectName("show_circle_toggle_switch")
         self.show_circle_toggle_switch.toggled.connect(self.show_circle_toggle)
-        self.show_circle_toggle_switch.setChecked(self.config.show_circle)
+
+        self.show_aim_toggle_switch = QCheckBox("标记瞄准目标")
+        self.show_aim_toggle_switch.setObjectName("show_aim_toggle_switch")
+        self.show_aim_toggle_switch.toggled.connect(self.show_aim_toggle)
+        show_circle_layout.addWidget(self.show_circle_toggle_switch)
+        show_circle_layout.addWidget(self.show_aim_toggle_switch)
 
         resolution_layout = QHBoxLayout()
         self.screenshot_area_title_label = QLabel("识别范围设置")
@@ -96,7 +102,7 @@ class ScreenshotAreaLayout:
                              radius=int(self.config.mouse_moving_radius / 10),
                              aim_radius=int(self.config.aim_mouse_moving_radius / 10))
         screenshot_area_layout.addWidget(self.screenshot_area_title_label)
-        screenshot_area_layout.addWidget(self.show_circle_toggle_switch)
+        screenshot_area_layout.addLayout(show_circle_layout)
         screenshot_area_layout.addLayout(resolution_layout)
         screenshot_area_layout.addLayout(aim_radius_layout)
         screenshot_area_layout.addLayout(stage_aiming_speed_toggle_layout)
@@ -123,6 +129,8 @@ class ScreenshotAreaLayout:
 
         self.multi_stage_aiming_speed_toggle.setChecked(self.config.multi_stage_aiming_speed_toggle)
         self.based_on_character_box.setChecked(self.config.based_on_character_box)
+        self.show_circle_toggle_switch.setChecked(self.config.show_circle)
+        self.show_aim_toggle_switch.setChecked(self.config.show_aim)
 
     def delete_extra_zero(self, n):
         """删除小数点后多余的0"""
@@ -137,6 +145,14 @@ class ScreenshotAreaLayout:
             get_circle_window().show()
         else:
             destory_circle_window()
+
+    def show_aim_toggle(self, checked):
+        self.config.set_config("show_aim", checked)
+        self.config.show_aim = checked
+        if self.config.show_aim:
+            get_aim_show_window().show()
+        else:
+            destory_aim_show_window()
 
     def update_inner_rect_size(self):
         # 当输入框的内容改变时，更新内部框的大小

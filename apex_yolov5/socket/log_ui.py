@@ -1,6 +1,6 @@
 import cv2
 
-from apex_yolov5.DebugWindow import DebugWindow
+from apex_yolov5.windows.DebugWindow import DebugWindow
 from apex_yolov5.socket.config import global_config
 
 

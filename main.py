@@ -10,9 +10,10 @@ import apex_yolov5_main_asyn
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
-from apex_yolov5.circle_window import get_circle_window
+from apex_yolov5.windows.aim_show_window import get_aim_show_window
+from apex_yolov5.windows.circle_window import get_circle_window
 
-from apex_yolov5.config_window import ConfigWindow
+from apex_yolov5.windows.config_window import ConfigWindow
 from apex_yolov5.socket.config import global_config
 
 if __name__ == "__main__":
@@ -37,6 +38,9 @@ if __name__ == "__main__":
 
     if global_config.show_circle:
         get_circle_window().show()
+
+    if global_config.show_aim:
+        get_aim_show_window().show()
 
     if global_config.joy_move:
         joy_listener.start(log_window)

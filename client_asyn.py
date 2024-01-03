@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5 import LogUtil, check_run
-from apex_yolov5.DebugWindow import DebugWindow
+from apex_yolov5.windows.DebugWindow import DebugWindow
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import start

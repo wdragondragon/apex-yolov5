@@ -10,6 +10,7 @@ from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
 from apex_yolov5.socket.yolov5_handler import get_aims
 from apex_yolov5.GetBlockQueue import GetBlockQueue
+from apex_yolov5.windows.aim_show_window import get_aim_show_window
 
 screen_count = 0
 image_block_queue = GetBlockQueue("image_queue", maxsize=1)
@@ -46,6 +47,9 @@ def handle(log_window):
                         top_left = (int(x_center - width / 2.0), int(y_center - height / 2.0))
                         bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
                         bboxes.append((tag, top_left, bottom_right))
+            else:
+                if global_config.show_aim:
+                    get_aim_show_window().clear_box()
             print_count += 1
             now = time.time()
             if now - compute_time > 1:

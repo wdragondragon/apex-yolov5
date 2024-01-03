@@ -224,6 +224,7 @@ class Config:
         self.joy_move = self.get_config(self.config_data, "joy_move", False)
 
         self.show_circle = self.get_config(self.config_data, "show_circle", False)
+        self.show_aim = self.get_config(self.config_data, "show_aim", False)
 
         if self.only_save:
             self.shot_height = 640

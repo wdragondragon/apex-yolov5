@@ -4,6 +4,7 @@ import random
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
 from apex_yolov5.auxiliary import set_intention, set_click
 from apex_yolov5.socket.config import global_config
+from apex_yolov5.windows.aim_show_window import get_aim_show_window
 
 lock_time = 0
 no_lock_time = 0
@@ -24,6 +25,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     # print(aims_copy)
     aims_copy = [x for x in aims_copy if x[0] in global_config.lock_index]
     if len(aims_copy) == 0:
+        if global_config.show_aim:
+            get_aim_show_window().clear_box()
         return
     for det in aims_copy:
         _, x_c, y_c, _, _ = det
@@ -44,6 +47,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
     targetRealX = left_top_x + targetShotX  # 目标在屏幕的坐标
     targetRealY = left_top_y + targetShotY - int(global_config.cross_hair / 2 * height)
+    if global_config.show_aim:
+        get_aim_show_window().update_box((left_top_x, left_top_y), det)
 
     if apex_mouse_listener.get_aim_status():
         mouse_moving_radius = global_config.aim_mouse_moving_radius

@@ -1,6 +1,3 @@
-from apex_yolov5.DebugWindow import DebugWindow
-
-
 class LogUtil:
 
     def __init__(self):

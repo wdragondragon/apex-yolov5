@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication, QDialog, \
     QComboBox, QLineEdit
 
-from apex_yolov5.DebugWindow import DebugWindow
+from apex_yolov5.windows.DebugWindow import DebugWindow
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
