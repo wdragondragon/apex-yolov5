@@ -48,6 +48,7 @@ def main(log_window):
             else:
                 if global_config.show_aim:
                     get_aim_show_window().clear_box()
+                global_config.sign_shot_xy(0)
             print_count += 1
             screen_count += 1
             now = time.time()
@@ -63,6 +64,7 @@ def main(log_window):
                 log_window.set_image(img, bboxes=bboxes)
             if global_config.only_save:
                 time.sleep(1)
+            global_config.change_shot_xy()
         except Exception as e:
             print(e)
             traceback.print_exc()

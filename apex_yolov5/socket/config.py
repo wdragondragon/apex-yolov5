@@ -23,6 +23,8 @@ global_config_path = 'config\\global_config.json'
 config_ref_path = 'config\\ref\\'
 use_ref_path = 'config\\ref.txt'
 
+sign_shot_xy_num = 0
+
 
 def get_all_config_file_name(directory=config_ref_path):
     # 获取指定目录下的所有文件和子目录
@@ -258,23 +260,51 @@ class Config:
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 
+    def sign_shot_xy(self, averager):
+        global sign_shot_xy_num
+        sign_shot_xy_num = averager
+
+    def change_shot_xy(self):
+        global sign_shot_xy_num
+        if sign_shot_xy_num > 0.7:
+            print(f"{sign_shot_xy_num}")
+            self.increase_shot_xy()
+        elif sign_shot_xy_num == 0:
+            # 重置
+            self.reset_shot_xy()
+        elif sign_shot_xy_num < 0.2:
+            print(f"{sign_shot_xy_num}")
+            self.reduce_shot_xy()
+
+
     def reset_shot_xy(self):
         if (self.shot_width, self.shot_height) != (self.default_shot_width, self.default_shot_height):
             self.shot_width = self.default_shot_width
             self.shot_height = self.default_shot_height
+            self.update_shot_xy()
             print("重置shot大小")
 
     def increase_shot_xy(self):
-        self.shot_width = int(1.5 * self.shot_width)
-        self.shot_height = int(1.5 * self.shot_width)
-        self.update_shot_xy()
-        print(f"增加shot大小{self.shot_width},{self.shot_height}")
+        new_width = int(self.shot_width * 1.5)
+        new_height = int(self.shot_height * 1.5)
+        if new_width < 640 and new_height < 640:
+            self.shot_width = new_width
+            self.shot_height = new_height
+            self.update_shot_xy()
+            print(f"增加shot大小{self.shot_width},{self.shot_height}")
+        else:
+            print(f"无法增加shot大小{new_width},{new_height}")
 
     def reduce_shot_xy(self):
-        self.shot_width = int(self.shot_width / 1.5)
-        self.shot_height = int(self.shot_width / 1.5)
-        self.update_shot_xy()
-        print(f"缩小shot大小{self.shot_width},{self.shot_height}")
+        new_width = int(self.shot_width / 1.5)
+        new_height = int(self.shot_height / 1.5)
+        if new_width > 80 and new_height > 80:
+            self.shot_width = new_width
+            self.shot_height = new_height
+            self.update_shot_xy()
+            print(f"缩小shot大小{self.shot_width},{self.shot_height}")
+        else:
+            print(f"无法缩小shot大小{new_width},{new_height}")
 
     def update_shot_xy(self):
         self.half_shot_width, self.half_shot_height = self.shot_width // 2, self.shot_height // 2
