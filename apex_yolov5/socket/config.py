@@ -242,15 +242,8 @@ class Config:
                                                  2 * self.half_shot_height)
         else:
             self.half_shot_width, self.half_shot_height = self.shot_width // 2, self.shot_height // 2
-
-        self.left_top_x, self.left_top_y = (self.screen_center_x - self.half_shot_width,
-                                            self.screen_center_y - self.half_shot_height)
-        self.right_bottom_x, self.right_bottom_y = (self.screen_center_x + self.half_shot_width,
-                                                    self.screen_center_y + self.half_shot_height)
-
-        self.region = (self.left_top_x, self.left_top_y, self.right_bottom_x, self.right_bottom_y)
-        self.monitor = {"top": self.left_top_y, "left": self.left_top_x, "width": self.shot_width,
-                        "height": self.shot_height}
+        self.default_shot_width, self.default_shot_height = self.shot_width, self.shot_height
+        self.update_shot_other_data()
 
         self.auto_save_monitor = {"top": self.screen_center_y - 320, "left": self.screen_center_x - 320, "width": 640,
                                   "height": 640}
@@ -264,6 +257,38 @@ class Config:
         self.image_path = 'images/' + '{}x{}/'.format(*self.game_solution)  # 枪械图片路径
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
+
+    def reset_shot_xy(self):
+        if (self.shot_width, self.shot_height) != (self.default_shot_width, self.default_shot_height):
+            self.shot_width = self.default_shot_width
+            self.shot_height = self.default_shot_height
+            print("重置shot大小")
+
+    def increase_shot_xy(self):
+        self.shot_width = int(1.5 * self.shot_width)
+        self.shot_height = int(1.5 * self.shot_width)
+        self.update_shot_xy()
+        print(f"增加shot大小{self.shot_width},{self.shot_height}")
+
+    def reduce_shot_xy(self):
+        self.shot_width = int(self.shot_width / 1.5)
+        self.shot_height = int(self.shot_width / 1.5)
+        self.update_shot_xy()
+        print(f"缩小shot大小{self.shot_width},{self.shot_height}")
+
+    def update_shot_xy(self):
+        self.half_shot_width, self.half_shot_height = self.shot_width // 2, self.shot_height // 2
+        self.update_shot_other_data()
+
+    def update_shot_other_data(self):
+        self.left_top_x, self.left_top_y = (self.screen_center_x - self.half_shot_width,
+                                            self.screen_center_y - self.half_shot_height)
+        self.right_bottom_x, self.right_bottom_y = (self.screen_center_x + self.half_shot_width,
+                                                    self.screen_center_y + self.half_shot_height)
+
+        self.region = (self.left_top_x, self.left_top_y, self.right_bottom_x, self.right_bottom_y)
+        self.monitor = {"top": self.left_top_y, "left": self.left_top_x, "width": self.shot_width,
+                        "height": self.shot_height}
 
     @staticmethod
     def get_config(config, pattern=None, default=None):
@@ -291,17 +316,18 @@ class Config:
         print("保存配置文件到:{0}".format(global_config_path))
         self.init()
 
+    # 检查配置文件夹是否存在
+    if not os.path.exists(config_ref_path):
+        try:
+            print("识别到使用的是旧版配置系统，进行升级")
+            # 使用 os.makedirs 创建文件夹（可以递归创建多层文件夹）
+            os.makedirs(config_ref_path)
+            new_path = '{0}{1}.json'.format(config_ref_path, "global_config")
+            shutil.copy(global_config_path, new_path)
+            writer_config_file_name()
+            print(f"新版默认配置文件已移动到：{new_path}")
+        except Exception as e:
+            print(f"创建文件夹时发生错误: {e}")
 
-# 检查配置文件夹是否存在
-if not os.path.exists(config_ref_path):
-    try:
-        print("识别到使用的是旧版配置系统，进行升级")
-        # 使用 os.makedirs 创建文件夹（可以递归创建多层文件夹）
-        os.makedirs(config_ref_path)
-        new_path = '{0}{1}.json'.format(config_ref_path, "global_config")
-        shutil.copy(global_config_path, new_path)
-        writer_config_file_name()
-        print(f"新版默认配置文件已移动到：{new_path}")
-    except Exception as e:
-        print(f"创建文件夹时发生错误: {e}")
+
 global_config = Config()

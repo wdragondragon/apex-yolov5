@@ -1,5 +1,6 @@
 import math
 import random
+import traceback
 
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
 from apex_yolov5.auxiliary import set_intention, set_click
@@ -11,6 +12,8 @@ no_lock_time = 0
 
 random_time = 0
 random_float = 0.0
+
+target_proportion = []
 
 
 def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
@@ -27,6 +30,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     if len(aims_copy) == 0:
         if global_config.show_aim:
             get_aim_show_window().clear_box()
+        global_config.reset_shot_xy()
         return
     for det in aims_copy:
         _, x_c, y_c, _, _ = det
@@ -48,8 +52,12 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     targetRealX = left_top_x + targetShotX  # 目标在屏幕的坐标
     targetRealY = left_top_y + targetShotY - int(global_config.cross_hair / 2 * height)
     if global_config.show_aim:
-        get_aim_show_window().update_box((left_top_x, left_top_y), det)
-
+        try:
+            get_aim_show_window().update_box((left_top_x, left_top_y), det)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            pass
     if apex_mouse_listener.get_aim_status():
         mouse_moving_radius = global_config.aim_mouse_moving_radius
     else:
@@ -104,3 +112,25 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
             if lock_time == global_config.intention_deviation_interval and no_lock_time == global_config.intention_deviation_duration:
                 lock_time = 0
                 no_lock_time = 0
+
+    averager = average_target_proportion(float(target_height))
+    print(f"{averager}")
+    if averager > 0.8:
+        global_config.increase_shot_xy()
+    elif averager < 0.2:
+        global_config.reduce_shot_xy()
+
+
+def average_target_proportion(target_height):
+    global target_proportion
+    target_proportion.append(target_height)
+    if len(target_proportion) > 10:
+        target_proportion.pop(0)
+    return calculate_average()
+
+
+def calculate_average():
+    global target_proportion
+    if len(target_proportion) == 0:
+        return 0  # 避免除以零错误
+    return sum(target_proportion) / len(target_proportion)

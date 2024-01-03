@@ -50,6 +50,7 @@ def handle(log_window):
             else:
                 if global_config.show_aim:
                     get_aim_show_window().clear_box()
+                global_config.reset_shot_xy()
             print_count += 1
             now = time.time()
             if now - compute_time > 1:
@@ -75,9 +76,10 @@ def main():
     sct = mss.mss()
     while True:
         try:
-            img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
+            monitor = global_config.monitor
+            img_origin = grab_screen_int_array2(sct, monitor=monitor)
             img = np.frombuffer(img_origin.rgb, dtype='uint8')
-            img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
+            img = img.reshape((monitor["height"], monitor["width"], 3))
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             image_block_queue.put({"img": img, "img_origin": img_origin})
             screen_count += 1
