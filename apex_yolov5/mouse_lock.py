@@ -126,7 +126,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 def average_target_proportion(target_height):
     global target_proportion
     target_proportion.append(target_height)
-    if len(target_proportion) > global_config.dynamic_screenshot_collection_window:
+    while len(target_proportion) > global_config.dynamic_screenshot_collection_window:
         target_proportion.pop(0)
     return calculate_average()
 
