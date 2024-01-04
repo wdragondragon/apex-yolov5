@@ -34,3 +34,10 @@
 [罗技抖枪宏大全](https://github.com/wdragondragon/apex-shake-gun.git)
 
 [基于opencv的apex枪械识别宏框架](https://github.com/wdragondragon/ApexAutomaticGunSelection.git)
+
+
+## 加入我们
+
+欢迎加入我们，共同完善已有代码，优化模型或提供建议。我们将资源完全共享。
+
+![wechat.png](wechat.png)
