@@ -228,6 +228,24 @@ class Config:
         self.show_circle = self.get_config(self.config_data, "show_circle", False)
         self.show_aim = self.get_config(self.config_data, "show_aim", False)
 
+        # 动态识别范围
+
+        self.dynamic_screenshot = self.get_config(self.config_data, "dynamic_screenshot",
+                                                  False) and self.screenshot_frequency_mode != "asyn"
+
+        self.dynamic_upper_width = self.get_config(self.config_data, "dynamic_upper_width", 640)
+        self.dynamic_upper_height = self.get_config(self.config_data, "dynamic_upper_height", 640)
+        self.dynamic_lower_width = self.get_config(self.config_data, "dynamic_lower_width", 160)
+        self.dynamic_lower_height = self.get_config(self.config_data, "dynamic_lower_height", 160)
+        self.dynamic_screenshot_step = self.get_config(self.config_data, "dynamic_screenshot_step", 8)
+        self.dynamic_screenshot_collection_window = self.get_config(self.config_data,
+                                                                    "dynamic_screenshot_collection_window", 20)
+        self.dynamic_screenshot_reduce_threshold = self.get_config(self.config_data,
+                                                                   "dynamic_screenshot_reduce_threshold", 0.2)
+
+        self.dynamic_screenshot_increase_threshold = self.get_config(self.config_data,
+                                                                     "dynamic_screenshot_increase_threshold", 0.7)
+
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
@@ -260,45 +278,46 @@ class Config:
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 
-    def sign_shot_xy(self, averager):
+    def sign_shot_xy(self, averager=0):
         global sign_shot_xy_num
         sign_shot_xy_num = averager
 
     def change_shot_xy(self):
         global sign_shot_xy_num
-        if sign_shot_xy_num > 0.7:
-            print(f"{sign_shot_xy_num}")
-            self.increase_shot_xy()
+        if not self.dynamic_screenshot:
+            return
+        if sign_shot_xy_num > self.dynamic_screenshot_increase_threshold:
+            # print(f"{sign_shot_xy_num}")
+            self.increase_shot_xy(self.dynamic_screenshot_step)
         elif sign_shot_xy_num == 0:
             # 重置
             self.reset_shot_xy()
-        elif sign_shot_xy_num < 0.2:
-            print(f"{sign_shot_xy_num}")
-            self.reduce_shot_xy()
-
+        elif sign_shot_xy_num < self.dynamic_screenshot_reduce_threshold:
+            # print(f"{sign_shot_xy_num}")
+            self.reduce_shot_xy(self.dynamic_screenshot_step)
 
     def reset_shot_xy(self):
         if (self.shot_width, self.shot_height) != (self.default_shot_width, self.default_shot_height):
-            self.shot_width = self.default_shot_width
-            self.shot_height = self.default_shot_height
-            self.update_shot_xy()
-            print("重置shot大小")
+            if self.shot_width > self.default_shot_width and self.shot_height > self.default_shot_height:
+                self.reduce_shot_xy(self.dynamic_screenshot_step)
+            elif self.shot_width < self.default_shot_width and self.shot_height < self.default_shot_height:
+                self.increase_shot_xy(self.dynamic_screenshot_step)
 
-    def increase_shot_xy(self):
-        new_width = int(self.shot_width * 1.5)
-        new_height = int(self.shot_height * 1.5)
-        if new_width < 640 and new_height < 640:
+    def increase_shot_xy(self, step=8):
+        new_width = int(self.shot_width + step)
+        new_height = int(self.shot_height + step)
+        if new_width < self.dynamic_upper_width and new_height < self.dynamic_upper_height:
             self.shot_width = new_width
             self.shot_height = new_height
             self.update_shot_xy()
-            print(f"增加shot大小{self.shot_width},{self.shot_height}")
-        else:
-            print(f"无法增加shot大小{new_width},{new_height}")
+        #     print(f"增加shot大小{self.shot_width},{self.shot_height}")
+        # else:
+        #     print(f"无法增加shot大小{new_width},{new_height}")
 
-    def reduce_shot_xy(self):
-        new_width = int(self.shot_width / 1.5)
-        new_height = int(self.shot_height / 1.5)
-        if new_width > 80 and new_height > 80:
+    def reduce_shot_xy(self, step=8):
+        new_width = int(self.shot_width - step)
+        new_height = int(self.shot_height - step)
+        if new_width > self.dynamic_lower_width and new_height > self.dynamic_lower_height:
             self.shot_width = new_width
             self.shot_height = new_height
             self.update_shot_xy()

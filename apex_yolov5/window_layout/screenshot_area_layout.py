@@ -16,6 +16,9 @@ class ScreenshotAreaLayout:
     def add_layout(self):
         screenshot_area_layout = QVBoxLayout()
         screenshot_area_layout.setObjectName("screenshot_area_layout")
+        self.screenshot_area_title_label = QLabel("识别范围设置")
+        self.screenshot_area_title_label.setAlignment(Qt.AlignCenter)
+
         show_circle_layout = QHBoxLayout()
         self.show_circle_toggle_switch = QCheckBox("展示瞄准范围")
         self.show_circle_toggle_switch.setObjectName("show_circle_toggle_switch")
@@ -28,8 +31,6 @@ class ScreenshotAreaLayout:
         show_circle_layout.addWidget(self.show_aim_toggle_switch)
 
         resolution_layout = QHBoxLayout()
-        self.screenshot_area_title_label = QLabel("识别范围设置")
-        self.screenshot_area_title_label.setAlignment(Qt.AlignCenter)
         self.screenshot_area_label = QLabel("识别区域：", self.main_window)
         self.screenshot_area_x_label = QLabel("x", self.main_window)
 
@@ -46,6 +47,57 @@ class ScreenshotAreaLayout:
         resolution_layout.addWidget(self.width_input)
         resolution_layout.addWidget(self.screenshot_area_x_label)
         resolution_layout.addWidget(self.height_input)
+
+        dynamic_screenshot_layout = QVBoxLayout()
+        self.dynamic_screenshot_area_toggle = QCheckBox("开启动态识别区域")
+        self.dynamic_screenshot_area_toggle.toggled.connect(self.dynamic_screenshot_toggle)
+        dynamic_screenshot_upper_layout = QHBoxLayout()
+        self.dynamic_screenshot_upper_label = QLabel("最大区域：")
+        self.dynamic_screenshot_upper_x_label = QLabel("x", self.main_window)
+        self.dynamic_upper_width_input = QLineEdit()
+        self.dynamic_upper_height_input = QLineEdit()
+        dynamic_screenshot_upper_layout.addWidget(self.dynamic_screenshot_upper_label)
+        dynamic_screenshot_upper_layout.addWidget(self.dynamic_upper_width_input)
+        dynamic_screenshot_upper_layout.addWidget(self.dynamic_screenshot_upper_x_label)
+        dynamic_screenshot_upper_layout.addWidget(self.dynamic_upper_height_input)
+
+        dynamic_screenshot_lower_layout = QHBoxLayout()
+        self.dynamic_screenshot_lower_label = QLabel("最小区域：")
+        self.dynamic_screenshot_lower_x_label = QLabel("x", self.main_window)
+        self.dynamic_lower_width_input = QLineEdit()
+        self.dynamic_lower_height_input = QLineEdit()
+        dynamic_screenshot_lower_layout.addWidget(self.dynamic_screenshot_lower_label)
+        dynamic_screenshot_lower_layout.addWidget(self.dynamic_lower_width_input)
+        dynamic_screenshot_lower_layout.addWidget(self.dynamic_screenshot_lower_x_label)
+        dynamic_screenshot_lower_layout.addWidget(self.dynamic_lower_height_input)
+
+        dynamic_screenshot_param_layout = QVBoxLayout()
+        dynamic_screenshot_windows_layout = QHBoxLayout()
+        self.dynamic_screenshot_collection_window_label = QLabel("采样窗口：")
+        self.dynamic_screenshot_collection_window_input = QLineEdit()
+        self.dynamic_screenshot_step_label = QLabel("动态步长：")
+        self.dynamic_screenshot_step_input = QLineEdit()
+        dynamic_screenshot_windows_layout.addWidget(self.dynamic_screenshot_step_label)
+        dynamic_screenshot_windows_layout.addWidget(self.dynamic_screenshot_step_input)
+        dynamic_screenshot_windows_layout.addWidget(self.dynamic_screenshot_collection_window_label)
+        dynamic_screenshot_windows_layout.addWidget(self.dynamic_screenshot_collection_window_input)
+
+        dynamic_screenshot_threshold_layout = QHBoxLayout()
+        self.dynamic_screenshot_reduce_threshold_label = QLabel("缩小阈值：")
+        self.dynamic_screenshot_reduce_threshold_input = QLineEdit()
+        self.dynamic_screenshot_increase_threshold_label = QLabel("放大阈值：")
+        self.dynamic_screenshot_increase_threshold_input = QLineEdit()
+        dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_reduce_threshold_label)
+        dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_reduce_threshold_input)
+        dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_increase_threshold_label)
+        dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_increase_threshold_input)
+        dynamic_screenshot_param_layout.addLayout(dynamic_screenshot_windows_layout)
+        dynamic_screenshot_param_layout.addLayout(dynamic_screenshot_threshold_layout)
+
+        dynamic_screenshot_layout.addWidget(self.dynamic_screenshot_area_toggle)
+        dynamic_screenshot_layout.addLayout(dynamic_screenshot_lower_layout)
+        dynamic_screenshot_layout.addLayout(dynamic_screenshot_upper_layout)
+        dynamic_screenshot_layout.addLayout(dynamic_screenshot_param_layout)
 
         aim_radius_layout = QHBoxLayout()
         self.mouse_moving_radius_label = QLabel("腰射自瞄半径：")
@@ -109,6 +161,8 @@ class ScreenshotAreaLayout:
         screenshot_area_layout.addLayout(multi_stage_aiming_speed_layout)
         screenshot_area_layout.addLayout(aim_multi_stage_aiming_speed_layout)
         screenshot_area_layout.addWidget(self.view)
+        screenshot_area_layout.addLayout(dynamic_screenshot_layout)
+
         self.parent_layout.addLayout(screenshot_area_layout)
 
         self.init_form_config()
@@ -131,12 +185,41 @@ class ScreenshotAreaLayout:
         self.based_on_character_box.setChecked(self.config.based_on_character_box)
         self.show_circle_toggle_switch.setChecked(self.config.show_circle)
         self.show_aim_toggle_switch.setChecked(self.config.show_aim)
+        self.dynamic_screenshot_area_toggle.setDisabled(self.config.screenshot_frequency_mode == "asyn")
+        self.dynamic_screenshot_area_toggle.setChecked(self.config.dynamic_screenshot)
+        self.dynamic_upper_width_input.setText(str(self.config.dynamic_upper_width))
+        self.dynamic_upper_height_input.setText(str(self.config.dynamic_upper_height))
+        self.dynamic_lower_width_input.setText(str(self.config.dynamic_lower_width))
+        self.dynamic_lower_height_input.setText(str(self.config.dynamic_lower_height))
+        self.dynamic_screenshot_step_input.setText(str(self.config.dynamic_screenshot_step))
+        self.dynamic_screenshot_collection_window_input.setText(str(self.config.dynamic_screenshot_collection_window))
+        self.dynamic_screenshot_reduce_threshold_input.setText(str(self.config.dynamic_screenshot_reduce_threshold))
+        self.dynamic_screenshot_increase_threshold_input.setText(str(self.config.dynamic_screenshot_increase_threshold))
+        self.dynamic_screenshot_toggle(self.config.dynamic_screenshot)
 
     def delete_extra_zero(self, n):
         """删除小数点后多余的0"""
         n = '{:g}'.format(n)
         n = float(n) if '.' in n else int(n)  # 含小数点转float否则int
         return n
+
+    def dynamic_screenshot_toggle(self, checked):
+        self.dynamic_screenshot_upper_label.setVisible(checked)
+        self.dynamic_screenshot_upper_x_label.setVisible(checked)
+        self.dynamic_upper_width_input.setVisible(checked)
+        self.dynamic_upper_height_input.setVisible(checked)
+        self.dynamic_screenshot_lower_label.setVisible(checked)
+        self.dynamic_screenshot_lower_x_label.setVisible(checked)
+        self.dynamic_lower_width_input.setVisible(checked)
+        self.dynamic_lower_height_input.setVisible(checked)
+        self.dynamic_screenshot_step_label.setVisible(checked)
+        self.dynamic_screenshot_step_input.setVisible(checked)
+        self.dynamic_screenshot_collection_window_label.setVisible(checked)
+        self.dynamic_screenshot_collection_window_input.setVisible(checked)
+        self.dynamic_screenshot_reduce_threshold_label.setVisible(checked)
+        self.dynamic_screenshot_reduce_threshold_input.setVisible(checked)
+        self.dynamic_screenshot_increase_threshold_label.setVisible(checked)
+        self.dynamic_screenshot_increase_threshold_input.setVisible(checked)
 
     def show_circle_toggle(self, checked):
         self.config.set_config("show_circle", checked)
@@ -210,6 +293,19 @@ class ScreenshotAreaLayout:
 
         self.config.set_config("multi_stage_aiming_speed_toggle", self.multi_stage_aiming_speed_toggle.isChecked())
         self.config.set_config("based_on_character_box", self.based_on_character_box.isChecked())
+
+        self.config.set_config("dynamic_screenshot", self.dynamic_screenshot_area_toggle.isChecked())
+        self.config.set_config("dynamic_upper_width", int(self.dynamic_upper_width_input.text()))
+        self.config.set_config("dynamic_upper_height", int(self.dynamic_upper_height_input.text()))
+        self.config.set_config("dynamic_lower_width", int(self.dynamic_lower_width_input.text()))
+        self.config.set_config("dynamic_lower_height", int(self.dynamic_lower_height_input.text()))
+        self.config.set_config("dynamic_screenshot_step", int(self.dynamic_screenshot_step_input.text()))
+        self.config.set_config("dynamic_screenshot_collection_window",
+                               int(self.dynamic_screenshot_collection_window_input.text()))
+        self.config.set_config("dynamic_screenshot_reduce_threshold",
+                               float(self.dynamic_screenshot_reduce_threshold_input.text()))
+        self.config.set_config("dynamic_screenshot_increase_threshold",
+                               float(self.dynamic_screenshot_increase_threshold_input.text()))
 
 
 class RectView(QGraphicsView):
