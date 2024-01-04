@@ -5,6 +5,7 @@ import cv2
 import mss
 import numpy as np
 
+from apex_yolov5 import global_img_info
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
@@ -25,24 +26,26 @@ def handle(log_window):
             if not global_config.ai_toggle:
                 time.sleep(6)
                 continue
+            # start = time.time()
             data = image_block_queue.get()
             img = data["img"]
             img_origin = data["img_origin"]
+            global_img_info.set_current_img(img_origin, img)
             aims = get_aims(img)
             bboxes = []
             if len(aims):
                 if not global_config.only_save:
                     lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
-                         shot_width=global_config.shot_width,
-                         shot_height=global_config.shot_height)  # x y 是分辨率
+                         shot_width=global_img_info.get_current_img().shot_width,
+                         shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
                 if global_config.is_show_debug_window:
                     for i, det in enumerate(aims):
                         tag, x_center, y_center, width, height = det
-                        x_center, width = global_config.shot_width * float(
-                            x_center), global_config.shot_width * float(
+                        x_center, width = global_img_info.get_current_img().shot_width * float(
+                            x_center), global_img_info.get_current_img().shot_width * float(
                             width)
-                        y_center, height = global_config.shot_height * float(
-                            y_center), global_config.shot_height * float(
+                        y_center, height = global_img_info.get_current_img().shot_height * float(
+                            y_center), global_img_info.get_current_img().shot_height * float(
                             height)
                         top_left = (int(x_center - width / 2.0), int(y_center - height / 2.0))
                         bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
@@ -67,6 +70,7 @@ def handle(log_window):
             if global_config.only_save:
                 time.sleep(1)
             global_config.change_shot_xy()
+            # print(f'all cost {int((time.time() - start) * 1000)}ms')
         except Exception as e:
             print(e)
             traceback.print_exc()

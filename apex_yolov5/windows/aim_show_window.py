@@ -2,6 +2,7 @@ from PyQt5.QtGui import QPainter, QPen, QColor, QPixmap
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import Qt, QPoint, QRect
 
+from apex_yolov5 import global_img_info
 from apex_yolov5.socket.config import global_config
 
 
@@ -35,11 +36,11 @@ class AimShowWindows(QMainWindow):
 
         painter = QPainter(self)
         tag, x_center, y_center, width, height = self.bbox
-        x_center, width = self.config.shot_width * float(
-            x_center), self.config.shot_width * float(
+        x_center, width = global_img_info.get_current_img().shot_width * float(
+            x_center), global_img_info.get_current_img().shot_width * float(
             width)
-        y_center, height = self.config.shot_height * float(
-            y_center), self.config.shot_height * float(
+        y_center, height = global_img_info.get_current_img().shot_height * float(
+            y_center), global_img_info.get_current_img().shot_height * float(
             height)
 
         # 计算图标的位置

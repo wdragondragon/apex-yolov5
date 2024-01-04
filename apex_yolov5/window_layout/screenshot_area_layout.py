@@ -185,7 +185,7 @@ class ScreenshotAreaLayout:
         self.based_on_character_box.setChecked(self.config.based_on_character_box)
         self.show_circle_toggle_switch.setChecked(self.config.show_circle)
         self.show_aim_toggle_switch.setChecked(self.config.show_aim)
-        self.dynamic_screenshot_area_toggle.setDisabled(self.config.screenshot_frequency_mode == "asyn")
+        # self.dynamic_screenshot_area_toggle.setDisabled(self.config.screenshot_frequency_mode == "asyn")
         self.dynamic_screenshot_area_toggle.setChecked(self.config.dynamic_screenshot)
         self.dynamic_upper_width_input.setText(str(self.config.dynamic_upper_width))
         self.dynamic_upper_height_input.setText(str(self.config.dynamic_upper_height))

@@ -230,8 +230,7 @@ class Config:
 
         # 动态识别范围
 
-        self.dynamic_screenshot = self.get_config(self.config_data, "dynamic_screenshot",
-                                                  False) and self.screenshot_frequency_mode != "asyn"
+        self.dynamic_screenshot = self.get_config(self.config_data, "dynamic_screenshot", False)
 
         self.dynamic_upper_width = self.get_config(self.config_data, "dynamic_upper_width", 640)
         self.dynamic_upper_height = self.get_config(self.config_data, "dynamic_upper_height", 640)
