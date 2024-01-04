@@ -321,9 +321,9 @@ class Config:
             self.shot_width = new_width
             self.shot_height = new_height
             self.update_shot_xy()
-            print(f"缩小shot大小{self.shot_width},{self.shot_height}")
-        else:
-            print(f"无法缩小shot大小{new_width},{new_height}")
+        #     print(f"缩小shot大小{self.shot_width},{self.shot_height}")
+        # else:
+        #     print(f"无法缩小shot大小{new_width},{new_height}")
 
     def update_shot_xy(self):
         self.half_shot_width, self.half_shot_height = self.shot_width // 2, self.shot_height // 2
