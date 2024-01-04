@@ -44,7 +44,7 @@ class AimShowWindows(QMainWindow):
 
         # 计算图标的位置
         icon_width, icon_height = self.icon.width(), self.icon.height()
-        icon_position = QPoint(int(x_center - icon_width / 2.0), int(y_center - height / 2.0 - icon_height))
+        icon_position = QPoint(int(x_center - icon_width / 2.0), int(y_center - height / 2.0 - icon_height) - 10)
 
         # 绘制图标
         self.setGeometry(self.left_top_x, self.left_top_y, self.config.shot_width, self.config.shot_width)
