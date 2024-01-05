@@ -105,7 +105,7 @@ class Config:
         self.init()
 
     def init(self):
-        self.version = "v3.21-Beta"
+        self.version = "v3.22-Beta"
         self.listener_ip = self.get_config(self.config_data, 'listener_ip')
         self.listener_port = self.get_config(self.config_data, 'listener_port')
         self.listener_ports = self.get_config(self.config_data, 'listener_ports')
@@ -246,10 +246,10 @@ class Config:
                                                                      "dynamic_screenshot_increase_threshold", 0.6)
 
         self.dynamic_screenshot_reduce_threshold_y = self.get_config(self.config_data,
-                                                                     "dynamic_screenshot_reduce_threshold", 0.2)
+                                                                     "dynamic_screenshot_reduce_threshold_y", 0.2)
 
         self.dynamic_screenshot_increase_threshold_y = self.get_config(self.config_data,
-                                                                       "dynamic_screenshot_increase_threshold", 0.7)
+                                                                       "dynamic_screenshot_increase_threshold_y", 0.7)
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
