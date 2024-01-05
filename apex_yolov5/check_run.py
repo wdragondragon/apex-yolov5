@@ -119,6 +119,7 @@ def check(main_windows):
     main_board_info_hash = hashlib.sha256(main_board_info_str.encode()).hexdigest()
     disk_info_hash = hashlib.sha256(disk_info_str.encode()).hexdigest()
     machine_code = hashlib.sha256((main_board_info_hash + "_" + disk_info_hash).encode()).hexdigest()
+    print("machine_code:" + machine_code)
     if not check_permission(main_windows, machine_code):
         print("没有运行权限")
         QMessageBox.warning(main_windows, "错误", "没有运行权限")

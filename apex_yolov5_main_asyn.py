@@ -54,7 +54,7 @@ def handle(log_window):
                 if global_config.show_aim:
                     get_aim_show_window().clear_box()
                 # 异步暂时不支持改变shot大小
-                # global_config.sign_shot_xy()
+                global_config.sign_shot_xy()
             print_count += 1
             now = time.time()
             if now - compute_time > 1:

@@ -23,7 +23,7 @@ global_config_path = 'config\\global_config.json'
 config_ref_path = 'config\\ref\\'
 use_ref_path = 'config\\ref.txt'
 
-sign_shot_xy_num = 0
+sign_shot_xy_num = 0, 0
 
 
 def get_all_config_file_name(directory=config_ref_path):
@@ -105,7 +105,7 @@ class Config:
         self.init()
 
     def init(self):
-        self.version = "v3.20-Beta"
+        self.version = "v3.21-Beta"
         self.listener_ip = self.get_config(self.config_data, 'listener_ip')
         self.listener_port = self.get_config(self.config_data, 'listener_port')
         self.listener_ports = self.get_config(self.config_data, 'listener_ports')
@@ -240,11 +240,16 @@ class Config:
         self.dynamic_screenshot_collection_window = self.get_config(self.config_data,
                                                                     "dynamic_screenshot_collection_window", 20)
         self.dynamic_screenshot_reduce_threshold = self.get_config(self.config_data,
-                                                                   "dynamic_screenshot_reduce_threshold", 0.2)
+                                                                   "dynamic_screenshot_reduce_threshold", 0.4)
 
         self.dynamic_screenshot_increase_threshold = self.get_config(self.config_data,
-                                                                     "dynamic_screenshot_increase_threshold", 0.7)
+                                                                     "dynamic_screenshot_increase_threshold", 0.6)
 
+        self.dynamic_screenshot_reduce_threshold_y = self.get_config(self.config_data,
+                                                                     "dynamic_screenshot_reduce_threshold", 0.2)
+
+        self.dynamic_screenshot_increase_threshold_y = self.get_config(self.config_data,
+                                                                       "dynamic_screenshot_increase_threshold", 0.7)
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
@@ -277,21 +282,22 @@ class Config:
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 
-    def sign_shot_xy(self, averager=0):
+    def sign_shot_xy(self, averager=(0, 0)):
         global sign_shot_xy_num
         sign_shot_xy_num = averager
 
     def change_shot_xy(self):
         global sign_shot_xy_num
+        sign_shot_x, sign_shot_y = sign_shot_xy_num
         if not self.dynamic_screenshot:
             return
-        if sign_shot_xy_num > self.dynamic_screenshot_increase_threshold:
+        if sign_shot_x > self.dynamic_screenshot_increase_threshold or sign_shot_y > self.dynamic_screenshot_increase_threshold_y:
             # print(f"{sign_shot_xy_num}")
             self.increase_shot_xy(self.dynamic_screenshot_step)
-        elif sign_shot_xy_num == 0:
+        elif sign_shot_x == 0 or sign_shot_y == 0:
             # 重置
             self.reset_shot_xy()
-        elif sign_shot_xy_num < self.dynamic_screenshot_reduce_threshold:
+        elif sign_shot_x < self.dynamic_screenshot_reduce_threshold or sign_shot_y < self.dynamic_screenshot_reduce_threshold_y:
             # print(f"{sign_shot_xy_num}")
             self.reduce_shot_xy(self.dynamic_screenshot_step)
 

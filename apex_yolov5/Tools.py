@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 import win32gui
 from skimage.metrics import structural_similarity
+from collections import deque
 
 
 class Tools:
@@ -54,3 +55,20 @@ class Tools:
         window_handle = win32gui.GetForegroundWindow()
         window_title = win32gui.GetWindowText(window_handle)
         return window_title == 'Apex Legends'
+
+    class FixedSizeQueue:
+        def __init__(self, max_size):
+            self.queue = deque(maxlen=max_size)
+
+        def push(self, item):
+            self.queue.append(item)
+
+        def pop(self):
+            return self.queue.popleft()
+
+        def size(self):
+            return len(self.queue)
+
+        def get_last(self):
+            # 获取最后一次进队的元素但不出队
+            return self.queue[-1] if self.queue else None

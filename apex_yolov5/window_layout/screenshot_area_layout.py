@@ -83,16 +83,28 @@ class ScreenshotAreaLayout:
         dynamic_screenshot_windows_layout.addWidget(self.dynamic_screenshot_collection_window_input)
 
         dynamic_screenshot_threshold_layout = QHBoxLayout()
-        self.dynamic_screenshot_reduce_threshold_label = QLabel("缩小阈值：")
+        self.dynamic_screenshot_reduce_threshold_label = QLabel("缩小阈值(x)：")
         self.dynamic_screenshot_reduce_threshold_input = QLineEdit()
-        self.dynamic_screenshot_increase_threshold_label = QLabel("放大阈值：")
+        self.dynamic_screenshot_increase_threshold_label = QLabel("放大阈值(x)：")
         self.dynamic_screenshot_increase_threshold_input = QLineEdit()
         dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_reduce_threshold_label)
         dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_reduce_threshold_input)
         dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_increase_threshold_label)
         dynamic_screenshot_threshold_layout.addWidget(self.dynamic_screenshot_increase_threshold_input)
+
+        dynamic_screenshot_threshold_y_layout = QHBoxLayout()
+        self.dynamic_screenshot_reduce_threshold_y_label = QLabel("缩小阈值(y)：")
+        self.dynamic_screenshot_reduce_threshold_y_input = QLineEdit()
+        self.dynamic_screenshot_increase_threshold_y_label = QLabel("放大阈值(y)：")
+        self.dynamic_screenshot_increase_threshold_y_input = QLineEdit()
+        dynamic_screenshot_threshold_y_layout.addWidget(self.dynamic_screenshot_reduce_threshold_y_label)
+        dynamic_screenshot_threshold_y_layout.addWidget(self.dynamic_screenshot_reduce_threshold_y_input)
+        dynamic_screenshot_threshold_y_layout.addWidget(self.dynamic_screenshot_increase_threshold_y_label)
+        dynamic_screenshot_threshold_y_layout.addWidget(self.dynamic_screenshot_increase_threshold_y_input)
+
         dynamic_screenshot_param_layout.addLayout(dynamic_screenshot_windows_layout)
         dynamic_screenshot_param_layout.addLayout(dynamic_screenshot_threshold_layout)
+        dynamic_screenshot_param_layout.addLayout(dynamic_screenshot_threshold_y_layout)
 
         dynamic_screenshot_layout.addWidget(self.dynamic_screenshot_area_toggle)
         dynamic_screenshot_layout.addLayout(dynamic_screenshot_lower_layout)
@@ -195,6 +207,9 @@ class ScreenshotAreaLayout:
         self.dynamic_screenshot_collection_window_input.setText(str(self.config.dynamic_screenshot_collection_window))
         self.dynamic_screenshot_reduce_threshold_input.setText(str(self.config.dynamic_screenshot_reduce_threshold))
         self.dynamic_screenshot_increase_threshold_input.setText(str(self.config.dynamic_screenshot_increase_threshold))
+        self.dynamic_screenshot_reduce_threshold_y_input.setText(str(self.config.dynamic_screenshot_reduce_threshold_y))
+        self.dynamic_screenshot_increase_threshold_y_input.setText(
+            str(self.config.dynamic_screenshot_increase_threshold_y))
         self.dynamic_screenshot_toggle(self.config.dynamic_screenshot)
 
     def delete_extra_zero(self, n):
@@ -220,6 +235,10 @@ class ScreenshotAreaLayout:
         self.dynamic_screenshot_reduce_threshold_input.setVisible(checked)
         self.dynamic_screenshot_increase_threshold_label.setVisible(checked)
         self.dynamic_screenshot_increase_threshold_input.setVisible(checked)
+        self.dynamic_screenshot_reduce_threshold_y_label.setVisible(checked)
+        self.dynamic_screenshot_reduce_threshold_y_input.setVisible(checked)
+        self.dynamic_screenshot_increase_threshold_y_label.setVisible(checked)
+        self.dynamic_screenshot_increase_threshold_y_input.setVisible(checked)
 
     def show_circle_toggle(self, checked):
         self.config.set_config("show_circle", checked)
@@ -306,6 +325,10 @@ class ScreenshotAreaLayout:
                                float(self.dynamic_screenshot_reduce_threshold_input.text()))
         self.config.set_config("dynamic_screenshot_increase_threshold",
                                float(self.dynamic_screenshot_increase_threshold_input.text()))
+        self.config.set_config("dynamic_screenshot_reduce_threshold_y",
+                               float(self.dynamic_screenshot_reduce_threshold_y_input.text()))
+        self.config.set_config("dynamic_screenshot_increase_threshold_y",
+                               float(self.dynamic_screenshot_increase_threshold_y_input.text()))
 
 
 class RectView(QGraphicsView):

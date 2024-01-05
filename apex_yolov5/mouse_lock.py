@@ -2,7 +2,9 @@ import math
 import random
 import traceback
 
+from PID import Pid
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
+from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import set_intention, set_click
 from apex_yolov5.socket.config import global_config
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
@@ -14,6 +16,11 @@ random_time = 0
 random_float = 0.0
 
 target_proportion = []
+
+# 初始化 x 和 y 方向上的 PID 控制器
+
+history_xy = Tools.FixedSizeQueue(100)
+history_pid_xy = Tools.FixedSizeQueue(100)
 
 
 def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
@@ -62,7 +69,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
         mouse_moving_radius = global_config.aim_mouse_moving_radius
     else:
         mouse_moving_radius = global_config.mouse_moving_radius
-
+    # targetRealX, targetRealY = pid(targetRealX, targetRealY)
     if (mouse_moving_radius ** 2 >
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
@@ -113,7 +120,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 lock_time = 0
                 no_lock_time = 0
 
-    averager = average_target_proportion(float(target_height))
+    averager = average_target_proportion((float(target_width), float(target_height)))
     global_config.sign_shot_xy(averager)
     # if averager > 0.8:
     #     print(f"{averager}")
@@ -123,9 +130,9 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     #     global_config.reduce_shot_xy()
 
 
-def average_target_proportion(target_height):
+def average_target_proportion(target_size):
     global target_proportion
-    target_proportion.append(target_height)
+    target_proportion.append(target_size)
     while len(target_proportion) > global_config.dynamic_screenshot_collection_window:
         target_proportion.pop(0)
     return calculate_average()
@@ -133,6 +140,32 @@ def average_target_proportion(target_height):
 
 def calculate_average():
     global target_proportion
+    if not target_proportion:
+        return 0, 0  # 避免除以零错误
     if len(target_proportion) == 0:
-        return 0  # 避免除以零错误
-    return sum(target_proportion) / len(target_proportion)
+        return 0, 0  # 避免除以零错误
+
+    # 计算 x 和 y 的平均值
+    average_x = sum(coord[0] for coord in target_proportion) / len(target_proportion)
+    average_y = sum(coord[1] for coord in target_proportion) / len(target_proportion)
+
+    return average_x, average_y
+
+
+def pid(targetRealX, targetRealY):
+    history_xy.push((targetRealX, targetRealY))
+    pid_controller_x = Pid(kp=0.2, ki=0.03, kd=0.15)
+    pid_controller_y = Pid(kp=0.1, ki=0.01, kd=0.1)
+
+    for targetRealX, targetRealY in history_xy.queue:
+        pid_x = pid_controller_x.cmd_pid(targetRealX)
+        pid_y = pid_controller_y.cmd_pid(targetRealY)
+
+    last_pid_xy = history_pid_xy.get_last()
+    if last_pid_xy is not None:
+        x, y = last_pid_xy
+        print(
+            f"Actual Trajectory: ({targetRealX}, {targetRealY}), Predicted Trajectory: ({x}, {y})")
+
+    history_pid_xy.push((pid_x, pid_y))
+    return pid_x, pid_y
