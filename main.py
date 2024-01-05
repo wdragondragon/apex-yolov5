@@ -10,6 +10,7 @@ import apex_yolov5_main_asyn
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
+from apex_yolov5.windows.DisclaimerWindow import DisclaimerWindow
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
 from apex_yolov5.windows.circle_window import get_circle_window
 
@@ -32,6 +33,7 @@ if __name__ == "__main__":
     threading.Thread(target=auxiliary.start).start()
 
     log_window = ConfigWindow(global_config)
+    dis = DisclaimerWindow(log_window)
     check_run.check(log_window)
     if global_config.show_config:
         log_window.show()

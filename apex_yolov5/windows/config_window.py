@@ -1,8 +1,9 @@
 import os
+import sys
 
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication, QDialog, \
-    QComboBox, QLineEdit
+    QComboBox, QLineEdit, QCheckBox, QMessageBox
 
 from apex_yolov5.windows.DebugWindow import DebugWindow
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
@@ -17,6 +18,7 @@ from apex_yolov5.window_layout.auto_save_config_layout import AutoSaveConfigLayo
 from apex_yolov5.window_layout.model_config_layout import ModelConfigLayout
 from apex_yolov5.window_layout.mouse_config_layout import MouseConfigLayout
 from apex_yolov5.window_layout.screenshot_area_layout import ScreenshotAreaLayout
+from apex_yolov5.windows.DisclaimerWindow import DisclaimerWindow
 
 
 class ConfigWindow(QMainWindow):
@@ -78,6 +80,14 @@ class ConfigWindow(QMainWindow):
         config_menu = menu_bar.addMenu("管理配置")
         config_menu.addAction(read_ref_glass_action)
         config_menu.addAction(writer_ref_glass_action)
+
+        more_menu = menu_bar.addMenu("更多")
+        disclaimer_action = QAction('免责声明', self)
+        disclaimer_action.triggered.connect(self.open_disclaimer_window)
+        more_menu.addAction(disclaimer_action)
+
+    def open_disclaimer_window(self):
+        self.disclaimer_window = DisclaimerWindow(self)
 
     def open_read_ref_glass_window(self):
         dialog = QDialog(self)
