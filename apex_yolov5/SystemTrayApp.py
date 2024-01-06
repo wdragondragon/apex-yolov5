@@ -44,6 +44,7 @@ class SystemTrayApp:
     def show_app(self):
         self.config.set_config("show_config", True)
         self.config.save_config()
+        self.main_window.show()
         self.main_window.showNormal()
 
     def hide_app(self):

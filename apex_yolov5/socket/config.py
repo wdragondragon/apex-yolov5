@@ -1,12 +1,13 @@
+import json
 import os
+import os.path as op
 import shutil
 
+import jsonpath as jsonpath
 import pynput
 from torch.cuda import is_available
-import os.path as op
-import jsonpath as jsonpath
-import json
 
+from apex_yolov5.Counter import sure_no_aim, reset_counter
 from apex_yolov5.Tools import Tools
 
 screenshot_resolution = {
@@ -23,7 +24,7 @@ global_config_path = 'config\\global_config.json'
 config_ref_path = 'config\\ref\\'
 use_ref_path = 'config\\ref.txt'
 
-sign_shot_xy_num = 0, 0
+sign_shot_xy_num = 0, 0, 0, 0
 
 
 def get_all_config_file_name(directory=config_ref_path):
@@ -282,24 +283,40 @@ class Config:
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 
-    def sign_shot_xy(self, averager=(0, 0)):
+    def sign_shot_xy(self, averager=(0, 0, 0, 0)):
         global sign_shot_xy_num
         sign_shot_xy_num = averager
 
     def change_shot_xy(self):
         global sign_shot_xy_num
-        sign_shot_x, sign_shot_y = sign_shot_xy_num
+        sign_shot_x, sign_shot_y, sign_shot_origin_x, sign_shot_origin_y = sign_shot_xy_num
+        # shot_size = (
+        #     global_img_info.get_current_img().shot_width, global_img_info.get_current_img().shot_height)
+        # origin_size = (global_config.default_shot_width, global_config.default_shot_height)
         if not self.dynamic_screenshot:
             return
-        if sign_shot_x > self.dynamic_screenshot_increase_threshold or sign_shot_y > self.dynamic_screenshot_increase_threshold_y:
-            # print(f"{sign_shot_xy_num}")
-            self.increase_shot_xy(self.dynamic_screenshot_step)
-        elif sign_shot_x == 0 or sign_shot_y == 0:
+        if sign_shot_x == 0 or sign_shot_y == 0:
             # 重置
-            self.reset_shot_xy()
+            if sure_no_aim(self.dynamic_screenshot_collection_window):
+                self.reset_shot_xy()
+            return
+        # elif (
+        #         sign_shot_x > self.dynamic_screenshot_increase_threshold or sign_shot_y > self.dynamic_screenshot_increase_threshold_y) \
+        #         or (origin_size > shot_size and (
+        #         sign_shot_origin_x > self.dynamic_screenshot_reduce_threshold * 1.5 or sign_shot_origin_y > self.dynamic_screenshot_reduce_threshold_y * 1.5)):
+        #     print(f"增加：{sign_shot_xy_num}")
+        #     self.increase_shot_xy(self.dynamic_screenshot_step)
+        # elif (  # 小于减小阈值时减小，不为原始大小时小于原始增大阈值时减小
+        #         sign_shot_x < self.dynamic_screenshot_reduce_threshold or sign_shot_y < self.dynamic_screenshot_reduce_threshold_y) \
+        #         or (origin_size < shot_size and (
+        #         sign_shot_origin_x < self.dynamic_screenshot_increase_threshold * 0.7 or sign_shot_origin_y < self.dynamic_screenshot_increase_threshold_y) * 0.7):
+        #     print(f"减少：{sign_shot_xy_num}")
+        #     self.reduce_shot_xy(self.dynamic_screenshot_step)
+        elif sign_shot_x > self.dynamic_screenshot_increase_threshold or sign_shot_y > self.dynamic_screenshot_increase_threshold_y:
+            self.increase_shot_xy(self.dynamic_screenshot_step)
         elif sign_shot_x < self.dynamic_screenshot_reduce_threshold or sign_shot_y < self.dynamic_screenshot_reduce_threshold_y:
-            # print(f"{sign_shot_xy_num}")
             self.reduce_shot_xy(self.dynamic_screenshot_step)
+        reset_counter()
 
     def reset_shot_xy(self):
         if (self.shot_width, self.shot_height) != (self.default_shot_width, self.default_shot_height):

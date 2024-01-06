@@ -120,7 +120,13 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 lock_time = 0
                 no_lock_time = 0
 
-    averager = average_target_proportion((float(target_width), float(target_height)))
+    target_width_origin, target_height_origin = float(
+        target_width) * shot_width / global_config.default_shot_width, float(
+        target_height) * shot_height / global_config.default_shot_height
+
+    averager = *average_target_proportion(
+        (float(target_width), float(target_height))), float(target_width_origin), float(target_height_origin)
+
     global_config.sign_shot_xy(averager)
     # if averager > 0.8:
     #     print(f"{averager}")
