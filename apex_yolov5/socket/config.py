@@ -253,6 +253,9 @@ class Config:
                                                                        "dynamic_screenshot_increase_threshold_y", 0.7)
 
         self.lead_time_toggle = self.get_config(self.config_data, "lead_time_toggle", False)
+        self.lead_time_frame = self.get_config(self.config_data, "lead_time_frame", 1)
+        self.lead_time_decision_frame = self.get_config(self.config_data, "lead_time_decision_frame", 5)
+
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640

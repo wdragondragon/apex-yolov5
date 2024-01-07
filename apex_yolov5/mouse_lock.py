@@ -66,10 +66,14 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
         mouse_moving_radius = global_config.aim_mouse_moving_radius
     else:
         mouse_moving_radius = global_config.mouse_moving_radius
-    if global_config.lead_time_toggle:
-        targetRealX, targetRealY = lead_time(targetRealX, targetRealY, current_mouse_x, current_mouse_y)
     if (mouse_moving_radius ** 2 >
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
+        if global_config.lead_time_toggle:
+            # print(f"Actual Move: ({targetRealX, targetRealY})")
+            targetRealX, targetRealY = lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
+                                                    global_config.lead_time_frame,
+                                                    global_config.lead_time_decision_frame)
+            # print(f"Last Move: ({targetRealX, targetRealY})")
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
         # 随机弹道计算
@@ -156,110 +160,92 @@ def calculate_average():
     return average_x, average_y
 
 
-# 初始化 x 和 y 方向上的 PID 控制器
-history_xy = Tools.FixedSizeQueue(100)
-history_pid_xy = Tools.FixedSizeQueue(100)
+history_move_x_queue = Tools.FixedSizeQueue(100)
+history_executed_intention_x_queue = Tools.FixedSizeQueue(100)
+history_move_diff_x_queue = Tools.FixedSizeQueue(100)
 
-history_move_xy = Tools.FixedSizeQueue(100)
-history_executed_intention = Tools.FixedSizeQueue(100)
-history_move_diff_queue = Tools.FixedSizeQueue(100)
+history_move_y_queue = Tools.FixedSizeQueue(100)
+history_executed_intention_y_queue = Tools.FixedSizeQueue(100)
+history_move_diff_y_queue = Tools.FixedSizeQueue(100)
 
 
-def lead_time(targetRealX, targetRealY, current_mouse_x, current_mouse_y):
-    move_x, move_y = targetRealX - current_mouse_x, targetRealY - current_mouse_y
+def lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y, lead_time_frame, lead_time_decision_frame):
     executed_intention_x, executed_intention_y = get_executed_intention()
+    return (lead_time_one('x', targetRealX,
+                          current_mouse_x,
+                          executed_intention_x,
+                          lead_time_frame,
+                          lead_time_decision_frame,
+                          history_move_x_queue,
+                          history_executed_intention_x_queue,
+                          history_move_diff_x_queue),
+            lead_time_one('y', targetRealY,
+                          current_mouse_y,
+                          executed_intention_y,
+                          lead_time_frame,
+                          lead_time_decision_frame,
+                          history_move_y_queue,
+                          history_executed_intention_y_queue,
+                          history_move_diff_y_queue))
 
-    last_move = history_move_xy.get_last()
+
+def lead_time_one(name, target_real,
+                  current_mouse,
+                  executed_intention,
+                  lead_time_frame,
+                  lead_time_decision_frame,
+                  history_move_queue,
+                  history_executed_intention_queue,
+                  history_move_diff_queue):
+    move = target_real - current_mouse
+
+    last_move = history_move_queue.get_last()
     if last_move is None:
-        history_move_xy.push((move_x, move_y))
-        history_executed_intention.push((executed_intention_x, executed_intention_y))
-        print(
-            f"first Actual Move: ({move_x}, {move_y}), Last Move: ({move_x},{move_y})")
-        return targetRealX, targetRealY
-    last_move_x, last_move_y = history_move_xy.get_last()
-    history_move_xy.push((move_x, move_y))
-    history_executed_intention.push((executed_intention_x, executed_intention_y))
+        history_move_queue.push(move)
+        history_executed_intention_queue.push(executed_intention)
+        return target_real
+    last_move = history_move_queue.get_last()
+    history_move_queue.push(move)
+    history_executed_intention_queue.push(executed_intention)
 
-    move_x_diff, move_y_diff = move_x + executed_intention_x - last_move_x, move_y + executed_intention_y - last_move_y
-    history_move_diff_queue.push((move_x_diff, move_y_diff))
+    move_diff = move - executed_intention - last_move
+    history_move_diff_queue.push(move_diff)
     # 移除之前的不同象限的移动
-    current_quadrant = determine_quadrant(move_x, move_y)
-    remove_previous_movements(history_move_diff_queue, current_quadrant)
+    current_quadrant = determine_quadrant(move_diff)
+    lead_time = previous_movements(history_move_diff_queue, current_quadrant, lead_time_decision_frame)
     move_diff = history_move_diff_queue.get_last()
-    if move_diff is None:
-        print(f"move_diff is None")
-        return targetRealX, targetRealY
+    if (not lead_time) or move_diff is None:
+        return target_real
 
-    last_move = move_x + move_x_diff + current_mouse_x, move_y + move_y_diff + current_mouse_y
-    print(f"move diff:({move_x_diff, move_y_diff})")
-    print(f"Actual Move: ({move_x}, {move_y}), Last Move: ({move_x + move_x_diff},{move_y + move_y_diff})")
+    last_move = move + move * lead_time_frame + current_mouse
+    print(f"{name} move diff:({move_diff})")
+    print(f"{name} Actual Move: ({move}), Last Move: ({move + move_diff * lead_time_frame})")
     return last_move
 
 
-def pid(targetRealX, targetRealY, current_mouse_x, current_mouse_y):
-    move_x, move_y = targetRealX - current_mouse_x, targetRealY - current_mouse_y
-    current_quadrant = determine_quadrant(move_x, move_y)
-
-    # 移除之前的不同象限的移动
-    remove_previous_movements(history_xy, current_quadrant)
-    history_xy.push((move_x, move_y))
-
-    # 判断是否达到队列长度要求
-    if len(history_xy.queue) < 15:
-        return targetRealX, targetRealY
-
-    pid_controller_x = Pid(kp=0.2, ki=0.03, kd=0.15)
-    pid_controller_y = Pid(kp=0.1, ki=0.01, kd=0.1)
-
-    # 从队列的尾部开始，每隔10个历史记录点进行一次 PID 控制计算
-    # 计算 PID 控制
-    pid_x, pid_y = 0, 0
-    for move_x, move_y in history_xy.queue:
-        pid_x = pid_controller_x.cmd_pid(move_x)
-        pid_y = pid_controller_y.cmd_pid(move_y)
-
-    # 记录预测轨迹
-    last_pid_xy = history_pid_xy.get_last()
-    if last_pid_xy is not None:
-        x, y = last_pid_xy
-        print(
-            f"Actual Trajectory: ({move_x}, {move_y}), Predicted Trajectory: ({x}, {y})")
-
-    # 将 PID 输出添加到历史队列
-    history_pid_xy.push((pid_x, pid_y))
-
-    for i in range(40):
-        pid_x = pid_controller_x.cmd_pid(pid_x)
-        pid_y = pid_controller_y.cmd_pid(pid_y)
-    print(
-        f"Actual Move: ({move_x}, {move_y}), Last Move: ({pid_x}, {pid_y})")
-    return pid_x + current_mouse_x, pid_y + current_mouse_y
-
-
-def remove_previous_movements(queue, current_quadrant):
+def previous_movements(queue, current_quadrant, lead_time_decision_frame):
     # 从队列中移除之前的不同象限的移动
-    index_to_remove = -1
-    for i, (prev_move_x, prev_move_y) in enumerate(queue.queue):
-        prev_quadrant = determine_quadrant(prev_move_x, prev_move_y)
-        if prev_quadrant != current_quadrant:
-            index_to_remove = i
+    remove_num = 0
+    keep_num = 0
+    for i in range(len(queue.queue) - 1, -1, -1):
+        prev_move = queue.queue[i]
+        prev_quadrant = determine_quadrant(prev_move)
+        if prev_quadrant == current_quadrant:
+            remove_num = 0
+            keep_num += 1
+            if keep_num >= lead_time_decision_frame:
+                return True
         else:
-            break
+            remove_num += 1
+            keep_num = 0
+            if remove_num >= 5:
+                return False
+    return keep_num >= lead_time_decision_frame
 
-    if index_to_remove >= 0:
-        for _ in range(index_to_remove + 1):
-            queue.queue.popleft()
 
-
-def determine_quadrant(move_x, move_y):
+def determine_quadrant(move):
     # 确定移动所在的象限
-    if move_x >= 0 and move_y >= 0:
+    if move >= 0:
         return 1
-    elif move_x < 0 <= move_y:
-        return 2
-    elif move_x < 0 and move_y < 0:
-        return 3
-    elif move_x >= 0 > move_y:
-        return 4
-    else:
-        return 0  # 处理移动为原点的情况
+    elif move <= 0:
+        return -1

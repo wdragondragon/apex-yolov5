@@ -56,15 +56,36 @@ class AnthropomorphicConfigLayout:
         random_aim_layout.addWidget(self.random_aim_toggle)
         random_aim_layout.addLayout(random_coefficient_layout)
 
+        lead_time_layout = QHBoxLayout()
         self.lead_time_toggle = QCheckBox("开启提前量（测试中）")
         self.lead_time_toggle.setObjectName("lead_time_toggle")
+        self.lead_time_toggle.toggled.connect(self.lead_time_toggle_check)
+        self.lead_time_frame_label = QLabel("提前帧")
+        self.lead_time_frame_input = QLineEdit(self.main_window)
+        self.lead_time_frame_input.setValidator(QIntValidator())
+
+        self.lead_time_decision_frame_label = QLabel("判定帧")
+        self.lead_time_decision_frame_input = QLineEdit(self.main_window)
+        self.lead_time_decision_frame_input.setValidator(QIntValidator())
+
+        lead_time_layout.addWidget(self.lead_time_frame_label)
+        lead_time_layout.addWidget(self.lead_time_frame_input)
+        lead_time_layout.addWidget(self.lead_time_decision_frame_label)
+        lead_time_layout.addWidget(self.lead_time_decision_frame_input)
 
         self.parent_layout.addWidget(self.label)
         self.parent_layout.addLayout(intention_deviation_layout)
         self.parent_layout.addLayout(random_aim_layout)
         self.parent_layout.addWidget(self.lead_time_toggle)
+        self.parent_layout.addLayout(lead_time_layout)
 
         self.init_form_config()
+
+    def lead_time_toggle_check(self, checked):
+        self.lead_time_frame_label.setVisible(checked)
+        self.lead_time_frame_input.setVisible(checked)
+        self.lead_time_decision_frame_label.setVisible(checked)
+        self.lead_time_decision_frame_input.setVisible(checked)
 
     def init_form_config(self):
         self.intention_deviation_toggle.setChecked(self.config.intention_deviation_toggle)
@@ -76,6 +97,9 @@ class AnthropomorphicConfigLayout:
         self.random_coefficient.setText(str(self.config.random_coefficient))
         self.random_change_frequency.setText(str(self.config.random_change_frequency))
         self.lead_time_toggle.setChecked(self.config.lead_time_toggle)
+        self.lead_time_frame_input.setText(str(self.config.lead_time_frame))
+        self.lead_time_decision_frame_input.setText(str(self.config.lead_time_decision_frame))
+        self.lead_time_toggle_check(self.config.lead_time_toggle)
 
     def save_config(self):
         self.config.set_config("intention_deviation_toggle", self.intention_deviation_toggle.isChecked())
@@ -86,4 +110,6 @@ class AnthropomorphicConfigLayout:
         self.config.set_config("random_aim_toggle", self.random_aim_toggle.isChecked())
         self.config.set_config("random_coefficient", float(self.random_coefficient.text()))
         self.config.set_config("random_change_frequency", int(self.random_change_frequency.text()))
-        self.config.set_config("lead_time_toggle", int(self.lead_time_toggle.isChecked()))
+        self.config.set_config("lead_time_toggle", self.lead_time_toggle.isChecked())
+        self.config.set_config("lead_time_frame", int(self.lead_time_frame_input.text()))
+        self.config.set_config("lead_time_decision_frame", int(self.lead_time_decision_frame_input.text()))

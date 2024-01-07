@@ -1,39 +1,34 @@
-#
-# win32api.SetCursorPos((200, 200))
-import time
-from ctypes import windll
-
-import win32api
-import win32con
-
-# mouse_xy(100,100)
-time0 = time.time()
-for i in range(199):
-    # pydirectinput.moveTo(200,200)
-    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 1, 1)
-    # mouse_xy(-3,3)
-print(time.time() - time0)
-
-user32 = windll.user32
-MOUSEEVENTF_MOVE = 0x1
+from apex_yolov5.Tools import Tools
 
 
-def mouse_to(x, y):
-    intention = (x, y)
-    print("开始移动，移动距离:{}".format((x, y)))
-    while x != 0 or y != 0:
-        (x, y) = intention
-        move_up = min(1, abs(x)) * (1 if x > 0 else -1)
-        move_down = min(1, abs(y)) * (1 if y > 0 else -1)
-        if x == 0:
-            move_up = 0
-        elif y == 0:
-            move_down = 0
-        x -= move_up
-        y -= move_down
-        intention = (x, y)
-        user32.mouse_event(MOUSEEVENTF_MOVE, int(move_up), int(move_down))
-        time.sleep(0.001)
+def remove_previous_movements(queue, current_quadrant):
+    # 从队列中移除之前的不同象限的移动
+    index_to_remove = -1
+    for i, prev_move in enumerate(queue.queue):
+        prev_quadrant = determine_quadrant(prev_move)
+        if prev_quadrant != current_quadrant:
+            index_to_remove = i
+
+    if index_to_remove >= 0:
+        for _ in range(index_to_remove + 1):
+            queue.queue.popleft()
 
 
-mouse_to(100, 100)
+def determine_quadrant(move):
+    # 确定移动所在的象限
+    if move >= 0:
+        return 1
+    elif move <= 0:
+        return -1
+
+
+queue = Tools.FixedSizeQueue(100)
+queue.push(1)
+queue.push(-1)
+queue.push(1)
+queue.push(1)
+queue.push(-1)
+queue.push(1)
+queue.push(-2)
+remove_previous_movements(queue, -1)
+print(queue.size())
