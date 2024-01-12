@@ -6,7 +6,7 @@ import mss
 import numpy as np
 
 from apex_yolov5 import global_img_info
-from apex_yolov5.GetBlockQueue import GetBlockQueue
+from apex_yolov5.Tools import Tools
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
@@ -14,7 +14,7 @@ from apex_yolov5.socket.yolov5_handler import get_aims
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
 
 screen_count = 0
-image_block_queue = GetBlockQueue("image_queue", maxsize=1)
+image_block_queue = Tools.GetBlockQueue("image_queue", maxsize=1)
 
 
 def handle(log_window):

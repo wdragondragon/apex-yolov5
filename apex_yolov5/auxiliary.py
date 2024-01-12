@@ -7,7 +7,7 @@ from pynput.mouse import Button
 from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.ScreenUtil import select_gun
-from apex_yolov5.mouse_controller import set_mouse_position, set_mouse_position_rp, left_click
+from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
 
 intention = None
@@ -73,14 +73,15 @@ def get_lock_mode():
 
 def start():
     global intention, change_coordinates_num, last_click_time, click_sign
+    sleep_time = 0.01
     while True:
         if click_sign and time.time() - last_click_time > click_interval and select_gun.current_gun in global_config.click_gun:
-            left_click()
+            MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()
             click_sign = False
         elif global_config.auto_charged_energy and select_gun.current_gun == '充能步枪' and time.time() - last_click_time > global_config.storage_interval and not apex_key_listener.is_open(
                 global_config.auto_charged_energy_toggle):
-            left_click()
+            MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()
 
         if get_lock_mode() and intention is not None:
@@ -121,7 +122,7 @@ def start():
                     finally:
                         # 释放锁
                         intention_lock.release()
-                    set_mouse_position_rp(int(move_up), int(move_down))
+                    MoverFactory.mouse_mover().move_rp(int(move_up), int(move_down))
                     if not global_config.ai_toggle:
                         break
                     if not global_config.mouse_move_frequency_switch:
@@ -130,13 +131,14 @@ def start():
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             else:
                 # print("开始移动，移动距离:{}".format((x, y)))
-                set_mouse_position(int(x), int(y))
+                MoverFactory.mouse_mover().move(int(x), int(y))
                 # print(
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             intention = None
+            sleep_time = 0.001
         elif not get_lock_mode():
             intention = None
-        time.sleep(0.01)
+        time.sleep(sleep_time)
         change_coordinates_num = 0
 
 

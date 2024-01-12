@@ -18,7 +18,6 @@ from apex_yolov5.auxiliary import start
 from apex_yolov5.grabscreen import grab_screen_int_array2
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
-from apex_yolov5.GetBlockQueue import GetBlockQueue
 
 listener = pynput.mouse.Listener(
     on_click=apex_mouse_listener.on_click)
@@ -158,7 +157,7 @@ if __name__ == "__main__":
     log_window = DebugWindow()
     if global_config.is_show_debug_window:
         log_window.show()
-    aims_data_block_queue = GetBlockQueue("aims_data_block_queue", maxsize=1)
+    aims_data_block_queue = Tools.GetBlockQueue("aims_data_block_queue", maxsize=1)
     threading.Thread(target=main).start()
     threading.Thread(target=handle).start()
     sys.exit(app.exec_())

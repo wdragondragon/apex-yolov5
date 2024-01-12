@@ -10,6 +10,9 @@ import apex_yolov5_main_asyn
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
+from apex_yolov5.log import LogFactory
+from apex_yolov5.log.Logger import Logger
+from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.windows.DisclaimerWindow import DisclaimerWindow
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
 from apex_yolov5.windows.circle_window import get_circle_window
@@ -19,6 +22,7 @@ from apex_yolov5.socket.config import global_config
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    LogFactory.init_logger()
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click)
     listener.start()
@@ -28,13 +32,15 @@ if __name__ == "__main__":
     )
     key_listener.start()
 
-    # names = model.module.names if hasattr(model, 'module') else model.names
-
     threading.Thread(target=auxiliary.start).start()
 
     log_window = ConfigWindow(global_config)
     dis = DisclaimerWindow(log_window)
-    check_run.check(log_window)
+    # check_run.check(log_window)
+
+    MoverFactory.init_mover(
+        mouse_model=global_config.mouse_model,
+        mouse_mover_params=global_config.available_mouse_models)
     if global_config.show_config:
         log_window.show()
 

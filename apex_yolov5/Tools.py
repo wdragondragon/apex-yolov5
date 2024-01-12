@@ -1,5 +1,6 @@
 import ctypes
 import os
+import threading
 import time
 from io import BytesIO
 from shutil import copyfile
@@ -9,16 +10,12 @@ import numpy as np
 import win32gui
 from skimage.metrics import structural_similarity
 from collections import deque
+import queue
 
 
 class Tools:
     @staticmethod
     def get_resolution():
-        # screen = tkinter.Tk()
-        # xw = screen.winfo_screenwidth()
-        # yh = screen.winfo_screenheight()
-        # screen.destroy()
-
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware(2)
         [xw, yh] = [user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)]
@@ -72,3 +69,32 @@ class Tools:
         def get_last(self):
             # 获取最后一次进队的元素但不出队
             return self.queue[-1] if self.queue else None
+
+    class GetBlockQueue:
+        def __init__(self, name, maxsize=1):
+            self.name = name
+            self.lock = threading.Lock()
+            self.queue = queue.Queue(maxsize=maxsize)
+
+        def get(self):
+            o = self.queue.get()
+            return o
+
+        def put(self, data):
+            with self.lock:
+                while True:
+                    try:
+                        self.queue.put(data, block=False)
+                        break
+                    except queue.Full:
+                        try:
+                            self.queue.get_nowait()
+                        except queue.Empty:
+                            pass
+            # print("[{}]put操作后队列大小：{}".format(self.name, self.queue.qsize()))
+
+        def clear(self):
+            with self.lock:
+                while not self.queue.empty():
+                    self.queue.get()
+                # print("[{}]清空队列".format(self.name))

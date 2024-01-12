@@ -132,20 +132,19 @@ class Config:
         # self.move_mouse_speed = self.get_config(data, "move_mouse_speed")  # 游戏内鼠标灵敏
         # 最终鼠标移动单次像素
 
-        self.mouse_model = self.get_config(self.config_data, "mouse_model", "kmbox")
+        self.mouse_model = self.get_config(self.config_data, "mouse_model", "win32api")
         self.available_mouse_models = self.get_config(self.config_data, "available_mouse_models", {
             "win32api": {},
-            "kmbox": {
+            "km_box": {
                 "VID/PID": "66882021"
             },
-            "logitech": {},
-            "ty": {
+            "wu_ya": {
                 "VID/PID": "26121701"
             }
         })
 
         self.available_mouse_smoothing = self.get_config(self.config_data, "available_mouse_smoothing",
-                                                         ["win32api", "ty"])
+                                                         ["win32api", "wu_ya"])
 
         self.move_step = self.get_config(self.config_data, "move_step")
         self.move_step_y = self.get_config(self.config_data, "move_step_y", self.move_step)

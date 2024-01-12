@@ -1,9 +1,8 @@
 from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QPixmap, QPainter, QIntValidator, QDoubleValidator
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSlider, QWidget, QCheckBox, QComboBox, QLineEdit, QVBoxLayout
+from PyQt5.QtGui import QPixmap, QPainter
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSlider, QWidget, QCheckBox, QComboBox
 
-import km_test
-import wyhkm
+from apex_yolov5.mouse_mover import MoverFactory
 
 
 class MouseConfigLayout:
@@ -287,10 +286,8 @@ class MouseConfigLayout:
         selected_key = self.mouse_model_combo_box.currentText()
         self.mouse_model_combo_box.setEnabled(False)
         self.config.set_config("mouse_model", selected_key)
-        if selected_key == "kmbox":
-            km_test.load()
-        elif selected_key == "ty":
-            wyhkm.load_ty()
+        self.config.mouse_model = selected_key
+        MoverFactory.reload_mover(self.config.mouse_model, self.config.available_mouse_models)
         self.mouse_model_combo_box.setEnabled(True)
 
     def selection_aim_model_changed(self, index):
