@@ -107,7 +107,7 @@ def check_permission(main_windows, machine_code, validate_type):
     return None
 
 
-def check(main_windows, validate_type='ai'):
+def check(main_windows=None, validate_type='ai'):
     main_board_info = get_mainboard_info()
     disk_info = get_disk_info()
 
