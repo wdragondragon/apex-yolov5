@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     log_window = ConfigWindow(global_config)
     dis = DisclaimerWindow(log_window)
-    check_run.check(main_windows=log_window, validate_type='ai')
+    check_run.check(validate_type='ai', main_windows=log_window)
 
     MoverFactory.init_mover(
         mouse_model=global_config.mouse_model,
