@@ -1,10 +1,8 @@
 import hashlib
 import json
-import sys
-from datetime import datetime
-
-import requests
+import os
 import uuid
+from datetime import datetime
 
 import requests
 import wmi
@@ -123,4 +121,4 @@ def check(main_windows):
     if not check_permission(main_windows, machine_code):
         print("没有运行权限")
         QMessageBox.warning(main_windows, "错误", "没有运行权限")
-        sys.exit(1)
+        os._exit(0)
