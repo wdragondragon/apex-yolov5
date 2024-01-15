@@ -20,6 +20,12 @@ class AutoSaveConfigLayout:
         self.is_show_debug_window_switch.toggled.connect(self.main_window.handle_toggled)
         toggle_layout.addWidget(self.is_show_debug_window_switch)
 
+        self.frame_rate_monitor = QCheckBox("帧率监控")
+        self.frame_rate_monitor.setObjectName("frame_rate_monitor")
+
+        self.frame_rate_monitor.toggled.connect(self.main_window.handle_toggled)
+        toggle_layout.addWidget(self.frame_rate_monitor)
+
         self.auto_save_switch = QCheckBox("自动保存标注文件")
         self.auto_save_switch.setObjectName("auto_save")
 
@@ -39,3 +45,4 @@ class AutoSaveConfigLayout:
         self.is_show_debug_window_switch.setChecked(self.config.is_show_debug_window)  # 初始化开关的值
         self.auto_save_switch.setChecked(self.config.auto_save)  # 初始化开关的值
         self.only_save_switch.setChecked(self.config.only_save)  # 初始化开关的值
+        self.frame_rate_monitor.setChecked(self.config.frame_rate_monitor)

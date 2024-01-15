@@ -26,7 +26,6 @@ def handle(log_window):
             if not global_config.ai_toggle:
                 time.sleep(6)
                 continue
-            # start = time.time()
             data = image_block_queue.get()
             img = data["img"]
             img_origin = data["img_origin"]
@@ -58,8 +57,7 @@ def handle(log_window):
             print_count += 1
             now = time.time()
             if now - compute_time > 1:
-                log_window.update_frame_rate_plot_2(screen_count)
-                log_window.update_frame_rate_plot(print_count)
+                log_window.add_frame_rate_plot((print_count, screen_count))
                 if global_config.auto_save:
                     save_rescreen_and_aims_to_file_with_thread(img_origin, img, aims)
                 print_count = 0
@@ -70,7 +68,6 @@ def handle(log_window):
             if global_config.only_save:
                 time.sleep(1)
             global_config.change_shot_xy()
-            # print(f'all cost {int((time.time() - start) * 1000)}ms')
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -87,8 +84,8 @@ def main():
             img = np.frombuffer(img_origin.rgb, dtype='uint8')
             img = img.reshape((monitor["height"], monitor["width"], 3))
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-            image_block_queue.put({"img": img, "img_origin": img_origin})
             screen_count += 1
+            image_block_queue.put({"img": img, "img_origin": img_origin})
         except Exception as e:
             print(e)
             traceback.print_exc()

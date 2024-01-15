@@ -3,7 +3,7 @@ import traceback
 
 from PyQt5.QtCore import QPoint, QRect, QEvent, QThread, pyqtSignal, Qt
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor
-from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
 
 from apex_yolov5.Tools import Tools

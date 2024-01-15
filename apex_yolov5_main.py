@@ -57,8 +57,7 @@ def main(log_window):
             screen_count += 1
             now = time.time()
             if now - compute_time > 1:
-                log_window.update_frame_rate_plot_2(screen_count)
-                log_window.update_frame_rate_plot(print_count)
+                log_window.add_frame_rate_plot((print_count, screen_count))
                 if global_config.auto_save:
                     save_rescreen_and_aims_to_file_with_thread(img_origin, img, aims)
                 print_count = 0

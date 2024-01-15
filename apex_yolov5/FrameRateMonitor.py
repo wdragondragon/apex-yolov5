@@ -1,16 +1,20 @@
 import sys
-import random
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel
-from PyQt5.QtCore import QTimer, Qt
+import time
+import traceback
+
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.ticker import MaxNLocator, MultipleLocator
+from matplotlib.ticker import MultipleLocator
+
+from apex_yolov5.Tools import Tools
 
 
 class FrameRateMonitor(QMainWindow):
-    def __init__(self):
+    def __init__(self, config):
         super().__init__()
-
+        self.config = config
         self.initUI()
 
     def initUI(self):
@@ -39,7 +43,6 @@ class FrameRateMonitor(QMainWindow):
         self.frame_rate_data = []
         self.frame_rate_data_2 = []
 
-
         layout.setContentsMargins(5, 5, 5, 5)  # 设置布局内容的边距
         layout.addWidget(self.canvas)
 
@@ -47,34 +50,64 @@ class FrameRateMonitor(QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-    def update_frame_rate_plot(self, frame_rate):
-        # 模拟获取帧率值，这里使用随机数代替
-        self.frame_rate_data.append(frame_rate)
+        self.queue = Tools.GetBlockQueue(name='frame_rate_queue', maxsize=1000)
+        self.frame_rate_monitor_thread = FrameRateMonitorThread(self.queue)
+        self.frame_rate_monitor_thread.signal.connect(self.update_frame_rate_plot)
+        self.frame_rate_monitor_thread.start()
 
-        # 只保留最近的20个数据点，以保持图表的长度有限
+    def add_frame_rate_plot(self, frame_rate):
+        self.queue.put(frame_rate)
+
+    def update_frame_rate_plot(self, frame_rate):
+        reasoning, screenshot = frame_rate
+
+        self.frame_rate_data.append(reasoning)
         if len(self.frame_rate_data) > 60:
             self.frame_rate_data.pop(0)
 
-        # 清除图表并绘制新数据
-        self.ax.clear()
-        self.ax.plot(self.frame_rate_data, marker='o', linestyle='-', label='识别', markersize=3)
-        self.ax.plot(self.frame_rate_data_2, marker='o', linestyle='-', label='截图', markersize=3)
-        self.ax.set_title('帧率监控')
-        self.ax.set_xlabel('经过时间（秒）', fontsize=12)
-        self.ax.set_ylabel('帧率', fontsize=12)
-
-        self.ax.legend(loc='lower right')
-
-        # 刷新图表
-        self.canvas.draw()
-
-    def update_frame_rate_plot_2(self, frame_rate):
-        # 模拟获取帧率值，这里使用随机数代替
-        self.frame_rate_data_2.append(frame_rate)
-
-        # 只保留最近的20个数据点，以保持图表的长度有限
+        self.frame_rate_data_2.append(screenshot)
         if len(self.frame_rate_data_2) > 60:
             self.frame_rate_data_2.pop(0)
+
+        if self.config.frame_rate_monitor:
+            # 清除图表并绘制新数据
+            self.ax.clear()
+            self.ax.plot(self.frame_rate_data, marker='o', linestyle='-', label='识别', markersize=3)
+            self.ax.plot(self.frame_rate_data_2, marker='o', linestyle='-', label='截图', markersize=3)
+            self.ax.set_title('帧率监控')
+            self.ax.set_xlabel('经过时间（秒）', fontsize=12)
+            self.ax.set_ylabel('帧率', fontsize=12)
+
+            self.ax.legend(loc='lower right')
+
+            # 刷新图表
+            self.canvas.draw()
+        else:
+            print(f"截图频率：[{screenshot}]，推理频率：[{reasoning}]")
+
+
+class FrameRateMonitorThread(QThread):
+    """
+        使用信号槽来多线程更新ui
+    """
+    signal = pyqtSignal(object)
+
+    def __init__(self, queue: Tools.GetBlockQueue):
+        super().__init__()
+        self.queue = queue
+
+    def run(self):
+        """
+            避免多线程影响ui，在一个线程中启动队列消费打印
+        """
+        while True:
+            try:
+                data = self.queue.get()
+                self.signal.emit(data)
+            except Exception as e:
+                print(e)
+                traceback.print_exc()
+                time.sleep(0.1)
 
 
 if __name__ == '__main__':

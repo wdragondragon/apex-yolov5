@@ -1,12 +1,9 @@
 import os
-import sys
 
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication, QDialog, \
-    QComboBox, QLineEdit, QCheckBox, QMessageBox
+    QComboBox, QLineEdit
 
-from apex_yolov5.log.Logger import Logger
-from apex_yolov5.windows.DebugWindow import DebugWindow
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
@@ -19,6 +16,7 @@ from apex_yolov5.window_layout.auto_save_config_layout import AutoSaveConfigLayo
 from apex_yolov5.window_layout.model_config_layout import ModelConfigLayout
 from apex_yolov5.window_layout.mouse_config_layout import MouseConfigLayout
 from apex_yolov5.window_layout.screenshot_area_layout import ScreenshotAreaLayout
+from apex_yolov5.windows.DebugWindow import DebugWindow
 from apex_yolov5.windows.DisclaimerWindow import DisclaimerWindow
 
 
@@ -39,7 +37,7 @@ class ConfigWindow(QMainWindow):
             self.system_tray = SystemTrayApp(self, self.config)
             self.main_window = DebugWindow()
             self.magnifying_glass_window = MagnifyingGlassWindows()
-            self.open_frame_rate_monitor_window = FrameRateMonitor()
+            self.open_frame_rate_monitor_window = FrameRateMonitor(self.config)
             self.config_layout_main = QVBoxLayout()
             self.config_layout = QHBoxLayout()
             self.config_layout_1 = QVBoxLayout()
@@ -177,16 +175,12 @@ class ConfigWindow(QMainWindow):
 
     def open_frame_rate_monitor(self):
         if self.open_frame_rate_monitor_window is None:
-            self.open_frame_rate_monitor_window = FrameRateMonitor()
+            self.open_frame_rate_monitor_window = FrameRateMonitor(self.config)
         self.open_frame_rate_monitor_window.show()
 
-    def update_frame_rate_plot(self, frame_rate):
+    def add_frame_rate_plot(self, frame_rate):
         if self.open_frame_rate_monitor_window is not None:
-            self.open_frame_rate_monitor_window.update_frame_rate_plot(frame_rate)
-
-    def update_frame_rate_plot_2(self, frame_rate):
-        if self.open_frame_rate_monitor_window is not None:
-            self.open_frame_rate_monitor_window.update_frame_rate_plot_2(frame_rate)
+            self.open_frame_rate_monitor_window.add_frame_rate_plot(frame_rate)
 
     def initUI(self):
         self.setWindowTitle("Apex Gun " + self.config.version)

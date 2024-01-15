@@ -172,6 +172,7 @@ class Config:
         self.auto_save = self.get_config(self.config_data, "auto_save")
         self.auto_save_path = self.get_config(self.config_data, "auto_save_path")
         self.only_save = self.get_config(self.config_data, "only_save")
+        self.frame_rate_monitor = self.get_config(self.config_data, "frame_rate_monitor", False)
         self.cross_hair = self.get_config(self.config_data, "cross_hair")
         self.available_guns = self.get_config(self.config_data, "available_guns")
         self.auto_charged_energy = self.get_config(self.config_data, "auto_charged_energy", False)
