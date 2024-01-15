@@ -210,13 +210,17 @@ class MouseConfigLayout:
         self.init_form_config()
 
     def init_form_config(self):
+        self.mouse_model_combo_box.blockSignals(True)
         self.mouse_model_combo_box.clear()
+        self.mouse_model_combo_box.blockSignals(False)
         for key in self.config.available_mouse_models.keys():
             self.mouse_model_combo_box.addItem(key)
         self.mouse_model_combo_box.setCurrentText(self.config.mouse_model)
         self.mouse_model_combo_box.currentIndexChanged.connect(self.selection_changed)
 
+        self.aim_model_combo_box.blockSignals(True)
         self.aim_model_combo_box.clear()
+        self.aim_model_combo_box.blockSignals(False)
         for key in self.config.aim_models:
             self.aim_model_combo_box.addItem(key)
         self.aim_model_combo_box.setCurrentText(self.config.aim_model)

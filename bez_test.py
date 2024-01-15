@@ -16,12 +16,12 @@ for t in np.arange(0, 1, 0.1):
     plt.plot([P0[0], P1[0]], [P0[1], P1[1]], 'k')
     plt.plot([P1[0], P2[0]], [P1[1], P2[1]], 'k')
     plt.plot([P2[0], P3[0]], [P2[1], P3[1]], 'k')
-    p11_t = (1-t)*P0+t*P1
-    p12_t = (1-t)*P1+t*P2
-    p13_t = (1-t)*P2+t*P3
-    p21_t = (1-t)*p11_t+t*p12_t
-    p22_t = (1-t)*p12_t+t*p13_t
-    p3_t = (1-t)*p21_t+t*p22_t
+    p11_t = (1 - t) * P0 + t * P1
+    p12_t = (1 - t) * P1 + t * P2
+    p13_t = (1 - t) * P2 + t * P3
+    p21_t = (1 - t) * p11_t + t * p12_t
+    p22_t = (1 - t) * p12_t + t * p13_t
+    p3_t = (1 - t) * p21_t + t * p22_t
 
     x_2.append(p3_t[0])
     y_2.append(p3_t[1])
@@ -31,7 +31,7 @@ for t in np.arange(0, 1, 0.1):
     plt.plot([p12_t[0], p13_t[0]], [p12_t[1], p13_t[1]], 'b')
 
     plt.plot([p21_t[0], p22_t[0]], [p21_t[1], p22_t[1]], 'r')
-    plt.title("t="+str(t))
+    plt.title("t=" + str(t))
     plt.pause(0.1)
 #     camera.snap()
 # animation = camera.animate()
