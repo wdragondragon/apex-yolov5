@@ -233,7 +233,7 @@ class ConfigWindow(QMainWindow):
     def changeEvent(self, event):
         if event.type() == event.WindowStateChange and self.windowState() == Qt.WindowMinimized:
             # 如果窗口状态变为最小化，则同时隐藏主窗口并显示系统托盘图标
-            self.hide()
+            self.system_tray.hide_app()
             # 在这里添加代码以显示系统托盘图标，可能是调用 SystemTrayApp 的相关方法
 
     def closeEvent(self, event):
