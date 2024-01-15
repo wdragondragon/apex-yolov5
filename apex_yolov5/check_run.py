@@ -76,11 +76,11 @@ def get_machine_code():
     return ':'.join(('%012X' % mac)[i:i + 2] for i in range(0, 12, 2))
 
 
-def check_permission(main_windows, machine_code):
+def check_permission(main_windows, machine_code, validate_type):
     # 发送请求到你的验证服务器
     # 你需要替换这个URL为你的服务器地址
     url = "http://1.15.138.227:8123/validate"
-    payload = {"machine_code": machine_code}
+    payload = {"machine_code": machine_code, 'validate_type': validate_type}
     response = requests.post(url, data=payload)
     print(response.content.decode('unicode-escape'))
     # 检查服务器的响应
@@ -107,7 +107,7 @@ def check_permission(main_windows, machine_code):
     return None
 
 
-def check(main_windows):
+def check(main_windows, validate_type='ai'):
     main_board_info = get_mainboard_info()
     disk_info = get_disk_info()
 
@@ -118,7 +118,7 @@ def check(main_windows):
     disk_info_hash = hashlib.sha256(disk_info_str.encode()).hexdigest()
     machine_code = hashlib.sha256((main_board_info_hash + "_" + disk_info_hash).encode()).hexdigest()
     print("machine_code:" + machine_code)
-    if not check_permission(main_windows, machine_code):
+    if not check_permission(main_windows, machine_code, validate_type):
         print("没有运行权限")
         QMessageBox.warning(main_windows, "错误", "没有运行权限")
         os._exit(0)
