@@ -19,7 +19,7 @@ class FrameRateMonitor(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('帧率监控')
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 300, 200)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         import matplotlib
@@ -74,9 +74,9 @@ class FrameRateMonitor(QMainWindow):
             self.ax.clear()
             self.ax.plot(self.frame_rate_data, marker='o', linestyle='-', label='识别', markersize=3)
             self.ax.plot(self.frame_rate_data_2, marker='o', linestyle='-', label='截图', markersize=3)
-            self.ax.set_title('帧率监控')
-            self.ax.set_xlabel('经过时间（秒）', fontsize=12)
-            self.ax.set_ylabel('帧率', fontsize=12)
+            # self.ax.set_title('帧率监控')
+            # self.ax.set_xlabel('经过时间（秒）', fontsize=12)
+            # self.ax.set_ylabel('帧率', fontsize=12)
 
             self.ax.legend(loc='lower right')
 
