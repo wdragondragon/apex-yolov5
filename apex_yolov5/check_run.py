@@ -93,15 +93,17 @@ def check_permission(main_windows, machine_code, validate_type):
                 expiration_time_str = server_response['expiration_time']
                 if expiration_time_str is None:
                     print("欢迎回来：永久授权用户")
-                    main_windows.setWindowTitle(main_windows.windowTitle() + " 永久授权")
+                    if main_windows is not None:
+                        main_windows.setWindowTitle(main_windows.windowTitle() + " 永久授权")
                 else:
                     expiration_time = datetime.strptime(expiration_time_str, "%a, %d %b %Y %H:%M:%S %Z")
                     # 将 expiration_time 格式化为字符串
                     formatted_expiration_time = expiration_time.strftime("%Y-%m-%d %H:%M:%S")
 
                     print("欢迎回来：授权过期时间：" + formatted_expiration_time)
-                    main_windows.setWindowTitle(
-                        main_windows.windowTitle() + " 授权过期时间：" + formatted_expiration_time)
+                    if main_windows is not None:
+                        main_windows.setWindowTitle(
+                            main_windows.windowTitle() + " 授权过期时间：" + formatted_expiration_time)
             return server_response['access_granted']
 
     return None
