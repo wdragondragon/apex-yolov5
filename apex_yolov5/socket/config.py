@@ -106,7 +106,7 @@ class Config:
         self.init()
 
     def init(self):
-        self.version = "v3.23-Beta"
+        self.version = "v3.30"
         self.listener_ip = self.get_config(self.config_data, 'listener_ip')
         self.listener_port = self.get_config(self.config_data, 'listener_port')
         self.listener_ports = self.get_config(self.config_data, 'listener_ports')
@@ -255,6 +255,11 @@ class Config:
         self.lead_time_toggle = self.get_config(self.config_data, "lead_time_toggle", False)
         self.lead_time_frame = self.get_config(self.config_data, "lead_time_frame", 1)
         self.lead_time_decision_frame = self.get_config(self.config_data, "lead_time_decision_frame", 5)
+
+        # 延迟瞄准
+        self.delayed_aiming = self.get_config(self.config_data, "delayed_aiming", True)
+        self.delayed_aiming_factor_x = self.get_config(self.config_data, "delayed_aiming_factor_x", 0.4)
+        self.delayed_aiming_factor_y = self.get_config(self.config_data, "delayed_aiming_factor_y", 0.4)
 
         if self.only_save:
             self.shot_height = 640

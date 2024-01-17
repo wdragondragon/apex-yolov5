@@ -73,9 +73,28 @@ class AnthropomorphicConfigLayout:
         lead_time_layout.addWidget(self.lead_time_decision_frame_label)
         lead_time_layout.addWidget(self.lead_time_decision_frame_input)
 
+        delayed_aiming_layout = QVBoxLayout()
+        self.delayed_aiming = QCheckBox("延迟瞄准")
+        delayed_aiming_xy_layout = QHBoxLayout()
+        self.delayed_aiming.setObjectName("delayed_aiming")
+        self.delayed_aiming.toggled.connect(self.delayed_aiming_toggle_check)
+        self.delayed_aiming_factor_x_label = QLabel("延迟系数(x)")
+        self.delayed_aiming_factor_x_input = QLineEdit(self.main_window)
+        self.delayed_aiming_factor_x_input.setValidator(QDoubleValidator())
+        self.delayed_aiming_factor_y_label = QLabel("延迟系数(y)")
+        self.delayed_aiming_factor_y_input = QLineEdit(self.main_window)
+        self.delayed_aiming_factor_y_input.setValidator(QDoubleValidator())
+        delayed_aiming_xy_layout.addWidget(self.delayed_aiming_factor_x_label)
+        delayed_aiming_xy_layout.addWidget(self.delayed_aiming_factor_x_input)
+        delayed_aiming_xy_layout.addWidget(self.delayed_aiming_factor_y_label)
+        delayed_aiming_xy_layout.addWidget(self.delayed_aiming_factor_y_input)
+        delayed_aiming_layout.addWidget(self.delayed_aiming)
+        delayed_aiming_layout.addLayout(delayed_aiming_xy_layout)
+
         self.parent_layout.addWidget(self.label)
         self.parent_layout.addLayout(intention_deviation_layout)
         self.parent_layout.addLayout(random_aim_layout)
+        self.parent_layout.addLayout(delayed_aiming_layout)
         # self.parent_layout.addWidget(self.lead_time_toggle)
         # self.parent_layout.addLayout(lead_time_layout)
 
@@ -86,6 +105,12 @@ class AnthropomorphicConfigLayout:
         self.lead_time_frame_input.setVisible(checked)
         self.lead_time_decision_frame_label.setVisible(checked)
         self.lead_time_decision_frame_input.setVisible(checked)
+
+    def delayed_aiming_toggle_check(self, checked):
+        self.delayed_aiming_factor_x_label.setVisible(checked)
+        self.delayed_aiming_factor_x_input.setVisible(checked)
+        self.delayed_aiming_factor_y_label.setVisible(checked)
+        self.delayed_aiming_factor_y_input.setVisible(checked)
 
     def init_form_config(self):
         self.intention_deviation_toggle.setChecked(self.config.intention_deviation_toggle)
@@ -101,6 +126,10 @@ class AnthropomorphicConfigLayout:
         self.lead_time_decision_frame_input.setText(str(self.config.lead_time_decision_frame))
         self.lead_time_toggle_check(self.config.lead_time_toggle)
 
+        self.delayed_aiming.setChecked(self.config.delayed_aiming)
+        self.delayed_aiming_factor_x_input.setText(str(self.config.delayed_aiming_factor_x))
+        self.delayed_aiming_factor_y_input.setText(str(self.config.delayed_aiming_factor_y))
+
     def save_config(self):
         self.config.set_config("intention_deviation_toggle", self.intention_deviation_toggle.isChecked())
         self.config.set_config("intention_deviation_interval", int(self.intention_deviation_interval.text()))
@@ -113,3 +142,7 @@ class AnthropomorphicConfigLayout:
         self.config.set_config("lead_time_toggle", self.lead_time_toggle.isChecked())
         self.config.set_config("lead_time_frame", int(self.lead_time_frame_input.text()))
         self.config.set_config("lead_time_decision_frame", int(self.lead_time_decision_frame_input.text()))
+
+        self.config.set_config("delayed_aiming", self.delayed_aiming.isChecked())
+        self.config.set_config("delayed_aiming_factor_x", float(self.delayed_aiming_factor_x_input.text()))
+        self.config.set_config("delayed_aiming_factor_y", float(self.delayed_aiming_factor_y_input.text()))

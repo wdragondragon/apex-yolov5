@@ -42,15 +42,17 @@ class ConfigWindow(QMainWindow):
             self.config_layout = QHBoxLayout()
             self.config_layout_1 = QVBoxLayout()
             self.config_layout_2 = QVBoxLayout()
+            self.config_layout_3 = QVBoxLayout()
             self.ai_toggle_layout = AiToggleLayout(self.config, self, self.config_layout_1, self.system_tray)
             self.model_config_layout = ModelConfigLayout(self.config, self, self.config_layout_1)
             self.mouse_config_layout = MouseConfigLayout(self.config, self, self.config_layout_1)
-            self.anthropomorphic_config_layout = AnthropomorphicConfigLayout(self.config, self, self.config_layout_1)
 
+            self.anthropomorphic_config_layout = AnthropomorphicConfigLayout(self.config, self, self.config_layout_2)
             self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_2)
-            self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_2)
-            self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_2)
-            self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_2)
+            
+            self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_3)
+            self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_3)
+            self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_3)
             self.initUI()
             self.setWindowFlags(Qt.WindowStaysOnTopHint)
             self.init_sign = True
@@ -201,6 +203,7 @@ class ConfigWindow(QMainWindow):
 
         self.config_layout.addLayout(self.config_layout_1)
         self.config_layout.addLayout(self.config_layout_2)
+        self.config_layout.addLayout(self.config_layout_3)
 
         self.config_layout_main.addLayout(self.config_layout)
         self.config_layout_main.addWidget(self.save_button)

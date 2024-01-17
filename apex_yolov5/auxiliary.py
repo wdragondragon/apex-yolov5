@@ -22,16 +22,22 @@ click_sign = False
 intention_lock = threading.Lock()
 
 
-def set_intention(x, y, current_x, current_y, base_sign=0):
+def set_intention(x, y, random_deviation, base_sign=0):
     global intention, change_coordinates_num, intention_base_sign, executed_intention
     intention_lock.acquire()
     try:
         intention_base_sign = base_sign
         if apex_mouse_listener.get_aim_status():
-            intention = (
-                (x - current_x) * global_config.aim_move_path_nx, (y - current_y) * global_config.aim_move_path_ny)
+            x = x * global_config.aim_move_path_nx
+            y = y * global_config.aim_move_path_ny
+            random_deviation_x = random_deviation * global_config.aim_move_path_nx
+            random_deviation_y = random_deviation * global_config.aim_move_path_ny
         else:
-            intention = ((x - current_x) * global_config.move_path_nx, (y - current_y) * global_config.move_path_ny)
+            x = x * global_config.move_path_nx
+            y = y * global_config.move_path_ny
+            random_deviation_x = random_deviation * global_config.move_path_nx
+            random_deviation_y = random_deviation * global_config.move_path_ny
+        intention = (x + random_deviation_x, y + random_deviation_y)
         executed_intention = (0, 0)
         change_coordinates_num += 1
     finally:

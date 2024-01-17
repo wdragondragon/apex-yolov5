@@ -66,14 +66,13 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
         mouse_moving_radius = global_config.aim_mouse_moving_radius
     else:
         mouse_moving_radius = global_config.mouse_moving_radius
-    if (mouse_moving_radius ** 2 >
-            (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2):
+    if in_moving_raduis(mouse_moving_radius, targetRealX, targetRealY, current_mouse_x, current_mouse_y) and \
+            not in_delayed(width, height, left_top_x, left_top_y, targetShotX, targetShotY, screenCenterX,
+                           screenCenterY):
         if global_config.lead_time_toggle:
-            # print(f"Actual Move: ({targetRealX, targetRealY})")
             targetRealX, targetRealY = lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
                                                     global_config.lead_time_frame,
                                                     global_config.lead_time_decision_frame)
-            # print(f"Last Move: ({targetRealX, targetRealY})")
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
         # 随机弹道计算
@@ -96,8 +95,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
         # 漏枪逻辑cc
         if not global_config.intention_deviation_toggle:
-            set_intention(targetRealX + random_deviation, targetRealY + random_deviation, current_mouse_x,
-                          current_mouse_y, min(width / 2.0, height / 2.0))
+            set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, random_deviation,
+                          min(width / 2.0, height / 2.0))
             if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                 set_click()
         else:
@@ -106,8 +105,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     lock_time += 1
                 # 正常追踪
-                set_intention(targetRealX + random_deviation, targetRealY + random_deviation, current_mouse_x,
-                              current_mouse_y, min(width / 2.0, height / 2.0))
+                set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, random_deviation,
+                              min(width / 2.0, height / 2.0))
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     set_click()
             elif no_lock_time < global_config.intention_deviation_duration:
@@ -115,7 +114,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     targetRealX = x1 if float(target_x) > 0.5 else x2
                 if global_config.intention_deviation_force:
-                    set_intention(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
+                    set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, random_deviation,
                                   min(width / 2.0, height / 2.0))
             # 重置标记
             if lock_time == global_config.intention_deviation_interval and no_lock_time == global_config.intention_deviation_duration:
@@ -130,12 +129,24 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
         (float(target_width), float(target_height))), float(target_width_origin), float(target_height_origin)
 
     global_config.sign_shot_xy(averager)
-    # if averager > 0.8:
-    #     print(f"{averager}")
-    #     global_config.increase_shot_xy()
-    # elif averager < 0.2:
-    #     print(f"{averager}")
-    #     global_config.reduce_shot_xy()
+
+
+def in_moving_raduis(mouse_moving_radius, targetRealX, targetRealY, current_mouse_x, current_mouse_y):
+    return (mouse_moving_radius ** 2 >
+            (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2)
+
+
+def in_delayed(width, height, left_top_x, left_top_y, targetShotX, targetShotY, screenCenterX, screenCenterY):
+    if not global_config.delayed_aiming:
+        return True
+    delayed_width = width / 2.0 * global_config.delayed_aiming_factor_x
+    delayed_height = height / 2.0 * global_config.delayed_aiming_factor_y
+    delayed_aiming_xy1 = (left_top_x + (int(targetShotX - delayed_width)),
+                          (left_top_y + int(targetShotY - delayed_height)))
+    delayed_aiming_xy2 = (left_top_x + (int(targetShotX + delayed_width)),
+                          (left_top_y + int(targetShotY + delayed_height)))
+    return delayed_aiming_xy1[0] < screenCenterX < delayed_aiming_xy2[0] and \
+        delayed_aiming_xy1[1] < screenCenterY < delayed_aiming_xy2[1]
 
 
 def average_target_proportion(target_size):
