@@ -67,8 +67,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     else:
         mouse_moving_radius = global_config.mouse_moving_radius
     if in_moving_raduis(mouse_moving_radius, targetRealX, targetRealY, current_mouse_x, current_mouse_y) and \
-            not in_delayed(width, height, left_top_x, left_top_y, targetShotX, targetShotY, screenCenterX,
-                           screenCenterY):
+            not in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCenterY):
         if global_config.lead_time_toggle:
             targetRealX, targetRealY = lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
                                                     global_config.lead_time_frame,
@@ -136,15 +135,13 @@ def in_moving_raduis(mouse_moving_radius, targetRealX, targetRealY, current_mous
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2)
 
 
-def in_delayed(width, height, left_top_x, left_top_y, targetShotX, targetShotY, screenCenterX, screenCenterY):
+def in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCenterY):
     if not global_config.delayed_aiming:
         return False
     delayed_width = width / 2.0 * global_config.delayed_aiming_factor_x
     delayed_height = height / 2.0 * global_config.delayed_aiming_factor_y
-    delayed_aiming_xy1 = (left_top_x + (int(targetShotX - delayed_width)),
-                          (left_top_y + int(targetShotY - delayed_height)))
-    delayed_aiming_xy2 = (left_top_x + (int(targetShotX + delayed_width)),
-                          (left_top_y + int(targetShotY + delayed_height)))
+    delayed_aiming_xy1 = int(targetRealX - delayed_width), int(targetRealY - delayed_height)
+    delayed_aiming_xy2 = int(targetRealX + delayed_width), int(targetRealY + delayed_height)
     return delayed_aiming_xy1[0] < screenCenterX < delayed_aiming_xy2[0] and \
         delayed_aiming_xy1[1] < screenCenterY < delayed_aiming_xy2[1]
 
