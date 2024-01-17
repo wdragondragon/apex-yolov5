@@ -138,7 +138,7 @@ def in_moving_raduis(mouse_moving_radius, targetRealX, targetRealY, current_mous
 
 def in_delayed(width, height, left_top_x, left_top_y, targetShotX, targetShotY, screenCenterX, screenCenterY):
     if not global_config.delayed_aiming:
-        return True
+        return False
     delayed_width = width / 2.0 * global_config.delayed_aiming_factor_x
     delayed_height = height / 2.0 * global_config.delayed_aiming_factor_y
     delayed_aiming_xy1 = (left_top_x + (int(targetShotX - delayed_width)),
