@@ -24,7 +24,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
     listener = pynput.mouse.Listener(
-        on_click=apex_mouse_listener.on_click)
+        on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
     listener.start()
 
     key_listener = pynput.keyboard.Listener(

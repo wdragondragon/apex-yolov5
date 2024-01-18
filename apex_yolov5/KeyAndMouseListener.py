@@ -1,10 +1,12 @@
 import threading
+import time
 
 from pynput.mouse import Button
 
 from apex_yolov5.ScreenUtil import select_gun
 from apex_yolov5.Tools import Tools
 from apex_yolov5.grabscreen import save_screen_to_file
+from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
 
 
@@ -55,9 +57,20 @@ class MouseListener:
         super().__init__()
         self.on_mouse_key_map = dict()
         self.toggle_mouse_key_map = []
+        self.move_metering = None
 
     def on_move(self, x, y):
-        pass
+        if MoverFactory.mouse_mover() is None:
+            return
+        if self.move_metering is None:
+            self.move_metering = (time.time(), (MoverFactory.mouse_mover().get_position()), 0, 0)
+        pre_time, (pre_x, pre_y), metering_x, metering_y = self.move_metering
+        now = time.time()
+        if int((now - pre_time) * 1000) < 1000:
+            self.move_metering = (pre_time, (x, y), metering_x + abs(pre_x - x), metering_x + abs(pre_y - y))
+        else:
+            # print(f"1秒鼠标移动幅度：[{metering_x / 2, metering_y / 2}]")
+            self.move_metering = (time.time(), (x, y), abs(pre_x - x), abs(pre_y - y))
 
     def on_click(self, x, y, button, pressed):
         if pressed:
