@@ -216,13 +216,13 @@ def lead_time_one(name, target_real,
     history_move_queue.push(move)
     history_executed_intention_queue.push(executed_intention)
 
-    move_diff = move - executed_intention - last_move
+    move_diff = move + executed_intention - last_move
     history_move_diff_queue.push(move_diff)
     # 移除之前的不同象限的移动
     current_quadrant = determine_quadrant(move_diff)
     lead_time = previous_movements(history_move_diff_queue, current_quadrant, lead_time_decision_frame)
     move_diff = history_move_diff_queue.get_last()
-    if (not lead_time) or move_diff is None:
+    if (not lead_time) or move_diff is None or abs(move_diff) < 10:
         return target_real
 
     last_move = move + move * lead_time_frame + current_mouse
@@ -233,22 +233,23 @@ def lead_time_one(name, target_real,
 
 def previous_movements(queue, current_quadrant, lead_time_decision_frame):
     # 从队列中移除之前的不同象限的移动
-    remove_num = 0
-    keep_num = 0
-    for i in range(len(queue.queue) - 1, -1, -1):
-        prev_move = queue.queue[i]
-        prev_quadrant = determine_quadrant(prev_move)
-        if prev_quadrant == current_quadrant:
-            remove_num = 0
-            keep_num += 1
-            if keep_num >= lead_time_decision_frame:
-                return True
-        else:
-            remove_num += 1
-            keep_num = 0
-            if remove_num >= 5:
-                return False
-    return keep_num >= lead_time_decision_frame
+    return True
+    # remove_num = 0
+    # keep_num = 0
+    # for i in range(len(queue.queue) - 1, -1, -1):
+    #     prev_move = queue.queue[i]
+    #     prev_quadrant = determine_quadrant(prev_move)
+    #     if prev_quadrant == current_quadrant:
+    #         remove_num = 0
+    #         keep_num += 1
+    #         if keep_num >= lead_time_decision_frame:
+    #             return True
+    #     else:
+    #         remove_num += 1
+    #         keep_num = 0
+    #         if remove_num >= 5:
+    #             return False
+    # return keep_num >= lead_time_decision_frame
 
 
 def determine_quadrant(move):

@@ -66,10 +66,10 @@ class MouseListener:
             self.move_metering = (time.time(), (MoverFactory.mouse_mover().get_position()), 0, 0)
         pre_time, (pre_x, pre_y), metering_x, metering_y = self.move_metering
         now = time.time()
-        if int((now - pre_time) * 1000) < 1000:
-            self.move_metering = (pre_time, (x, y), metering_x + abs(pre_x - x), metering_x + abs(pre_y - y))
+        if int((now - pre_time) * 1000) < 500:
+            self.move_metering = (pre_time, (x, y), metering_x + abs(pre_x - x), metering_y + abs(pre_y - y))
         else:
-            # print(f"1秒鼠标移动幅度：[{metering_x / 2, metering_y / 2}]")
+            # print(f"1秒鼠标移动幅度：[{metering_x, metering_y}]")
             self.move_metering = (time.time(), (x, y), abs(pre_x - x), abs(pre_y - y))
 
     def on_click(self, x, y, button, pressed):

@@ -95,8 +95,8 @@ class AnthropomorphicConfigLayout:
         self.parent_layout.addLayout(intention_deviation_layout)
         self.parent_layout.addLayout(random_aim_layout)
         self.parent_layout.addLayout(delayed_aiming_layout)
-        # self.parent_layout.addWidget(self.lead_time_toggle)
-        # self.parent_layout.addLayout(lead_time_layout)
+        self.parent_layout.addWidget(self.lead_time_toggle)
+        self.parent_layout.addLayout(lead_time_layout)
 
         self.init_form_config()
 
