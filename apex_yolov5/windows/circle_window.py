@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtWidgets import QMainWindow
 
+from apex_yolov5 import global_img_info
 from apex_yolov5.KeyAndMouseListener import KMCallBack
 from apex_yolov5.socket.config import global_config
 
@@ -28,7 +29,15 @@ class CircleWindow(QMainWindow):
             self.radius = self.config.aim_mouse_moving_radius
         else:
             self.radius = self.config.mouse_moving_radius
+        self.radius = round(
+            self.radius * max(global_img_info.get_current_img().shot_width / self.config.default_shot_width,
+                              global_img_info.get_current_img().shot_height / self.config.default_shot_height), 2)
         self.update()
+
+    def update_circle_auto_change(self, radius):
+        if self.radius != radius:
+            self.radius = radius
+            self.update()
 
     def init_form_config(self):
         self.desktop_width = self.config.desktop_width
@@ -47,6 +56,10 @@ class CircleWindow(QMainWindow):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(QPen(Qt.red, 1, Qt.SolidLine))
         painter.drawEllipse(self.center, self.radius, self.radius)
+
+    def close(self):
+        KMCallBack.remove("m", "right")
+        super().close()
 
 
 circle_window: CircleWindow = None

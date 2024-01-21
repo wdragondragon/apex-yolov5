@@ -24,7 +24,7 @@ def handle(log_window):
     while True:
         try:
             if not global_config.ai_toggle:
-                time.sleep(6)
+                time.sleep(0.006)
                 continue
             data = image_block_queue.get()
             img = data["img"]

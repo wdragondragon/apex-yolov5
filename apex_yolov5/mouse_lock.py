@@ -10,6 +10,7 @@ from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import set_intention, set_click, get_executed_intention
 from apex_yolov5.socket.config import global_config
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
+from apex_yolov5.windows.circle_window import get_circle_window
 
 lock_time = 0
 no_lock_time = 0
@@ -62,11 +63,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
             print(e)
             traceback.print_exc()
             pass
-    if apex_mouse_listener.get_aim_status():
-        mouse_moving_radius = global_config.aim_mouse_moving_radius
-    else:
-        mouse_moving_radius = global_config.mouse_moving_radius
-    if in_moving_raduis(mouse_moving_radius, targetRealX, targetRealY, current_mouse_x, current_mouse_y) and \
+
+    if in_moving_raduis(targetRealX, targetRealY, shot_width, shot_height, current_mouse_x, current_mouse_y) and \
             not in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCenterY):
         if global_config.lead_time_toggle:
             targetRealX, targetRealY = lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
@@ -130,7 +128,16 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     global_config.sign_shot_xy(averager)
 
 
-def in_moving_raduis(mouse_moving_radius, targetRealX, targetRealY, current_mouse_x, current_mouse_y):
+def in_moving_raduis(targetRealX, targetRealY, shot_width, shot_height, current_mouse_x, current_mouse_y):
+    if apex_mouse_listener.get_aim_status():
+        mouse_moving_radius = global_config.aim_mouse_moving_radius
+    else:
+        mouse_moving_radius = global_config.mouse_moving_radius
+
+    mouse_moving_radius = round(mouse_moving_radius * max(shot_width / global_config.default_shot_width,
+                                                          shot_height / global_config.default_shot_height), 2)
+    if global_config.show_circle:
+        get_circle_window().update_circle_auto_change(mouse_moving_radius)
     return (mouse_moving_radius ** 2 >
             (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2)
 
@@ -225,9 +232,9 @@ def lead_time_one(name, target_real,
     if (not lead_time) or move_diff is None or abs(move_diff) < 10:
         return target_real
 
-    last_move = move + move * lead_time_frame + current_mouse
-    print(f"{name} move diff:({move_diff})")
-    print(f"{name} Actual Move: ({move}), Last Move: ({move + move_diff * lead_time_frame})")
+    last_move = move + executed_intention * lead_time_frame + current_mouse
+    print(f"{name} move diff:({move_diff}) move intention:({executed_intention})")
+    print(f"{name} Actual Move: ({move}), Last Move: ({move + executed_intention * lead_time_frame})")
     return last_move
 
 
