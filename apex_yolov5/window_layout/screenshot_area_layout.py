@@ -187,11 +187,14 @@ class ScreenshotAreaLayout:
         self.mouse_moving_radius_input.setText(str(int(self.config.mouse_moving_radius)))
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
         self.multi_stage_aiming_speed_input.setText(
-            " ".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in
-                      self.config.multi_stage_aiming_speed]))
+            " ".join(
+                ["|".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in stage])
+                 for stage in self.config.multi_stage_aiming_speed]))
+
         self.aim_multi_stage_aiming_speed_input.setText(
-            " ".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in
-                      self.config.aim_multi_stage_aiming_speed]))
+            " ".join(
+                ["|".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in stage])
+                 for stage in self.config.aim_multi_stage_aiming_speed]))
 
         self.multi_stage_aiming_speed_toggle.setChecked(self.config.multi_stage_aiming_speed_toggle)
         self.based_on_character_box.setChecked(self.config.based_on_character_box)
@@ -275,25 +278,27 @@ class ScreenshotAreaLayout:
         if multi_stage_aiming_speed_str is None or multi_stage_aiming_speed_str == "":
             return []
         multi_stage_aiming_speed_arr = multi_stage_aiming_speed_str.split(" ")
-        number_array = []
-        for num_str in multi_stage_aiming_speed_arr:
-            try:
-                num_str_arr = num_str.split("-")
-                num_one = float(num_str_arr[0])
-                num_two = float(num_str_arr[1])
-                if not (len(num_str_arr) == 2 and num_two >= num_one):
-                    QMessageBox.warning(self.main_window, "不符合条件",
-                                        f"{num_str_arr} 格式错误，格式为 数字-数字，且前一位大于后一位")
+        range_array = []
+        for range_str in multi_stage_aiming_speed_arr:
+            number_array = []
+            range_str_arr = range_str.split("|")
+            for num_str in range_str_arr:
+                try:
+                    num_str_arr = num_str.split("-")
+                    num_one = float(num_str_arr[0])
+                    num_two = float(num_str_arr[1])
+                    if not (len(num_str_arr) == 2 and num_two >= num_one):
+                        QMessageBox.warning(self.main_window, "不符合条件",
+                                            f"{num_str_arr} 格式错误，格式为 数字-数字，且前一位大于后一位")
 
-                if not 0 <= num_two <= speed_up:
-                    QMessageBox.warning(self.main_window, "不符合条件", f"{num_two} 数字不允许比瞄准范围大")
-                    return []
-                else:
-                    number_array.append((num_one, num_two))
-            except ValueError:
-                QMessageBox.critical(self.main_window, "错误", f"{num_str} 格式错误")
-                return []
-        return number_array
+                    if not 0 <= num_two <= speed_up:
+                        QMessageBox.warning(self.main_window, "不符合条件", f"{num_two} 数字不允许比瞄准范围大")
+                    else:
+                        number_array.append((num_one, num_two))
+                except ValueError:
+                    QMessageBox.critical(self.main_window, "错误", f"{num_str} 格式错误")
+            range_array.append(number_array)
+        return range_array
 
     def save_config(self):
         self.config.set_config("shot_width", int(self.view.inner_rect.rect().width() * 10))

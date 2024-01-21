@@ -155,9 +155,10 @@ def calculate_distance(x, y):
 
 
 def find_range_index(ranges, num):
-    for i, (start_num, end) in enumerate(ranges):
-        if start_num <= num <= end:
-            return i
+    for i, range_arr in enumerate(ranges):
+        for (start_num, end) in range_arr:
+            if start_num <= num <= end:
+                return i
     return None
 
 
@@ -180,7 +181,8 @@ def calculate_percentage_value(arr, m, n, based_on_character_box):
 
 
 def find_range_index_2(ranges, num):
-    for i, (start_num, end) in enumerate(ranges):
-        if start_num * intention_base_sign <= num <= end * intention_base_sign:
-            return i
+    for i, range_arr in enumerate(ranges):
+        for (start_num, end) in range_arr:
+            if start_num * intention_base_sign <= num <= end * intention_base_sign:
+                return i
     return None
