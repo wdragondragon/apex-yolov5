@@ -19,8 +19,13 @@ class Win32ApiMover(MouseMover):
         self.user32 = windll.user32
         self.logger = logger
 
-    def move_rp(self, x: int, y: int):
-        self.user32.mouse_event(MOUSE_EVEN_TF_MOVE, x, y)
+    def move_rp(self, x: int, y: int, re_cut_size=0):
+        if re_cut_size == 0:
+            self.user32.mouse_event(MOUSE_EVEN_TF_MOVE, x, y)
+        else:
+            coordinates_arr = self.split_coordinates(x, y)
+            for move_x, move_y in coordinates_arr:
+                self.user32.mouse_event(MOUSE_EVEN_TF_MOVE, move_x, move_y)
 
     def move(self, x, y):
         self.move_rp(x, y)
@@ -28,3 +33,23 @@ class Win32ApiMover(MouseMover):
     def left_click(self):
         self.user32.mouse_event(MOUSE_EVEN_TF_LEFT_DOWN, 0, 0, 0, 0)
         self.user32.mouse_event(MOUSE_EVEN_TF_LEFT_UP, 0, 0, 0, 0)
+
+    def move_test(self, x: int, y: int):
+        self.user32.mouse_event(MOUSE_EVEN_TF_MOVE, x, y)
+
+    def split_coordinates(self, x, y):
+        result = []
+
+        # 处理 x 坐标
+        if x > 0:
+            result.extend([(1, 0) for _ in range(x)])
+        elif x < 0:
+            result.extend([(-1, 0) for _ in range(abs(x))])
+
+        # 处理 y 坐标
+        if y > 0:
+            result.extend([(0, 1) for _ in range(y)])
+        elif y < 0:
+            result.extend([(0, -1) for _ in range(abs(y))])
+
+        return result

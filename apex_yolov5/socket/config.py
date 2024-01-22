@@ -106,7 +106,7 @@ class Config:
         self.init()
 
     def init(self):
-        self.version = "v3.30"
+        self.version = "v3.32"
         self.listener_ip = self.get_config(self.config_data, 'listener_ip')
         self.listener_port = self.get_config(self.config_data, 'listener_port')
         self.listener_ports = self.get_config(self.config_data, 'listener_ports')
@@ -260,6 +260,7 @@ class Config:
         self.delayed_aiming = self.get_config(self.config_data, "delayed_aiming", True)
         self.delayed_aiming_factor_x = self.get_config(self.config_data, "delayed_aiming_factor_x", 0.4)
         self.delayed_aiming_factor_y = self.get_config(self.config_data, "delayed_aiming_factor_y", 0.4)
+        self.re_cut_size = self.get_config(self.config_data, "re_cut_size", 0)
 
         if self.only_save:
             self.shot_height = 640

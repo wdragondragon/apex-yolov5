@@ -1,4 +1,6 @@
 import os
+import threading
+import time
 
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication, QDialog, \
@@ -7,6 +9,7 @@ from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBo
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
+from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket import config
 from apex_yolov5.window_layout.ai_toggle_layout import AiToggleLayout
 from apex_yolov5.window_layout.anthropomorphic_config_layout import AnthropomorphicConfigLayout
@@ -49,7 +52,7 @@ class ConfigWindow(QMainWindow):
 
             self.anthropomorphic_config_layout = AnthropomorphicConfigLayout(self.config, self, self.config_layout_2)
             self.screenshot_layout = ScreenshotAreaLayout(self.config, self, self.config_layout_2)
-            
+
             self.auto_gun_config_layout = AutoGunConfigLayout(self.config, self, self.config_layout_3)
             self.auto_save_config_layout = AutoSaveConfigLayout(self.config, self, self.config_layout_3)
             self.auto_charge_energy_layout = AutoChargedEnergyLayout(self.config, self, self.config_layout_3)
@@ -67,6 +70,9 @@ class ConfigWindow(QMainWindow):
         magnifying_glass_action = QAction("识别频率监控", self)
         magnifying_glass_action.triggered.connect(self.open_frame_rate_monitor)
 
+        mouse_performance_action = QAction("测试鼠标性能", self)
+        mouse_performance_action.triggered.connect(self.mouse_performance_test)
+
         read_ref_glass_action = QAction("读取配置", self)
         read_ref_glass_action.triggered.connect(self.open_read_ref_glass_window)
 
@@ -77,6 +83,7 @@ class ConfigWindow(QMainWindow):
         file_menu = menu_bar.addMenu("其他功能")
         file_menu.addAction(config_action)
         file_menu.addAction(magnifying_glass_action)
+        file_menu.addAction(mouse_performance_action)
 
         config_menu = menu_bar.addMenu("管理配置")
         config_menu.addAction(read_ref_glass_action)
@@ -86,6 +93,19 @@ class ConfigWindow(QMainWindow):
         disclaimer_action = QAction('免责声明', self)
         disclaimer_action.triggered.connect(self.open_disclaimer_window)
         more_menu.addAction(disclaimer_action)
+
+    def mouse_performance_test(self):
+        threading.Thread(target=self.mouse_performance_test_threading).start()
+
+    def mouse_performance_test_threading(self):
+        i = 0
+        x = 1
+        start = time.time()
+        while int((time.time() - start) * 1000) < 1000:
+            MoverFactory.mouse_mover().move_test(x, x)
+            i += 1
+            x = -x
+        print(f"鼠标性能为{i}/s")
 
     def open_disclaimer_window(self):
         self.disclaimer_window = DisclaimerWindow(self)

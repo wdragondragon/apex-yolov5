@@ -7,6 +7,7 @@ from pynput.mouse import Button
 from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.ScreenUtil import select_gun
+from apex_yolov5.Tools import Tools
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
 
@@ -19,7 +20,9 @@ last_click_time = 0
 click_interval = 0.01
 click_sign = False
 
+block_queue = Tools.GetBlockQueue(name='auxiliary_queue')
 intention_lock = threading.Lock()
+intention_exec_sign = False
 
 
 def set_intention(x, y, random_deviation, base_sign=0):
@@ -40,6 +43,8 @@ def set_intention(x, y, random_deviation, base_sign=0):
         intention = (x + random_deviation_x, y + random_deviation_y)
         executed_intention = (0, 0)
         change_coordinates_num += 1
+        if not intention_exec_sign:
+            block_queue.put(True)
     finally:
         # 释放锁
         intention_lock.release()
@@ -78,9 +83,13 @@ def get_lock_mode():
 
 
 def start():
-    global intention, change_coordinates_num, last_click_time, click_sign
-    sleep_time = 0.01
+    global intention, change_coordinates_num, last_click_time, click_sign, intention_exec_sign
+    sum_move_x, sum_move_y = 0, 0
+    start_time = time.time()
+    while_frequency = 0
     while True:
+        block_queue.get()
+        intention_exec_sign = True
         if click_sign and time.time() - last_click_time > click_interval and select_gun.current_gun in global_config.click_gun:
             MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()
@@ -115,37 +124,47 @@ def start():
                             move_step_y_temp = calculate_percentage_value(multi_stage_aiming_speed, y, move_step_y_temp,
                                                                           global_config.based_on_character_box)
                         # print(str(move_step_temp) + ":" + str(move_step_y_temp))
-                        move_up = min(move_step_temp, abs(x)) * (1 if x > 0 else -1)
-                        move_down = min(move_step_y_temp, abs(y)) * (1 if y > 0 else -1)
-                        if x == 0:
-                            move_up = 0
-                        elif y == 0:
-                            move_down = 0
-                        x -= move_up
-                        y -= move_down
-                        intention = (x, y)
+                        intention, move_up, move_down = split_coordinate(x, y, move_step_temp, move_step_y_temp)
                         incr_executed_intention(move_up, move_down)
                     finally:
                         # 释放锁
                         intention_lock.release()
-                    MoverFactory.mouse_mover().move_rp(int(move_up), int(move_down))
+                    MoverFactory.mouse_mover().move_rp(int(move_up), int(move_down), global_config.re_cut_size)
+                    sum_move_x, sum_move_y = sum_move_x + abs(move_up), sum_move_y + abs(move_down)
                     if not global_config.ai_toggle:
                         break
                     if not global_config.mouse_move_frequency_switch:
                         time.sleep(global_config.mouse_move_frequency)
+                # cost_time = int((time.time() - t0) * 1000)
                 # print(
-                #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
+                #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format(cost_time, change_coordinates_num))
             else:
                 # print("开始移动，移动距离:{}".format((x, y)))
                 MoverFactory.mouse_mover().move(int(x), int(y))
                 # print(
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             intention = None
-            sleep_time = 0.001
         elif not get_lock_mode():
             intention = None
-        time.sleep(sleep_time)
+        while_frequency += 1
+        if int((time.time() - start_time) * 1000) > 1000:
+            print(f"鼠标移动频率为：{while_frequency}")
+            while_frequency = 0
+            start_time = time.time()
         change_coordinates_num = 0
+        intention_exec_sign = False
+
+
+def split_coordinate(x, y, move_step_temp, move_step_y_temp):
+    move_up = min(move_step_temp, abs(x)) * (1 if x > 0 else -1)
+    move_down = min(move_step_y_temp, abs(y)) * (1 if y > 0 else -1)
+    if x == 0:
+        move_up = 0
+    elif y == 0:
+        move_down = 0
+    x -= move_up
+    y -= move_down
+    return (x, y), move_up, move_down
 
 
 def calculate_distance(x, y):

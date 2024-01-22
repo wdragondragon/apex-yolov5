@@ -157,12 +157,22 @@ class MouseConfigLayout:
         self.mouse_move_frequency_label = QLabel("鼠标移动频率:", self.main_window)
         self.mouse_move_frequency_slider = QSlider(Qt.Horizontal, self.main_window)
         self.mouse_move_frequency_slider.setObjectName("mouse_move_frequency")
-        self.mouse_move_frequency_slider.setMinimum(100)  # 最小值
-        self.mouse_move_frequency_slider.setMaximum(1000)  # 最大值
+        self.mouse_move_frequency_slider.setMinimum(125)  # 最小值
+        self.mouse_move_frequency_slider.setMaximum(4000)  # 最大值
 
         self.mouse_move_frequency_slider.valueChanged.connect(self.update_mouse_move_frequency_label)
         mouse_move_frequency_layout.addWidget(self.mouse_move_frequency_label)
         mouse_move_frequency_layout.addWidget(self.mouse_move_frequency_slider)
+
+        re_cut_size_layout = QHBoxLayout()
+        self.re_cut_size_label = QLabel("单次移动最大像素:", self.main_window)
+        self.re_cut_size_slider = QSlider(Qt.Horizontal, self.main_window)
+        self.re_cut_size_slider.setObjectName("re_cut_size")
+        self.re_cut_size_slider.setMinimum(0)  # 最小值
+        self.re_cut_size_slider.setMaximum(100)  # 最大值
+        self.re_cut_size_slider.valueChanged.connect(self.update_re_cut_size_label)  # 最大值
+        re_cut_size_layout.addWidget(self.re_cut_size_label)
+        re_cut_size_layout.addWidget(self.re_cut_size_slider)
 
         cross_layout = QHBoxLayout()
         self.cross_label = QLabel("瞄准高度：", self.main_window)
@@ -205,6 +215,7 @@ class MouseConfigLayout:
 
         self.parent_layout.addWidget(self.mouse_move_frequency_switch)
         self.parent_layout.addLayout(mouse_move_frequency_layout)
+        self.parent_layout.addLayout(re_cut_size_layout)
 
         self.parent_layout.addLayout(cross_layout)
         self.init_form_config()
@@ -272,6 +283,9 @@ class MouseConfigLayout:
 
         self.mouse_move_frequency_label.setText("鼠标移动频率:" + str(int(1 / self.config.mouse_move_frequency)))
         self.mouse_move_frequency_slider.setValue(int(1 / self.config.mouse_move_frequency))  # 初始化值
+
+        self.re_cut_size_label.setText("单次移动最大像素:" + str(self.config.re_cut_size))
+        self.re_cut_size_slider.setValue(int(self.config.re_cut_size))
 
         self.mouse_move_frequency_slider.setEnabled(
             self.config.mouse_smoothing_switch and not self.config.mouse_move_frequency_switch)
@@ -357,6 +371,10 @@ class MouseConfigLayout:
         self.mouse_move_frequency_label.setText("鼠标移动频率:" + str(value))
         self.mouse_move_frequency_label.adjustSize()
 
+    def update_re_cut_size_label(self, value):
+        self.re_cut_size_label.setText("单次移动最大像素:" + str(value))
+        self.re_cut_size_label.adjustSize()
+
     def move_crosshair(self, value):
         self.crosshair_position = QPoint(
             self.human_pixmap.size().width() // 2 - self.crosshair_pixmap.size().width() // 2,
@@ -378,6 +396,7 @@ class MouseConfigLayout:
         self.config.set_config("aim_move_path_nx", self.aim_move_path_nx_slider.value() / 10.0)
         self.config.set_config("aim_move_path_ny", self.aim_move_path_ny_slider.value() / 10.0)
         self.config.set_config("mouse_move_frequency", 1.0 / self.mouse_move_frequency_slider.value())
+        self.config.set_config("re_cut_size", int(self.re_cut_size_slider.value()))
 
         self.config.set_config("cross_hair", (self.slider.value() / (
                 self.slider.maximum() // 2)) - 1)

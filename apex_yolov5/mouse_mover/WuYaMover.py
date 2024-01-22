@@ -31,7 +31,7 @@ class WuYaMover(MouseMover):
         if not self.wy_hkm.Open(dev_id, 0):
             self.logger.print_log("打开无涯键鼠盒子失败")
 
-    def move_rp(self, short_x: int, short_y: int):
+    def move_rp(self, short_x: int, short_y: int, re_cut_size=0):
         self.wy_hkm.MoveRP(short_x, short_y)
 
     def move(self, short_x: int, short_y: int):

@@ -35,7 +35,7 @@ class KmBoxMover(MouseMover):
         # 左键
         self.km_box_A.KM_left(ctypes.c_char(vk_key))
 
-    def move_rp(self, short_x: int, short_y: int):
+    def move_rp(self, short_x: int, short_y: int, re_cut_size=0):
         self.move(short_x, short_y)
 
     def move(self, short_x: int, short_y: int):

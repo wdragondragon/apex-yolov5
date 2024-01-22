@@ -17,11 +17,12 @@ class MouseMover:
     def __init__(self, mouse_mover_param):
         self.mouse_mover_param = mouse_mover_param
 
-    def move_rp(self, x: int, y: int):
+    def move_rp(self, x: int, y: int, re_cut_size=0):
         """
             鼠标移动，原生移动
         :param x:
         :param y:
+        :param re_cut_size:
         """
         pass
 
@@ -68,3 +69,6 @@ class MouseMover:
             销毁
         """
         pass
+
+    def move_test(self, x: int, y: int):
+        self.move_rp(x, y)

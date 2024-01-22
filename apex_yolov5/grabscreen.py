@@ -119,7 +119,7 @@ def save_screen_to_file():
     image = Image.fromarray(img)
     now = datetime.now()
     # 格式化日期为字符串
-    formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
+    formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
     os.makedirs(save_manual_operation_path, exist_ok=True)
     image.save(save_manual_operation_path + formatted_date + ".png", 'PNG')
 
@@ -176,7 +176,7 @@ def save_img_and_aims_to_file(img, aims):
         return
     now = datetime.now()
     # 格式化日期为字符串
-    formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S")
+    formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
     # 保存图像到文件
     os.makedirs(save_image_path, exist_ok=True)
     os.makedirs(save_label_path, exist_ok=True)
