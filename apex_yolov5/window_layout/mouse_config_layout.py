@@ -31,6 +31,9 @@ class MouseConfigLayout:
         aim_model_layout.addWidget(aim_model_label)
         aim_model_layout.addWidget(self.aim_model_combo_box)
 
+        self.dynamic_mouse_move = QCheckBox("动态移速")
+        self.dynamic_mouse_move.setObjectName("dynamic_mouse_move")
+
         self.joy_move = QCheckBox("手柄模式")
         self.joy_move.setObjectName("joy_move")
         self.joy_move.toggled.connect(self.joy_move_toggled)
@@ -202,6 +205,7 @@ class MouseConfigLayout:
         self.parent_layout.addLayout(aim_model_layout)
         self.parent_layout.addLayout(mouse_model_layout)
         self.parent_layout.addWidget(self.joy_move)
+        self.parent_layout.addWidget(self.dynamic_mouse_move)
         self.parent_layout.addWidget(self.mouse_smoothing_switch)
         self.parent_layout.addLayout(move_step_layout)
         self.parent_layout.addLayout(move_step_y_layout)
@@ -238,6 +242,7 @@ class MouseConfigLayout:
         self.aim_model_combo_box.currentIndexChanged.connect(self.selection_aim_model_changed)
 
         self.joy_move.setChecked(self.config.joy_move)  # 初始化开关的值
+        self.dynamic_mouse_move.setChecked(self.config.dynamic_mouse_move)  # 初始化开关的值
 
         self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
 
@@ -400,3 +405,5 @@ class MouseConfigLayout:
 
         self.config.set_config("cross_hair", (self.slider.value() / (
                 self.slider.maximum() // 2)) - 1)
+
+        self.config.set_config("dynamic_mouse_move", self.dynamic_mouse_move.isChecked())

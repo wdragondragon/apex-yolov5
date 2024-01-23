@@ -225,6 +225,7 @@ class Config:
         self.random_coefficient = self.get_config(self.config_data, "random_coefficient", 0.3)
         self.random_change_frequency = self.get_config(self.config_data, "random_change_frequency", 20)
         self.joy_move = self.get_config(self.config_data, "joy_move", False)
+        self.dynamic_mouse_move = self.get_config(self.config_data, "dynamic_mouse_move", False)
 
         self.show_circle = self.get_config(self.config_data, "show_circle", False)
         self.show_aim = self.get_config(self.config_data, "show_aim", False)

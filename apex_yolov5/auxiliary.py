@@ -109,10 +109,14 @@ def start():
                     intention_lock.acquire()
                     try:
                         (x, y) = intention
-                        move_step_temp = global_config.aim_move_step if apex_mouse_listener.is_press(
-                            Button.right) else global_config.move_step
-                        move_step_y_temp = global_config.aim_move_step_y if apex_mouse_listener.is_press(
-                            Button.right) else global_config.move_step_y
+                        if global_config.dynamic_mouse_move:
+                            move_step_temp = apex_mouse_listener.move_avg_x
+                            move_step_y_temp = apex_mouse_listener.move_avg_y
+                        else:
+                            move_step_temp = global_config.aim_move_step if apex_mouse_listener.is_press(
+                                Button.right) else global_config.move_step
+                            move_step_y_temp = global_config.aim_move_step_y if apex_mouse_listener.is_press(
+                                Button.right) else global_config.move_step_y
 
                         # 多级瞄速计算
                         if global_config.multi_stage_aiming_speed_toggle:

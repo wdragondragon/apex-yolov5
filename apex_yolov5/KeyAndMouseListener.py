@@ -58,19 +58,33 @@ class MouseListener:
         self.on_mouse_key_map = dict()
         self.toggle_mouse_key_map = []
         self.move_metering = None
+        self.move_avg_x = 1
+        self.move_avg_y = 1
 
     def on_move(self, x, y):
         if MoverFactory.mouse_mover() is None:
             return
         if self.move_metering is None:
-            self.move_metering = (time.time(), (MoverFactory.mouse_mover().get_position()), 0, 0)
-        pre_time, (pre_x, pre_y), metering_x, metering_y = self.move_metering
+            self.move_metering = (time.time(), (MoverFactory.mouse_mover().get_position()), 0, 0, 0, 0)
+        pre_time, (pre_x, pre_y), metering_x, metering_y, move_time_x, move_time_y = self.move_metering
         now = time.time()
-        if int((now - pre_time) * 1000) < 500:
-            self.move_metering = (pre_time, (x, y), metering_x + abs(pre_x - x), metering_y + abs(pre_y - y))
+        abs_x = abs(pre_x - x)
+        abs_y = abs(pre_y - y)
+        if int((now - pre_time) * 1000) < 100:
+            if abs_x > 0:
+                move_time_x += 1
+            if abs_y > 0:
+                move_time_y += 1
+            self.move_metering = (
+                pre_time, (x, y), metering_x + abs_x, metering_y + abs_y, move_time_x, move_time_y)
         else:
-            # print(f"1秒鼠标移动幅度：[{metering_x, metering_y}]")
-            self.move_metering = (time.time(), (x, y), abs(pre_x - x), abs(pre_y - y))
+            avg_x = 0 if move_time_x == 0 else metering_x / move_time_x
+            avg_y = 0 if move_time_y == 0 else metering_y / move_time_y
+            # print(
+            #     f"1秒鼠标移动幅度：[{metering_x, metering_y}],移动次数：[{move_time_x, move_time_y}]，平均每次：[{avg_x, avg_y}]")
+            self.move_metering = (time.time(), (x, y), abs_x, abs_y, 1 if abs_x > 0 else 0, 1 if abs_y > 0 else 0)
+            self.move_avg_x = max(1, round(avg_x, 0))
+            self.move_avg_y = max(1, round(avg_y, 0))
 
     def on_click(self, x, y, button, pressed):
         if pressed:
