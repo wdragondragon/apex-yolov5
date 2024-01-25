@@ -88,6 +88,7 @@ def start():
     start_time = time.time()
     while_frequency = 0
     while True:
+        # sleep_time = 0.01
         block_queue.get()
         intention_exec_sign = True
         if click_sign and time.time() - last_click_time > click_interval and select_gun.current_gun in global_config.click_gun:
@@ -109,14 +110,13 @@ def start():
                     intention_lock.acquire()
                     try:
                         (x, y) = intention
+                        move_step_temp = global_config.aim_move_step if apex_mouse_listener.is_press(
+                            Button.right) else global_config.move_step
+                        move_step_y_temp = global_config.aim_move_step_y if apex_mouse_listener.is_press(
+                            Button.right) else global_config.move_step_y
                         if global_config.dynamic_mouse_move:
-                            move_step_temp = apex_mouse_listener.move_avg_x
-                            move_step_y_temp = apex_mouse_listener.move_avg_y
-                        else:
-                            move_step_temp = global_config.aim_move_step if apex_mouse_listener.is_press(
-                                Button.right) else global_config.move_step
-                            move_step_y_temp = global_config.aim_move_step_y if apex_mouse_listener.is_press(
-                                Button.right) else global_config.move_step_y
+                            move_step_temp = max(apex_mouse_listener.move_avg_x, move_step_temp)
+                            move_step_y_temp = max(apex_mouse_listener.move_avg_y, move_step_y_temp)
 
                         # 多级瞄速计算
                         if global_config.multi_stage_aiming_speed_toggle:
@@ -148,6 +148,7 @@ def start():
                 # print(
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             intention = None
+            # sleep_time = 0.001
         elif not get_lock_mode():
             intention = None
         while_frequency += 1
@@ -157,6 +158,7 @@ def start():
             start_time = time.time()
         change_coordinates_num = 0
         intention_exec_sign = False
+        # time.sleep(sleep_time)
 
 
 def split_coordinate(x, y, move_step_temp, move_step_y_temp):

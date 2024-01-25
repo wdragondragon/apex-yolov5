@@ -64,6 +64,21 @@ class MouseMover:
 
         return num_lock_state == 1
 
+    def is_caps_locked(self):
+        """
+        使用ctypes获取键盘状态信息
+        0x14 是Caps Lock键的虚拟键码
+        返回值是一个表示键盘状态的整数，最低位bit为1表示Caps Lock被锁定
+        :return:
+        """
+        key_state = windll.user32.GetKeyState(0x14)
+
+        # 判断Caps Lock键的状态
+        # 第16位是最低位，如果为1表示Caps Lock被锁定，否则未锁定
+        caps_lock_state = key_state & 1
+
+        return caps_lock_state == 1
+
     def destroy(self):
         """
             销毁

@@ -7,6 +7,7 @@ import numpy as np
 
 from apex_yolov5 import global_img_info
 from apex_yolov5.Tools import Tools
+from apex_yolov5.auxiliary import get_lock_mode
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
@@ -33,7 +34,7 @@ def handle(log_window):
             aims = get_aims(img)
             bboxes = []
             if len(aims):
-                if not global_config.only_save:
+                if not global_config.only_save and get_lock_mode():
                     lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
                          shot_width=global_img_info.get_current_img().shot_width,
                          shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
