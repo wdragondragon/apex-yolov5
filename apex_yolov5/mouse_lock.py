@@ -2,9 +2,6 @@ import math
 import random
 import traceback
 
-import numpy as np
-
-from PID import Pid
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
 from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import set_intention, set_click, get_executed_intention

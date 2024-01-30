@@ -1,5 +1,9 @@
+import threading
+
+from apex_yolov5.KmBoxNetListener import KmBoxNetListener
 from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.KmBoxMover import KmBoxMover
+from apex_yolov5.mouse_mover.KmBoxNetMover import KmBoxNetMover
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 from apex_yolov5.mouse_mover.Win32ApiMover import Win32ApiMover
 from apex_yolov5.mouse_mover.WuYaMover import WuYaMover
@@ -21,6 +25,10 @@ def init_mover(mouse_model, mouse_mover_params):
         current_mover = KmBoxMover(logger, mouse_mover_param)
     elif mouse_model == "wu_ya":
         current_mover = WuYaMover(logger, mouse_mover_param)
+    elif mouse_model == "km_box_net":
+        current_mover = KmBoxNetMover(logger, mouse_mover_param)
+        current_mover.listener = KmBoxNetListener(current_mover)
+        threading.Thread(target=current_mover.listener.km_box_net_start).start()
 
 
 def reload_mover(mouse_model, mouse_mover_params):
