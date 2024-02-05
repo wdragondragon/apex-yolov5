@@ -7,13 +7,19 @@ import traceback
 
 import cv2
 import numpy as np
+import pynput
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
 from apex_yolov5 import LogUtil, global_img_info
+from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
+from apex_yolov5.auxiliary import start
 from apex_yolov5.log import LogFactory
-from apex_yolov5.socket import socket_util, yolov5_handler
+from apex_yolov5.mouse_lock import lock
+from apex_yolov5.mouse_mover import MoverFactory
+from apex_yolov5.socket import socket_util
 from apex_yolov5.socket.config import global_config
+from apex_yolov5.socket.yolov5_handler import get_aims
 from apex_yolov5.windows.config_window import ConfigWindow
 
 log_util = LogUtil.LogUtil()
@@ -38,35 +44,25 @@ def main(log_window):
             print_count = 0
             compute_time = time.time()
             while True:
-                t0 = time.time()
-                # 接收客户端发送的图像数据
-                t1 = time.time()
                 data = socket_util.recv(client_socket, buffer_size=buffer_size)
                 data = pickle.loads(data)
                 img_origin = data["img_origin"]
                 shot_width = data["shot_width"]
                 shot_height = data["shot_height"]
-                log_util.set_time("接受图片", time.time() - t1)
-                t2 = time.time()
                 total_size += len(img_origin)
                 # 将接收到的数据转换为图像
                 img = np.frombuffer(img_origin, dtype='uint8')
-                img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
+                img = img.reshape((shot_height, shot_width, 3))
                 img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
                 global_img_info.set_current_img_2(img_origin, img, shot_width, shot_height)
 
-                log_util.set_time("转换图片", time.time() - t2)
-                # 在这里可以对图像进行进一步处理
-                t3 = time.time()
-                aims = yolov5_handler.get_aims(img)
-                log_util.set_time("转换坐标", time.time() - t3)
-                t4 = time.time()
-                aims_data = pickle.dumps(aims)
-                socket_util.send(client_socket, aims_data, buffer_size=buffer_size)
-                log_util.set_time("发送坐标", time.time() - t4)
-                t5 = time.time()
+                aims = get_aims(img)
                 bboxes = []
+                averager = (0, 0, 0, 0)
                 if len(aims):
+                    averager = lock(aims, global_config.mouse, global_config.desktop_width,
+                                    global_config.desktop_height,
+                                    shot_width=shot_width, shot_height=shot_height)  # x y 是分辨率
                     if global_config.is_show_debug_window:
                         for i, det in enumerate(aims):
                             tag, x_center, y_center, width, height = det
@@ -79,17 +75,20 @@ def main(log_window):
                             top_left = (int(x_center - width / 2.0), int(y_center - height / 2.0))
                             bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
                             bboxes.append((tag, top_left, bottom_right))
-                if global_config.is_show_debug_window:
-                    log_window.set_image(img, bboxes=bboxes)
-                log_util.set_time("展示图像", time.time() - t5)
+
+                averager_data = pickle.dumps(averager)
+                socket_util.send(client_socket, averager_data, buffer_size=buffer_size)
+
                 print_count += 1
                 now = time.time()
                 if now - compute_time > 1:
                     print("识别[{}]次，传输{:.1f}M/s".format(print_count, (1.0 * total_size / 1024 / 1024)))
-                    log_util.print_time(print_count)
+                    log_window.add_frame_rate_plot((print_count, print_count))
                     total_size = 0
                     print_count = 0
                     compute_time = now
+                if global_config.is_show_debug_window:
+                    log_window.set_image(img, bboxes=bboxes)
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -106,7 +105,21 @@ def main(log_window):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
-    log_window = ConfigWindow(global_config)
+    LogFactory.init_logger()
+    listener = pynput.mouse.Listener(
+        on_click=apex_mouse_listener.on_click)
+    listener.start()
+
+    key_listener = pynput.keyboard.Listener(
+        on_press=apex_key_listener.on_press, on_release=apex_key_listener.on_release
+    )
+    key_listener.start()
+
+    threading.Thread(target=start).start()
+    MoverFactory.init_mover(
+        mouse_model=global_config.mouse_model,
+        mouse_mover_params=global_config.available_mouse_models)
+    log_window = ConfigWindow(global_config, "服务端")
     log_window.show()
     if global_config.is_show_debug_window:
         log_window.setWindowFlags(Qt.WindowStaysOnTopHint)

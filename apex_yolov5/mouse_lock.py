@@ -32,8 +32,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
     if len(aims_copy) == 0:
         if global_config.show_aim:
             get_aim_show_window().clear_box()
-        global_config.sign_shot_xy()
-        return
+        return 0, 0, 0, 0
     for det in aims_copy:
         _, x_c, y_c, _, _ = det
         dist = (shot_width * float(x_c) - current_mouse_x) ** 2 + (shot_height * float(y_c) - current_mouse_y) ** 2
@@ -121,8 +120,7 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
     averager = *average_target_proportion(
         (float(target_width), float(target_height))), float(target_width_origin), float(target_height_origin)
-
-    global_config.sign_shot_xy(averager)
+    return averager
 
 
 def in_moving_raduis(targetRealX, targetRealY, shot_width, shot_height, current_mouse_x, current_mouse_y):

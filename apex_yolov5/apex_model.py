@@ -5,14 +5,14 @@ from models.common import DetectMultiBackend
 from utils.general import check_img_size
 from utils.torch_utils import select_device
 
-device = global_config.device if global_config.device == 'cpu' else '0'  # cuda,cpu
-dnn = False
-device = select_device(device)
 current_model_name = ''
 
 
 def load_model():
     global current_model_name
+    device = global_config.device if global_config.device == 'cpu' else '0'  # cuda,cpu
+    dnn = False
+    device = select_device(device)
     print("cuda is ok?", is_available())
     current_model_info = global_config.available_models.get(global_config.current_model)
     print("加载模型:" + global_config.current_model + ":" + current_model_info["data"])

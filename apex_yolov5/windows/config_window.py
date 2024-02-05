@@ -33,7 +33,7 @@ class ConfigWindow(QMainWindow):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, config):
+    def __init__(self, config, title=None):
         super().__init__()
         if not self.init_sign:
             self.config = config
@@ -59,6 +59,10 @@ class ConfigWindow(QMainWindow):
             self.initUI()
             self.setWindowFlags(Qt.WindowStaysOnTopHint)
             self.init_sign = True
+            if title is None:
+                self.setWindowTitle("Apex Gun " + self.config.version)
+            else:
+                self.setWindowTitle(title)
 
     def create_menus(self):
         config_action = QAction("实时锁定人物展示", self)
@@ -205,7 +209,6 @@ class ConfigWindow(QMainWindow):
             self.open_frame_rate_monitor_window.add_frame_rate_plot(frame_rate)
 
     def initUI(self):
-        self.setWindowTitle("Apex Gun " + self.config.version)
         self.setGeometry(0, 0, 250, 200)
         self.create_menus()
         self.ai_toggle_layout.add_layout()

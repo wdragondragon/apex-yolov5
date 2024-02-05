@@ -33,11 +33,13 @@ def handle(log_window):
             global_img_info.set_current_img(img_origin, img)
             aims = get_aims(img)
             bboxes = []
+            averager = (0, 0, 0, 0)
             if len(aims):
                 if not global_config.only_save and get_lock_mode():
-                    lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
-                         shot_width=global_img_info.get_current_img().shot_width,
-                         shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
+                    averager = lock(aims, global_config.mouse, global_config.desktop_width,
+                                    global_config.desktop_height,
+                                    shot_width=global_img_info.get_current_img().shot_width,
+                                    shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
                 if global_config.is_show_debug_window:
                     for i, det in enumerate(aims):
                         tag, x_center, y_center, width, height = det
@@ -53,8 +55,6 @@ def handle(log_window):
             else:
                 if global_config.show_aim:
                     get_aim_show_window().clear_box()
-                # 异步暂时不支持改变shot大小
-                global_config.sign_shot_xy()
             print_count += 1
             now = time.time()
             if now - compute_time > 1:
@@ -68,6 +68,8 @@ def handle(log_window):
                 log_window.set_image(img, bboxes=bboxes)
             if global_config.only_save:
                 time.sleep(1)
+
+            global_config.sign_shot_xy(averager)
             global_config.change_shot_xy()
         except Exception as e:
             print(e)

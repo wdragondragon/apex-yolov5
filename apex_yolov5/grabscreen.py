@@ -1,4 +1,3 @@
-import io
 import os
 import threading
 import time
@@ -16,7 +15,6 @@ import win32ui
 from PIL import Image
 
 from apex_yolov5.socket.config import global_config
-from apex_yolov5.socket.yolov5_handler import get_aims
 
 
 def grab_screen(region=None):
@@ -143,6 +141,7 @@ def save_rescreen_and_aims_to_file(img_origin, img, aims):
     img_origin_size = img_origin.size
     if not (img_origin_size.width == global_config.auto_save_monitor['width'] and
             img_origin_size.height == global_config.auto_save_monitor['height']):
+        from apex_yolov5.socket.yolov5_handler import get_aims
         with mss.mss() as sct:
             screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
         rgb = screenshot.rgb
