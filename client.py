@@ -10,26 +10,16 @@ import pynput
 from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
-from apex_yolov5 import LogUtil, check_run
+from apex_yolov5 import LogUtil, global_img_info
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
-from apex_yolov5.windows.DebugWindow import DebugWindow
-from apex_yolov5.Tools import Tools
 from apex_yolov5.auxiliary import start
 from apex_yolov5.grabscreen import grab_screen_int_array2, \
     save_rescreen_and_aims_to_file_with_thread
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_lock import lock
+from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
-
-listener = pynput.mouse.Listener(
-    on_click=apex_mouse_listener.on_click)
-listener.start()
-
-key_listener = pynput.keyboard.Listener(
-    on_press=apex_key_listener.on_press, on_release=apex_key_listener.on_release
-)
-key_listener.start()
-
-threading.Thread(target=start).start()
+from apex_yolov5.windows.config_window import ConfigWindow
 
 log_util = LogUtil.LogUtil()
 
@@ -53,24 +43,23 @@ def main():
                 print_count = 0
                 compute_time = time.time()
                 while True:
-                    if not Tools.is_apex_windows():
-                        print("不是apex窗口")
-                        time.sleep(1)
-                        continue
+                    # if not Tools.is_apex_windows():
+                    #     print("不是apex窗口")
+                    #     time.sleep(1)
+                    #     continue
                     if not global_config.ai_toggle:
                         time.sleep(0.1)
                         continue
                     print_count += 1
                     t0 = time.time()
-                    # img = grab_screen_int_array(region=global_config.region)
                     screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.monitor)
+                    global_img_info.set_current_img_2(screenshot, screenshot, screenshot.width, screenshot.height)
                     log_util.set_time("截图", time.time() - t0)
-                    t1 = time.time()
-                    # img = zlib.compress(img)
-                    log_util.set_time("压缩图片", time.time() - t1)
-                    # print("发送数据大小：{}".format(len(img)))
                     t2 = time.time()
-                    socket_util.send(client_socket, screenshot.rgb, buffer_size=buffer_size)
+                    data = {"img_origin": screenshot.rgb, "shot_width": screenshot.width,
+                            "shot_height": screenshot.height}
+                    data = pickle.dumps(data)
+                    socket_util.send(client_socket, data, buffer_size=buffer_size)
                     log_util.set_time("发送图片", time.time() - t2)
                     t3 = time.time()
                     mouse_data = socket_util.recv(client_socket, buffer_size=buffer_size)
@@ -81,16 +70,18 @@ def main():
                     aims = pickle.loads(mouse_data)
                     if len(aims) and not global_config.only_save:
                         lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
-                             shot_width=global_config.shot_width, shot_height=global_config.shot_height)  # x y 是分辨率
+                             shot_width=global_img_info.get_current_img().shot_width,
+                             shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
                     log_util.set_time("处理鼠标数据", time.time() - t4)
                     now = time.time()
                     if now - compute_time > 1:
                         print("一秒识别[{}]次:".format(print_count))
                         t5 = time.time()
-                        log_window.update_frame_rate_plot(print_count)
+                        log_window.add_frame_rate_plot((print_count, print_count))
                         log_util.set_time("帧率监控", time.time() - t5)
                         log_util.print_time(print_count)
-                        save_rescreen_and_aims_to_file_with_thread(screenshot, None, aims)
+                        if global_config.auto_save:
+                            save_rescreen_and_aims_to_file_with_thread(screenshot, None, aims)
                         print_count = 0
                         compute_time = now
                     if global_config.only_save:
@@ -111,9 +102,23 @@ def main():
 
 
 if __name__ == "__main__":
-    check_run.check()
     app = QApplication(sys.argv)
-    log_window = DebugWindow()
+    LogFactory.init_logger()
+    listener = pynput.mouse.Listener(
+        on_click=apex_mouse_listener.on_click)
+    listener.start()
+
+    key_listener = pynput.keyboard.Listener(
+        on_press=apex_key_listener.on_press, on_release=apex_key_listener.on_release
+    )
+    key_listener.start()
+
+    threading.Thread(target=start).start()
+    log_window = ConfigWindow(global_config)
+    log_window.show()
+    MoverFactory.init_mover(
+        mouse_model=global_config.mouse_model,
+        mouse_mover_params=global_config.available_mouse_models)
     if global_config.is_show_debug_window:
         log_window.show()
     threading.Thread(target=main).start()

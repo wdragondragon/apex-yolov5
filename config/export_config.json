@@ -3,9 +3,10 @@
     320,
     320
   ],
-  "weights": ".\\apex_model\\apex_one.onnx",
-  "data": ".\\apex_model\\1w2\\mydata.yaml",
+  "weights": ".\\apex_model\\apex_416_pytrt.onnx",
+  "data": ".\\apex_model\\1w2\\1w.yaml",
   "half": true,
   "device": 0,
-  "include": ["engine"]
+  "include": ["engine"],
+  "batch_size": 1
 }
