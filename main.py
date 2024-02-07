@@ -6,23 +6,23 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5_main
 import apex_yolov5_main_asyn
-
 from apex_yolov5 import check_run, auxiliary
-from apex_yolov5.JoyListener import joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
+from apex_yolov5.job_listener import JoyListener
 from apex_yolov5.log import LogFactory
-from apex_yolov5.log.Logger import Logger
 from apex_yolov5.mouse_mover import MoverFactory
+from apex_yolov5.socket.config import global_config
 from apex_yolov5.windows.DisclaimerWindow import DisclaimerWindow
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
 from apex_yolov5.windows.circle_window import get_circle_window
-
 from apex_yolov5.windows.config_window import ConfigWindow
-from apex_yolov5.socket.config import global_config
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
+
+    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
     listener.start()

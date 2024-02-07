@@ -18,6 +18,16 @@ screenshot_resolution = {
     (1920, 1200): (1539, 1142, 1728, 1142),
     (2048, 1152): (1927, 1172, 2089, 1208)
 }
+
+scope_screenshot_resolution = {
+    (2560, 1440): [(2034, 1338, 2059, 1363), (2069, 1338, 2094, 1363), (2106, 1338, 2131, 1363)],
+    (1920, 1080): [(1522, 1002, 1542, 1022), (1551, 1002, 1571, 1022), (1579, 1002, 1599, 1022)]
+}
+hop_up_screenshot_resolution = {
+    (2560, 1440): [(2142, 1338, 2167, 1363), (2180, 1338, 2205, 1363)],
+    (1920, 1080): [(1607, 1002, 1627, 1022), (1635, 1002, 1655, 1022)]
+}
+
 (x, y) = Tools.get_resolution()
 
 global_config_path = 'config\\global_config.json'
@@ -263,6 +273,23 @@ class Config:
         self.delayed_aiming_factor_y = self.get_config(self.config_data, "delayed_aiming_factor_y", 0.4)
         self.re_cut_size = self.get_config(self.config_data, "re_cut_size", 0)
 
+        # 自动识别
+        self.comparator_mode = self.get_config(self.config_data, 'comparator_mode', "local")
+        self.read_image_mode = self.get_config(self.config_data, 'read_image_mode', "local")
+        self.key_trigger_mode = self.get_config(self.config_data, 'key_trigger_mode', "local")
+        self.screen_taker = self.get_config(self.config_data, "screen_taker", "local")
+        self.image_base_path = "images/" if self.read_image_mode == "local" else "https://apex-1304893688.cos.ap-guangzhou.myqcloud.com/images/"
+        self.has_turbocharger = self.get_config(self.config_data, "has_turbocharger", [
+            "专注",
+            "哈沃克"
+        ])
+        self.delayed_activation_key_list = self.get_config(self.config_data, "delayed_activation_key_list", {})
+        self.joy_to_key_map = self.get_config(self.config_data, "joy_to_key_map", {})
+        self.distributed_param = self.get_config(self.config_data, "distributed_param", {
+            "ip": "127.0.0.1",
+            "port": 12345
+        })
+
         if self.only_save:
             self.shot_height = 640
             self.shot_width = 640
@@ -291,7 +318,16 @@ class Config:
             self.select_gun_bbox = screenshot_resolution[self.game_solution]  # 选择枪械的区域
         else:
             self.select_gun_bbox = screenshot_resolution[(1920, 1080)]
-        self.image_path = 'images/' + '{}x{}/'.format(*self.game_solution)  # 枪械图片路径
+
+        if self.game_solution in scope_screenshot_resolution:
+            self.select_scope_bbox = scope_screenshot_resolution[self.game_solution]
+
+        if self.game_solution in hop_up_screenshot_resolution:
+            self.select_hop_up_bbox = hop_up_screenshot_resolution[self.game_solution]
+
+        self.image_path = '{}x{}/'.format(*self.game_solution)  # 枪械图片路径
+        self.scope_path = 'scope/{}x{}/'.format(*self.game_solution)  # 镜子图片路径
+        self.hop_up_path = 'hop_up/{}x{}/'.format(*self.game_solution)  # 镜子图片路径
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 

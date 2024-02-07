@@ -4,9 +4,9 @@ import time
 
 from pynput.mouse import Button
 
-from apex_yolov5.JoyListener import joy_listener
+from apex_yolov5.job_listener.JoyListener import get_joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
-from apex_yolov5.ScreenUtil import select_gun
+from apex_recoils.core.SelectGun import get_select_gun
 from apex_yolov5.Tools import Tools
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
@@ -67,16 +67,16 @@ def set_click():
 
 def get_lock_mode():
     lock_mode = (("left" in global_config.aim_button and (
-            apex_mouse_listener.is_press(Button.left) or joy_listener.is_press(4))) or
+            apex_mouse_listener.is_press(Button.left) or get_joy_listener().is_press(4))) or
                  ("right" in global_config.aim_button and (
-                         apex_mouse_listener.is_press(Button.right) or joy_listener.is_press(5))) or
+                         apex_mouse_listener.is_press(Button.right) or get_joy_listener().is_press(5))) or
                  ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)) or
                  ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)) or
                  ("x1&!x2" in global_config.aim_button and ((
                                                                     apex_mouse_listener.is_press(
                                                                         Button.left) and not apex_mouse_listener.is_press(
-                                                                Button.right)) or (joy_listener.is_press(
-                     4) and not joy_listener.is_press(5))))
+                                                                Button.right)) or (get_joy_listener().is_press(
+                     4) and not get_joy_listener().is_press(5))))
                  )
     lock_mode = lock_mode or len(global_config.aim_button) == 0
     return lock_mode and global_config.ai_toggle
@@ -91,11 +91,11 @@ def start():
         # sleep_time = 0.01
         block_queue.get()
         intention_exec_sign = True
-        if click_sign and time.time() - last_click_time > click_interval and select_gun.current_gun in global_config.click_gun:
+        if click_sign and time.time() - last_click_time > click_interval and get_select_gun().current_gun in global_config.click_gun:
             MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()
             click_sign = False
-        elif global_config.auto_charged_energy and select_gun.current_gun == '充能步枪' and time.time() - last_click_time > global_config.storage_interval and not apex_key_listener.is_open(
+        elif global_config.auto_charged_energy and get_select_gun().current_gun == '充能步枪' and time.time() - last_click_time > global_config.storage_interval and not apex_key_listener.is_open(
                 global_config.auto_charged_energy_toggle):
             MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()

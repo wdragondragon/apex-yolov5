@@ -87,3 +87,64 @@ class MouseMover:
 
     def move_test(self, x: int, y: int):
         self.move_rp(x, y)
+
+    def mouse_click(self, key, press):
+        """
+            点击鼠标
+        :param key:
+        :param press:
+        """
+        if key == "left":
+            if press:
+                self.left_down()
+            else:
+                self.left_up()
+        elif key == "right":
+            if press:
+                self.right_down()
+            else:
+                self.right_up()
+
+    def left_down(self):
+        """
+            左键按下
+        """
+        pass
+
+    def left_up(self):
+        """
+            左键弹起
+        """
+        pass
+
+    def right_down(self):
+        """
+            右键按下
+        """
+        pass
+
+    def right_up(self):
+        """
+            右键弹起
+        """
+        pass
+
+    def click_key(self, value):
+        """
+
+        :param value:
+        :return:
+        """
+        pass
+
+    def key_down(self, value):
+        """
+            按下按键
+        """
+        pass
+
+    def key_up(self, value):
+        """
+            松开按键
+        """
+        pass

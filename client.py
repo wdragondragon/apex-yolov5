@@ -11,6 +11,10 @@ from PyQt5.QtWidgets import QApplication
 import apex_yolov5.socket.socket_util as socket_util
 from apex_yolov5 import global_img_info
 from apex_yolov5.grabscreen import grab_screen_int_array2
+from apex_yolov5.job_listener import JoyListener
+from apex_yolov5.job_listener.JoyToKey import JoyToKey
+from apex_yolov5.log import LogFactory
+from apex_yolov5.mouse_mover.Win32ApiMover import Win32ApiMover
 from apex_yolov5.socket.config import global_config
 
 
@@ -29,6 +33,7 @@ def main():
             buffer_size = global_config.buffer_size
 
             sct = mss.mss()
+            print("连接成功")
             try:
                 while True:
                     if not global_config.ai_toggle:
@@ -65,5 +70,10 @@ def main():
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
+                   c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
+    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+    JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
+    JoyListener.joy_listener.start(None)
     threading.Thread(target=main).start()
     sys.exit(app.exec_())

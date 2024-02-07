@@ -53,3 +53,19 @@ class Win32ApiMover(MouseMover):
             result.extend([(0, -1) for _ in range(abs(y))])
 
         return result
+
+    def left_click(self):
+        self.user32.mouse_event(MOUSE_EVEN_TF_LEFT_DOWN, 0, 0, 0, 0)
+        self.user32.mouse_event(MOUSE_EVEN_TF_LEFT_UP, 0, 0, 0, 0)
+
+    def left_down(self):
+        self.user32.mouse_event(MOUSE_EVEN_TF_LEFT_DOWN, 0, 0, 0, 0)
+
+    def left_up(self):
+        self.user32.mouse_event(MOUSE_EVEN_TF_LEFT_UP, 0, 0, 0, 0)
+
+    def right_down(self):
+        self.user32.mouse_event(MOUSE_EVEN_TF_RIGHT_DOWN, 0, 0, 0, 0)
+
+    def right_up(self):
+        self.user32.mouse_event(MOUSE_EVEN_TF_RIGHT_UP, 0, 0, 0, 0)

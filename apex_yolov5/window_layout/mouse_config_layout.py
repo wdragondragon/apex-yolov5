@@ -337,8 +337,8 @@ class MouseConfigLayout:
         self.main_window.handle_toggled(checked)
         self.config.joy_move = checked
         if checked:
-            from apex_yolov5.JoyListener import joy_listener
-            joy_listener.start(self.main_window)
+            from apex_yolov5.job_listener.JoyListener import get_joy_listener
+            get_joy_listener().start(self.main_window)
 
     def update_move_step_label(self, value):
         self.move_step_label.setText("单次水平移动像素:" + str(value))

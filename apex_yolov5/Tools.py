@@ -53,6 +53,22 @@ class Tools:
         window_title = win32gui.GetWindowText(window_handle)
         return window_title == 'Apex Legends'
 
+    @staticmethod
+    def convert_to_decimal(input_str):
+        try:
+            # 尝试将输入字符串解析为16进制数字
+            decimal_value = int(input_str, 16)
+        except ValueError:
+            try:
+                # 如果解析失败，则尝试将输入字符串解析为10进制数字
+                decimal_value = int(input_str, 10)
+            except ValueError:
+                # 如果两者都失败，返回一个适当的错误或默认值
+                # print("无法解析输入字符串为数字")
+                return None
+
+        return decimal_value
+
     class FixedSizeQueue:
         def __init__(self, max_size):
             self.queue = deque(maxlen=max_size)

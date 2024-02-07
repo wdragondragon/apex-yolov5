@@ -3,7 +3,6 @@ import time
 
 from pynput.mouse import Button
 
-from apex_yolov5.ScreenUtil import select_gun
 from apex_yolov5.Tools import Tools
 from apex_yolov5.grabscreen import save_screen_to_file
 from apex_yolov5.mouse_mover import MoverFactory
@@ -40,8 +39,6 @@ class KeyListener:
         if not hasattr(key, 'name') and hasattr(key, 'char') and key.char is not None:
             if key.char in self.press_key:
                 self.press_key.pop(key.char)
-            if key.char in self.refresh_button:
-                threading.Thread(target=select_gun.select_gun).start()
             elif key.char == 'p' or key.char == 'P':
                 threading.Thread(target=save_screen_to_file).start()
         elif hasattr(key, 'name') and key.name is not None:

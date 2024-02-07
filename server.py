@@ -11,6 +11,9 @@ import pynput
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
+from apex_recoils.core import SelectGun, ReaSnowSelectGun
+from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
+from apex_recoils.core.screentaker.SocketScreenTaker import SocketScreenTaker
 from apex_yolov5 import LogUtil, global_img_info
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.auxiliary import start
@@ -105,7 +108,24 @@ def main(log_window):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
-    LogFactory.init_logger()
+    SelectGun.select_gun = SelectGun.SelectGun(logger=LogFactory.logger(),
+                                               bbox=global_config.select_gun_bbox,
+                                               image_path=global_config.image_path,
+                                               scope_bbox=global_config.select_scope_bbox,
+                                               scope_path=global_config.scope_path,
+                                               refresh_buttons=global_config.refresh_button,
+                                               has_turbocharger=global_config.has_turbocharger,
+                                               hop_up_bbox=global_config.select_hop_up_bbox,
+                                               hop_up_path=global_config.hop_up_path,
+                                               image_comparator=LocalImageComparator(LogFactory.logger(),
+                                                                                     global_config.image_base_path),
+                                               screen_taker=SocketScreenTaker(LogFactory.logger(), (
+                                                   global_config.distributed_param["ip"],
+                                                   global_config.distributed_param["port"])))
+
+    rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger())
+    SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
+
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click)
     listener.start()
