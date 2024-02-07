@@ -12,10 +12,25 @@ class Client:
     """
 
     def __init__(self, socket_address, client_type):
+        self.socket_address = socket_address
+        self.client_type = client_type
+        self.client_socket = None
+        self.open_sign = False
+
+    def open(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(socket_address)
-        data = pickle.dumps(client_type)
+        self.client_socket.connect(self.socket_address)
+        data = pickle.dumps(self.client_type)
         socket_util.send(self.client_socket, data)
+        self.open_sign = True
+
+    def close(self):
+        try:
+            self.client_socket.close()
+        except:
+            pass
+        self.client_socket = None
+        self.open_sign = False
 
     def compare_with_path(self, path, images, lock_score, discard_score):
         """

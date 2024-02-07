@@ -70,10 +70,11 @@ def main():
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
-                   c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
-    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
-    JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
-    JoyListener.joy_listener.start(None)
+    LogFactory.init_logger()
+    # jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
+    #                c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
+    # JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+    # JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
+    # JoyListener.joy_listener.start(None)
     threading.Thread(target=main).start()
     sys.exit(app.exec_())
