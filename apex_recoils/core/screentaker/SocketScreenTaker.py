@@ -22,4 +22,7 @@ class SocketScreenTaker:
 
     def open(self):
         while not self.client.open_sign:
-            self.client.open()
+            try:
+                self.client.open()
+            except:
+                pass
