@@ -278,7 +278,7 @@ class Config:
         self.read_image_mode = self.get_config(self.config_data, 'read_image_mode', "local")
         self.key_trigger_mode = self.get_config(self.config_data, 'key_trigger_mode', "local")
         self.screen_taker = self.get_config(self.config_data, "screen_taker", "local")
-        self.image_base_path = "images/" if self.read_image_mode == "local" else "https://apex-1304893688.cos.ap-guangzhou.myqcloud.com/images/"
+        self.image_base_path = "images/" if self.read_image_mode == "local" else "http://1.15.138.227:9000/apex/images/"
         self.has_turbocharger = self.get_config(self.config_data, "has_turbocharger", [
             "专注",
             "哈沃克"
