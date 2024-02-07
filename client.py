@@ -9,6 +9,9 @@ import mss
 from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
+from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
+from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
+from apex_recoils.net.socket.Server import Server
 from apex_yolov5 import global_img_info
 from apex_yolov5.grabscreen import grab_screen_int_array2
 from apex_yolov5.job_listener import JoyListener
@@ -71,10 +74,15 @@ def main():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
-    # jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
-    #                c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
-    # JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
-    # JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
-    # JoyListener.joy_listener.start(None)
+    server = Server(logger=LogFactory.logger(),
+                    server_address=(global_config.distributed_param["ip"], global_config.distributed_param["port"]),
+                    screen_taker=LocalScreenTaker(LogFactory.logger()))
+    threading.Thread(target=server.wait_client).start()
+    jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
+                   c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
+    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+    JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
+    JoyListener.joy_listener.start(None)
+
     threading.Thread(target=main).start()
     sys.exit(app.exec_())

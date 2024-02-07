@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QApplication
 
 from apex_recoils.core import SelectGun, ReaSnowSelectGun
 from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
+from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
 from apex_recoils.core.screentaker.SocketScreenTaker import SocketScreenTaker
 from apex_yolov5 import LogUtil, global_img_info
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
@@ -117,8 +118,8 @@ if __name__ == "__main__":
                                                has_turbocharger=global_config.has_turbocharger,
                                                hop_up_bbox=global_config.select_hop_up_bbox,
                                                hop_up_path=global_config.hop_up_path,
-                                               image_comparator=LocalImageComparator(LogFactory.logger(),
-                                                                                     global_config.image_base_path),
+                                               image_comparator=NetImageComparator(LogFactory.logger(),
+                                                                                   global_config.image_base_path),
                                                screen_taker=SocketScreenTaker(LogFactory.logger(), (
                                                    global_config.distributed_param["ip"],
                                                    global_config.distributed_param["port"])))
