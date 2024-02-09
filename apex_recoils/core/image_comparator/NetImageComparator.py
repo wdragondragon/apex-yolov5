@@ -8,7 +8,6 @@ import numpy as np
 import requests
 from skimage.metrics import structural_similarity
 
-from apex_recoils.core.image_comparator.ImageComparator import ImageComparator
 from apex_yolov5.log.Logger import Logger
 
 headers_list = [
@@ -120,7 +119,7 @@ def read_file_from_url(url):
         return None
 
 
-class NetImageComparator(ImageComparator):
+class NetImageComparator:
     def __init__(self, logger: Logger, base_path):
         # 用于缓存已下载图像的字典
         self.image_cache = {}

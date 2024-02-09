@@ -6,8 +6,9 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5_main
 import apex_yolov5_main_asyn
-from apex_recoils.core import SelectGun
+from apex_recoils.core import SelectGun, ReaSnowSelectGun
 from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
+from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
@@ -32,9 +33,14 @@ if __name__ == "__main__":
                                                has_turbocharger=global_config.has_turbocharger,
                                                hop_up_bbox=global_config.select_hop_up_bbox,
                                                hop_up_path=global_config.hop_up_path,
-                                               image_comparator=LocalImageComparator(LogFactory.logger(),
-                                                                                     global_config.image_base_path),
+                                               image_comparator=NetImageComparator(LogFactory.logger(),
+                                                                                   global_config.image_base_path),
                                                screen_taker=LocalScreenTaker(LogFactory.logger()))
+
+    # rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger())
+    # SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
+    SelectGun.get_select_gun().test()
+
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
     listener.start()
