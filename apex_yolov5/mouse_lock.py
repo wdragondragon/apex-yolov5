@@ -62,10 +62,11 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
     if in_moving_raduis(targetRealX, targetRealY, shot_width, shot_height, current_mouse_x, current_mouse_y) and \
             not in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCenterY):
+        lead_x, lead_y = (0, 0)
         if global_config.lead_time_toggle:
-            targetRealX, targetRealY = lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
-                                                    global_config.lead_time_frame,
-                                                    global_config.lead_time_decision_frame)
+            lead_x, lead_y = lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
+                                          global_config.lead_time_frame,
+                                          global_config.lead_time_decision_frame)
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
         # 随机弹道计算
@@ -88,7 +89,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
         # 漏枪逻辑cc
         if not global_config.intention_deviation_toggle:
-            set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, random_deviation,
+            set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, lead_x, lead_y,
+                          random_deviation,
                           min(width / 2.0, height / 2.0))
             if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                 set_click()
@@ -98,7 +100,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     lock_time += 1
                 # 正常追踪
-                set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, random_deviation,
+                set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, lead_x, lead_y,
+                              random_deviation,
                               min(width / 2.0, height / 2.0))
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     set_click()
@@ -107,7 +110,8 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     targetRealX = x1 if float(target_x) > 0.5 else x2
                 if global_config.intention_deviation_force:
-                    set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, random_deviation,
+                    set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, lead_x, lead_y,
+                                  random_deviation,
                                   min(width / 2.0, height / 2.0))
             # 重置标记
             if lock_time == global_config.intention_deviation_interval and no_lock_time == global_config.intention_deviation_duration:
@@ -227,9 +231,9 @@ def lead_time_one(name, target_real,
     if (not lead_time) or move_diff is None or abs(move_diff) < 10:
         return target_real
 
-    last_move = move + executed_intention * lead_time_frame + current_mouse
-    print(f"{name} move diff:({move_diff}) move intention:({executed_intention})")
-    print(f"{name} Actual Move: ({move}), Last Move: ({move + executed_intention * lead_time_frame})")
+    last_move = move_diff * lead_time_frame
+    print(
+        f"{name} move diff:({move_diff}) last move intention:({executed_intention}, Actual Move: ({move}), lead: ({last_move})")
     return last_move
 
 

@@ -13,6 +13,7 @@ from apex_yolov5.socket.config import global_config
 
 intention = None
 executed_intention = (0, 0)
+real_intention = (0, 0)
 intention_base_sign = 0
 change_coordinates_num = 0
 
@@ -25,8 +26,8 @@ intention_lock = threading.Lock()
 intention_exec_sign = False
 
 
-def set_intention(x, y, random_deviation, base_sign=0):
-    global intention, change_coordinates_num, intention_base_sign, executed_intention
+def set_intention(x, y, lead_x, lead_y, random_deviation, base_sign=0):
+    global intention, change_coordinates_num, intention_base_sign, executed_intention, real_intention
     intention_lock.acquire()
     try:
         intention_base_sign = base_sign
@@ -40,7 +41,8 @@ def set_intention(x, y, random_deviation, base_sign=0):
             y = y * global_config.move_path_ny
             random_deviation_x = random_deviation * global_config.move_path_nx
             random_deviation_y = random_deviation * global_config.move_path_ny
-        intention = (x + random_deviation_x, y + random_deviation_y)
+        intention = (x + random_deviation_x + lead_x, y + random_deviation_y + lead_y)
+        real_intention = (x, y)
         executed_intention = (0, 0)
         change_coordinates_num += 1
         if not intention_exec_sign:
@@ -52,8 +54,19 @@ def set_intention(x, y, random_deviation, base_sign=0):
 
 def incr_executed_intention(move_x, move_y):
     global executed_intention
+    real_intention_x, real_intention_y = real_intention
     executed_intention_x, executed_intention_y = executed_intention
-    executed_intention = executed_intention_x + move_x, executed_intention_y + move_y
+    if abs(executed_intention_x + move_x) < abs(real_intention_x):
+        executed_intention_x = executed_intention_x + move_x
+    else:
+        executed_intention_x = real_intention_x
+
+    if abs(executed_intention_y + move_y) < abs(real_intention_y):
+        executed_intention_x = executed_intention_y + move_y
+    else:
+        executed_intention_y = real_intention_y
+
+    executed_intention = executed_intention_x, executed_intention_y
 
 
 def get_executed_intention():
@@ -145,6 +158,7 @@ def start():
             else:
                 # print("开始移动，移动距离:{}".format((x, y)))
                 MoverFactory.mouse_mover().move(int(x), int(y))
+                incr_executed_intention(int(x), int(y))
                 # print(
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             intention = None

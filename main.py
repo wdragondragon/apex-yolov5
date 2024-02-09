@@ -21,8 +21,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
 
-    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
-
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
     listener.start()
@@ -50,8 +48,10 @@ if __name__ == "__main__":
     if global_config.show_aim:
         get_aim_show_window().show()
 
+    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
     if global_config.joy_move:
-        joy_listener.start(log_window)
+        JoyListener.joy_listener.start(log_window)
+
     if global_config.screenshot_frequency_mode == "asyn":
         threading.Thread(target=apex_yolov5_main_asyn.main).start()
         threading.Thread(target=apex_yolov5_main_asyn.handle, args=(log_window,)).start()
