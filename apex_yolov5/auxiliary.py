@@ -56,15 +56,15 @@ def incr_executed_intention(move_x, move_y):
     global executed_intention
     real_intention_x, real_intention_y = real_intention
     executed_intention_x, executed_intention_y = executed_intention
-    if abs(executed_intention_x + move_x) < abs(real_intention_x):
-        executed_intention_x = executed_intention_x + move_x
-    else:
-        executed_intention_x = real_intention_x
+    # if abs(executed_intention_x + move_x) < abs(real_intention_x):
+    executed_intention_x = executed_intention_x + move_x
+    # else:
+    #     executed_intention_x = real_intention_x
 
-    if abs(executed_intention_y + move_y) < abs(real_intention_y):
-        executed_intention_x = executed_intention_y + move_y
-    else:
-        executed_intention_y = real_intention_y
+    # if abs(executed_intention_y + move_y) < abs(real_intention_y):
+    executed_intention_x = executed_intention_y + move_y
+    # else:
+    #     executed_intention_y = real_intention_y
 
     executed_intention = executed_intention_x, executed_intention_y
 

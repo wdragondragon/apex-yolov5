@@ -229,33 +229,32 @@ def lead_time_one(name, target_real,
     lead_time = previous_movements(history_move_diff_queue, current_quadrant, lead_time_decision_frame)
     move_diff = history_move_diff_queue.get_last()
     if (not lead_time) or move_diff is None or abs(move_diff) < 10:
-        return target_real
+        return 0
 
-    last_move = move_diff * lead_time_frame
     print(
-        f"{name} move diff:({move_diff}) last move intention:({executed_intention}, Actual Move: ({move}), lead: ({last_move})")
-    return last_move
+        f"{name} move diff:({move_diff}) last move intention:({executed_intention}), Actual Move: ({move}), lead: ({move_diff * lead_time_frame})")
+    return move_diff * lead_time_frame
 
 
 def previous_movements(queue, current_quadrant, lead_time_decision_frame):
     # 从队列中移除之前的不同象限的移动
-    return True
-    # remove_num = 0
-    # keep_num = 0
-    # for i in range(len(queue.queue) - 1, -1, -1):
-    #     prev_move = queue.queue[i]
-    #     prev_quadrant = determine_quadrant(prev_move)
-    #     if prev_quadrant == current_quadrant:
-    #         remove_num = 0
-    #         keep_num += 1
-    #         if keep_num >= lead_time_decision_frame:
-    #             return True
-    #     else:
-    #         remove_num += 1
-    #         keep_num = 0
-    #         if remove_num >= 5:
-    #             return False
-    # return keep_num >= lead_time_decision_frame
+    # return True
+    remove_num = 0
+    keep_num = 0
+    for i in range(len(queue.queue) - 1, -1, -1):
+        prev_move = queue.queue[i]
+        prev_quadrant = determine_quadrant(prev_move)
+        if prev_quadrant == current_quadrant:
+            remove_num = 0
+            keep_num += 1
+            if keep_num >= lead_time_decision_frame:
+                return True
+        else:
+            remove_num += 1
+            keep_num = 0
+            if remove_num >= 5:
+                return False
+    return keep_num >= lead_time_decision_frame
 
 
 def determine_quadrant(move):

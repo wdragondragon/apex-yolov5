@@ -6,6 +6,9 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5_main
 import apex_yolov5_main_asyn
+from apex_recoils.core import SelectGun
+from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
+from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.job_listener import JoyListener
@@ -20,7 +23,18 @@ from apex_yolov5.windows.config_window import ConfigWindow
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
-
+    SelectGun.select_gun = SelectGun.SelectGun(logger=LogFactory.logger(),
+                                               bbox=global_config.select_gun_bbox,
+                                               image_path=global_config.image_path,
+                                               scope_bbox=global_config.select_scope_bbox,
+                                               scope_path=global_config.scope_path,
+                                               refresh_buttons=global_config.refresh_button,
+                                               has_turbocharger=global_config.has_turbocharger,
+                                               hop_up_bbox=global_config.select_hop_up_bbox,
+                                               hop_up_path=global_config.hop_up_path,
+                                               image_comparator=LocalImageComparator(LogFactory.logger(),
+                                                                                     global_config.image_base_path),
+                                               screen_taker=LocalScreenTaker(LogFactory.logger()))
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
     listener.start()
