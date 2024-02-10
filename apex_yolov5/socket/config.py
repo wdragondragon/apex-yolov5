@@ -321,9 +321,13 @@ class Config:
 
         if self.game_solution in scope_screenshot_resolution:
             self.select_scope_bbox = scope_screenshot_resolution[self.game_solution]
+        else:
+            self.select_scope_bbox = scope_screenshot_resolution[(1920, 1080)]
 
         if self.game_solution in hop_up_screenshot_resolution:
             self.select_hop_up_bbox = hop_up_screenshot_resolution[self.game_solution]
+        else:
+            self.select_hop_up_bbox = hop_up_screenshot_resolution[(1920, 1080)]
 
         self.image_path = '{}x{}/'.format(*self.game_solution)  # 枪械图片路径
         self.scope_path = 'scope/{}x{}/'.format(*self.game_solution)  # 镜子图片路径

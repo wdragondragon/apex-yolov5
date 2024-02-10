@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     # rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger())
     # SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
-    SelectGun.get_select_gun().test()
+    # SelectGun.get_select_gun().test()
 
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
