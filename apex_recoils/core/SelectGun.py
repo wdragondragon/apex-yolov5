@@ -40,7 +40,7 @@ class SelectGun:
         for refresh_button in self.refresh_buttons:
             KMCallBack.connect(KMCallBack("k", refresh_button, self.select_gun_threading, False))
 
-        threading.Thread(target=self.timing_execution).start()
+        # threading.Thread(target=self.timing_execution).start()
 
     def timing_execution(self):
         """

@@ -11,9 +11,9 @@ class ReaSnowSelectGun:
         转换器自动识别按键宏触发
     """
 
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger, config_name='ReaSnowGun'):
         self.logger = logger
-        self.config_path = ".\\config\\ReaSnowGun.json"
+        self.config_path = f".\\config\\{config_name}.json"
 
         if op.exists(self.config_path):
             with open(self.config_path, encoding='utf-8') as global_file:
@@ -22,6 +22,12 @@ class ReaSnowSelectGun:
             self.no_macro_key = self.key_dict["close_key"]
         else:
             self.no_macro_key = "0x35"
+
+        if "no_found_click_close_key" in self.key_dict:
+            self.no_found_click_close_key = self.key_dict["no_found_click_close_key"]
+        else:
+            self.no_found_click_close_key = True
+
         self.no_macro_key = Tools.convert_to_decimal(self.no_macro_key)
 
     def trigger_button(self, select_gun, select_scope, hot_pop):
@@ -33,14 +39,16 @@ class ReaSnowSelectGun:
         :return:
         """
         if select_gun is None or select_scope is None:
-            self.logger.print_log(f"未识别到枪械，关闭宏")
-            MoverFactory.mouse_mover().click_key(self.no_macro_key)
+            self.logger.print_log(f"未识别到枪械{'，关闭宏' if self.no_found_click_close_key else ''}")
+            if self.no_found_click_close_key:
+                MoverFactory.mouse_mover().click_key(self.no_macro_key)
             return
 
         gun_scope_dict = self.key_dict.get(select_gun)
         if gun_scope_dict is None:
-            self.logger.print_log(f"枪械[{select_gun}]没有数据，关闭宏")
-            MoverFactory.mouse_mover().click_key(self.no_macro_key)
+            self.logger.print_log(f"枪械[{select_gun}]没有数据{'，关闭宏' if self.no_found_click_close_key else ''}")
+            if self.no_found_click_close_key:
+                MoverFactory.mouse_mover().click_key(self.no_macro_key)
             return
 
         if hot_pop is not None and hot_pop in gun_scope_dict:

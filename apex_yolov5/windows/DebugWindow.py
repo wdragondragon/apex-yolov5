@@ -67,7 +67,7 @@ class DebugWindow(QMainWindow):
         for bbox in bboxes:
             tag, top_left, bottom_right = bbox
             color = global_config.aim_type[tag]
-            pen = QPen(QColor(color[0], color[1], color[2]), 5)  # 设置颜色和线宽
+            pen = QPen(QColor(color[0], color[1], color[2]), 5)  # 设置颜色z和线宽
             painter.setPen(pen)
             # 在图像上绘制矩形
             top_left = QPoint(*top_left)  # 你的左上角点

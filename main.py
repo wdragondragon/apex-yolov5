@@ -7,14 +7,17 @@ from PyQt5.QtWidgets import QApplication
 import apex_yolov5_main
 import apex_yolov5_main_asyn
 from apex_recoils.core import SelectGun, ReaSnowSelectGun
+from apex_recoils.core.GameWindowsStatus import GameWindowsStatus
 from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
 from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.job_listener import JoyListener
+from apex_yolov5.job_listener.JoyToKey import JoyToKey
 from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
+from apex_yolov5.mouse_mover.Win32ApiMover import Win32ApiMover
 from apex_yolov5.socket.config import global_config
 from apex_yolov5.windows.DisclaimerWindow import DisclaimerWindow
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
@@ -24,6 +27,12 @@ from apex_yolov5.windows.config_window import ConfigWindow
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
+
+    log_window = ConfigWindow(global_config)
+    dis = DisclaimerWindow(log_window)
+    check_run.check(validate_type='ai', main_windows=log_window)
+
+    game_windows_status = GameWindowsStatus(logger=LogFactory.logger())
     SelectGun.select_gun = SelectGun.SelectGun(logger=LogFactory.logger(),
                                                bbox=global_config.select_gun_bbox,
                                                image_path=global_config.image_path,
@@ -37,9 +46,16 @@ if __name__ == "__main__":
                                                                                    global_config.image_base_path),
                                                screen_taker=LocalScreenTaker(LogFactory.logger()))
 
-    # rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger())
-    # SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
-    # SelectGun.get_select_gun().test()
+    rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
+                                                            config_name=global_config.rea_snow_gun_config_name)
+    SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
+    SelectGun.get_select_gun().test()
+
+    jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
+                   c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}), game_windows_status=game_windows_status)
+    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+    JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
+    JoyListener.joy_listener.start(None)
 
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
@@ -51,10 +67,6 @@ if __name__ == "__main__":
     key_listener.start()
 
     threading.Thread(target=auxiliary.start).start()
-
-    log_window = ConfigWindow(global_config)
-    dis = DisclaimerWindow(log_window)
-    check_run.check(validate_type='ai', main_windows=log_window)
 
     MoverFactory.init_mover(
         mouse_model=global_config.mouse_model,

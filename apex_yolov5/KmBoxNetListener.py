@@ -1,9 +1,9 @@
 import time
+import traceback
 
 from pynput.mouse import Button
 
 from apex_yolov5.mouse_mover.KmBoxNetMover import KmBoxNetMover
-
 
 
 class KmBoxNetListener:
@@ -14,6 +14,8 @@ class KmBoxNetListener:
         self.listener_sign = False
         self.down_key_map = []
         self.down_mouse_map = []
+        self.connect_func = []
+        self.connect_mouse_func = []
         kmNet.monitor(10000)
 
     def km_box_net_start(self):
@@ -65,8 +67,31 @@ class KmBoxNetListener:
                 if "x2" in self.down_mouse_map:
                     self.down_mouse_map.remove("x2")
                     apex_mouse_listener.on_click(*self.km_box_net_mover.get_position(), Button.x2, False)
+
+            for func in self.connect_mouse_func:
+                func(self.down_mouse_map)
+
+            for func in self.connect_func:
+                try:
+                    func()
+                except:
+                    traceback.print_exc()
             time.sleep(0.01)
         print("km box net 监听结束")
 
     def stop(self):
         self.listener_sign = False
+
+    def connect(self, func):
+        """
+
+        :param func:
+        """
+        self.connect_func.append(func)
+
+    def connect_mouse_listner(self, func):
+        """
+
+        :param func:
+        """
+        self.connect_mouse_func.append(func)

@@ -21,11 +21,13 @@ screenshot_resolution = {
 
 scope_screenshot_resolution = {
     (2560, 1440): [(2034, 1338, 2059, 1363), (2069, 1338, 2094, 1363), (2106, 1338, 2131, 1363)],
-    (1920, 1080): [(1522, 1002, 1542, 1022), (1551, 1002, 1571, 1022), (1579, 1002, 1599, 1022)]
+    (1920, 1080): [(1522, 1002, 1542, 1022), (1551, 1002, 1571, 1022), (1579, 1002, 1599, 1022)],
+    (2048, 1152): [(1880, 1213, 1901, 1234), (1910, 1213, 1931, 1234), (1940, 1213, 1961, 1234)]
 }
 hop_up_screenshot_resolution = {
     (2560, 1440): [(2142, 1338, 2167, 1363), (2180, 1338, 2205, 1363)],
-    (1920, 1080): [(1607, 1002, 1627, 1022), (1635, 1002, 1655, 1022)]
+    (1920, 1080): [(1607, 1002, 1627, 1022), (1635, 1002, 1655, 1022)],
+    (2048, 1152): [(1970, 1213, 1991, 1234), (2000, 1213, 2021, 1234)]
 }
 
 (x, y) = Tools.get_resolution()
@@ -284,11 +286,14 @@ class Config:
             "哈沃克"
         ])
         self.delayed_activation_key_list = self.get_config(self.config_data, "delayed_activation_key_list", {})
+        self.toggle_hold_key = {}
         self.joy_to_key_map = self.get_config(self.config_data, "joy_to_key_map", {})
         self.distributed_param = self.get_config(self.config_data, "distributed_param", {
             "ip": "127.0.0.1",
             "port": 12345
         })
+
+        self.rea_snow_gun_config_name = self.get_config(self.config_data, "rea_snow_gun_config_name", "ReaSnowGun")
 
         if self.only_save:
             self.shot_height = 640

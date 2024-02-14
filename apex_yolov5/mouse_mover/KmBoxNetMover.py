@@ -1,4 +1,4 @@
-
+import traceback
 
 from apex_yolov5.log.Logger import Logger
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
@@ -8,15 +8,21 @@ class KmBoxNetMover(MouseMover):
 
     def __init__(self, logger: Logger, mouse_mover_param):
         import kmNet
-        self.kmNet = kmNet
-        # 初始化
-        super().__init__(mouse_mover_param)
-        self.logger = logger
-        ip = mouse_mover_param["ip"]
-        port = mouse_mover_param["port"]
-        uuid = mouse_mover_param["uuid"]
-        kmNet.init(ip, port, uuid)  # 连接盒子
-        self.listener = None
+        try:
+            self.kmNet = kmNet
+            # 初始化
+            super().__init__(mouse_mover_param)
+            self.logger = logger
+            ip = mouse_mover_param["ip"]
+            port = mouse_mover_param["port"]
+            uuid = mouse_mover_param["uuid"]
+            kmNet.init(ip, port, uuid)  # 连接盒子
+            self.listener = None
+            self.toggle_key_listener = None
+            self.logger.print_log("kmbox net 初始化成功")
+        except Exception as e:
+            print(e)
+            traceback.print_exception(e)
 
     def left_click(self):
         # 左键
@@ -51,6 +57,7 @@ class KmBoxNetMover(MouseMover):
             销毁
         """
         self.listener.stop()
+        self.toggle_key_listener.destory()
 
     def click_key(self, value):
         self.kmNet.keydown(value)

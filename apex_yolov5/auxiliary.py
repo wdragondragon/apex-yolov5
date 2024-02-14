@@ -1,6 +1,7 @@
 import math
 import threading
 import time
+import traceback
 
 from pynput.mouse import Button
 
@@ -146,7 +147,11 @@ def start():
                     finally:
                         # 释放锁
                         intention_lock.release()
-                    MoverFactory.mouse_mover().move_rp(int(move_up), int(move_down), global_config.re_cut_size)
+                    try:
+                        MoverFactory.mouse_mover().move_rp(int(move_up), int(move_down), global_config.re_cut_size)
+                    except Exception as e:
+                        print(e)
+                        traceback.print_exception(e)
                     sum_move_x, sum_move_y = sum_move_x + abs(move_up), sum_move_y + abs(move_down)
                     if not global_config.ai_toggle:
                         break
