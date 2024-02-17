@@ -29,12 +29,12 @@ def main(log_window):
             img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             global_img_info.set_current_img(img_origin, img)
-            print(f'screen cost {int((time.time() - start) * 1000)}ms')
             aims = get_aims(img)
             bboxes = []
+            averager = (0, 0, 0, 0)
             if len(aims):
                 if not global_config.only_save:
-                    lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
+                    averager = lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
                          shot_width=global_img_info.get_current_img().shot_width,
                          shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
                 if global_config.is_show_debug_window:
@@ -52,7 +52,6 @@ def main(log_window):
             else:
                 if global_config.show_aim:
                     get_aim_show_window().clear_box()
-                global_config.sign_shot_xy()
             print_count += 1
             screen_count += 1
             now = time.time()
@@ -67,8 +66,8 @@ def main(log_window):
                 log_window.set_image(img, bboxes=bboxes)
             if global_config.only_save:
                 time.sleep(1)
+            global_config.sign_shot_xy(averager)
             global_config.change_shot_xy()
-            print(f'all cost {int((time.time() - start) * 1000)}ms')
         except Exception as e:
             print(e)
             traceback.print_exc()

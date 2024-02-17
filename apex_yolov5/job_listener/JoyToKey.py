@@ -1,3 +1,4 @@
+from apex_yolov5.Tools import Tools
 from apex_yolov5.log.Logger import Logger
 
 
@@ -6,12 +7,11 @@ class JoyToKey:
         jtk
     """
 
-    def __init__(self, logger: Logger, joy_to_key_map, c1_mouse_mover, game_windows_status):
+    def __init__(self, logger: Logger, joy_to_key_map, c1_mouse_mover):
         self.logger = logger
         self.c1_mouse_mover = c1_mouse_mover
         self.joy_to_key_map = joy_to_key_map
         self.joy_to_key_last_status_map = {}
-        self.game_windows_status = game_windows_status
         self.init_status_map()
 
     def init_status_map(self):
@@ -28,7 +28,7 @@ class JoyToKey:
         :param axis:
         :param value:
         """
-        if not self.game_windows_status.get_game_windows_status():
+        if not Tools.is_apex_windows():
             return
 
         if "axis" not in self.joy_to_key_map:

@@ -32,7 +32,6 @@ if __name__ == "__main__":
     dis = DisclaimerWindow(log_window)
     check_run.check(validate_type='ai', main_windows=log_window)
 
-    game_windows_status = GameWindowsStatus(logger=LogFactory.logger())
     SelectGun.select_gun = SelectGun.SelectGun(logger=LogFactory.logger(),
                                                bbox=global_config.select_gun_bbox,
                                                image_path=global_config.image_path,
@@ -46,16 +45,16 @@ if __name__ == "__main__":
                                                                                    global_config.image_base_path),
                                                screen_taker=LocalScreenTaker(LogFactory.logger()))
 
-    rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
-                                                            config_name=global_config.rea_snow_gun_config_name)
-    SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
-    SelectGun.get_select_gun().test()
-
-    jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
-                   c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}), game_windows_status=game_windows_status)
-    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
-    JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
-    JoyListener.joy_listener.start(None)
+    # rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
+    #                                                         config_name=global_config.rea_snow_gun_config_name)
+    # SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
+    # SelectGun.get_select_gun().test()
+    #
+    # jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
+    #                c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
+    # JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+    # JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
+    # JoyListener.joy_listener.start(None)
 
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
