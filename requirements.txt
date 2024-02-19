@@ -53,3 +53,9 @@ setuptools>=65.5.1 # Snyk vulnerability fix
 # other
 pynput==1.7.6
 pywin32==306
+pyqt5==5.15.10
+mss==9.0.1
+jsonpath==0.82.2
+scikit-image==0.22.0
+pygame==2.5.2
+wmi==1.5.1
