@@ -30,11 +30,11 @@
 或参考文章[(yolov5从零开始，自动瞄准不再是天方夜谭)](https://www.jianshu.com/p/84ad94250172)
 
 ## 其他项目
-
 [罗技抖枪宏大全](https://github.com/wdragondragon/apex-shake-gun.git)
 
-[基于opencv的apex枪械识别宏框架](https://github.com/wdragondragon/ApexAutomaticGunSelection.git)
+[基于opencv的apex枪械识别框架（带压枪抖枪，对接硬件转换器自动识别）](https://github.com/wdragondragon/ApexRecoils.git)
 
+[基于opencv的apex枪械识别框架（对接罗技lua文件动态替换）](https://github.com/wdragondragon/ApexAutomaticGunSelection.git)
 
 ## 加入我们
 
