@@ -3,8 +3,8 @@
     320,
     320
   ],
-  "weights": ".\\apex_model\\apex_416_pytrt.onnx",
-  "data": ".\\apex_model\\1w2\\1w.yaml",
+  "weights": ".\\apex_model\\best3.pt",
+  "data": ".\\apex_model\\best3.yaml",
   "half": true,
   "device": 0,
   "include": ["engine"],

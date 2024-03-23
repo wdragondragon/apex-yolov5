@@ -36,9 +36,12 @@ def get_CPU_info():
 def get_disk_info():
     disk = []
     for pd in s.Win32_DiskDrive():
+        serial = s.Win32_PhysicalMedia()[0].SerialNumber
+        if serial is not None:
+            serial = serial.lstrip().rstrip()
         disk.append(
             {
-                "Serial": s.Win32_PhysicalMedia()[0].SerialNumber.lstrip().rstrip(),  # 获取硬盘序列号，调用另外一个win32 API
+                "Serial": serial,  # 获取硬盘序列号，调用另外一个win32 API
                 "ID": pd.deviceid,
                 "Caption": pd.Caption,
                 "size": str(int(float(pd.Size) / 1024 / 1024 / 1024)) + "G"

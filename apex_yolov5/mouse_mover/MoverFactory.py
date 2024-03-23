@@ -31,10 +31,11 @@ def init_mover(mouse_model, mouse_mover_params):
         current_mover = KmBoxNetMover(logger, mouse_mover_param)
         current_mover.listener = KmBoxNetListener(current_mover)
         threading.Thread(target=current_mover.listener.km_box_net_start).start()
-        # current_mover.toggle_key_listener = ToggleKeyListener(logger=logger,
-        #                                                       km_box_net_listener=current_mover.listener,
-        #                                                       delayed_activation_key_list=global_config.delayed_activation_key_list,
-        #                                                       toggle_hold_key=global_config.toggle_hold_key)
+        if global_config.rea_snow_gun_config_name != "":
+            current_mover.toggle_key_listener = ToggleKeyListener(logger=logger,
+                                                                  km_box_net_listener=current_mover.listener,
+                                                                  delayed_activation_key_list=global_config.delayed_activation_key_list,
+                                                                  toggle_hold_key=global_config.toggle_hold_key)
 
 
 def reload_mover(mouse_model, mouse_mover_params):

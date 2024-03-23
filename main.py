@@ -10,6 +10,8 @@ from apex_recoils.core import SelectGun, ReaSnowSelectGun
 from apex_recoils.core.GameWindowsStatus import GameWindowsStatus
 from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
 from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
+from apex_recoils.core.screentaker.CapScreenTaker import CapScreenTaker
+from apex_recoils.core.screentaker.LocalMssScreenTaker import LocalMssScreenTaker
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
@@ -43,18 +45,18 @@ if __name__ == "__main__":
                                                hop_up_path=global_config.hop_up_path,
                                                image_comparator=NetImageComparator(LogFactory.logger(),
                                                                                    global_config.image_base_path),
-                                               screen_taker=LocalScreenTaker(LogFactory.logger()))
+                                               screen_taker=LocalMssScreenTaker(LogFactory.logger()))
+    if global_config.rea_snow_gun_config_name != "":
+        rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
+                                                                config_name=global_config.rea_snow_gun_config_name)
+        SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
+        SelectGun.get_select_gun().test()
 
-    # rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
-    #                                                         config_name=global_config.rea_snow_gun_config_name)
-    # SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
-    # SelectGun.get_select_gun().test()
-    #
-    # jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
-    #                c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
-    # JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
-    # JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
-    # JoyListener.joy_listener.start(None)
+        jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
+                       c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
+        JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+        JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
+        JoyListener.joy_listener.start(None)
 
     listener = pynput.mouse.Listener(
         on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)

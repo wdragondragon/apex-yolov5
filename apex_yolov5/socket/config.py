@@ -293,7 +293,7 @@ class Config:
             "port": 12345
         })
 
-        self.rea_snow_gun_config_name = self.get_config(self.config_data, "rea_snow_gun_config_name", "ReaSnowGun")
+        self.rea_snow_gun_config_name = self.get_config(self.config_data, "rea_snow_gun_config_name", "")
 
         if self.only_save:
             self.shot_height = 640

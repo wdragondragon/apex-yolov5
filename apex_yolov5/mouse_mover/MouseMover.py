@@ -1,4 +1,6 @@
 from ctypes import Structure, c_ulong, byref, windll
+import win32api
+import win32con
 
 
 class PointAPI(Structure):
@@ -148,3 +150,13 @@ class MouseMover:
             松开按键
         """
         pass
+
+    def toggle_caps_lock(self, lock_status):
+        """
+        切换Caps Lock键的状态
+        """
+        if self.is_caps_locked() ^ lock_status:
+            # 模拟按下Caps Lock键
+            win32api.keybd_event(win32con.VK_CAPITAL, 0, win32con.KEYEVENTF_EXTENDEDKEY, 0)
+            # 模拟释放Caps Lock键
+            win32api.keybd_event(win32con.VK_CAPITAL, 0, win32con.KEYEVENTF_EXTENDEDKEY | win32con.KEYEVENTF_KEYUP, 0)

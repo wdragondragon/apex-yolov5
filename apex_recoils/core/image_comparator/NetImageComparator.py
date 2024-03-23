@@ -189,17 +189,9 @@ class NetImageComparator:
                 downloaded_image.seek(0)
                 image_a = cv2.imdecode(np.frombuffer(downloaded_image.getvalue(), dtype=np.uint8), cv2.IMREAD_COLOR)
                 downloaded_image.close()
-
-                buffer_b = BytesIO()
-                img.save(buffer_b, format="PNG")
-                buffer_b.seek(0)
-
-                # 使用内存中的图像数据
-                image_b = cv2.imdecode(np.frombuffer(buffer_b.getvalue(), dtype=np.uint8), cv2.IMREAD_COLOR)
-
+                image_b = np.array(img)
                 gray_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
                 gray_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
-
                 (score, diff) = structural_similarity(gray_a, gray_b, full=True)
                 return score
             else:
