@@ -37,3 +37,15 @@ class GameWindowsStatus:
             获取状态
         """
         return self.status
+
+
+game_status = None
+
+
+def init(logger):
+    global game_status
+    game_status = GameWindowsStatus(logger)
+
+
+def get_game_status():
+    return game_status

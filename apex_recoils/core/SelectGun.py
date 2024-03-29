@@ -17,7 +17,8 @@ class SelectGun:
     """
 
     def __init__(self, logger: Logger, bbox, image_path, scope_bbox, scope_path, hop_up_bbox, hop_up_path,
-                 refresh_buttons, has_turbocharger, image_comparator, screen_taker: LocalScreenTaker):
+                 refresh_buttons, has_turbocharger, image_comparator, screen_taker: LocalScreenTaker,
+                 game_windows_status):
         super().__init__()
         self.logger = logger
         self.on_key_map = dict()
@@ -33,6 +34,7 @@ class SelectGun:
         self.has_turbocharger = has_turbocharger
         self.hop_up_bbox = hop_up_bbox
         self.hop_up_path = hop_up_path
+        self.game_windows_status = game_windows_status
         self.call_back = []
         self.fail_time = 0
         self.image_comparator = image_comparator
@@ -40,7 +42,7 @@ class SelectGun:
         for refresh_button in self.refresh_buttons:
             KMCallBack.connect(KMCallBack("k", refresh_button, self.select_gun_threading, False))
 
-        # threading.Thread(target=self.timing_execution).start()
+        threading.Thread(target=self.timing_execution).start()
 
     def timing_execution(self):
         """
@@ -48,10 +50,13 @@ class SelectGun:
         """
         while True:
             try:
-                if self.select_gun_with_sign(auto=True):
-                    self.fail_time = 0
+                if self.game_windows_status.get_game_windows_status():
+                    if self.select_gun_with_sign(auto=True):
+                        self.fail_time = 0
+                    else:
+                        self.fail_time += 1
                 else:
-                    self.fail_time += 1
+                    self.fail_time = 0
             except Exception as e:
                 traceback.print_exc()
                 pass
@@ -103,6 +108,8 @@ class SelectGun:
             使用图片对比，逐一识别枪械，相似度最高设置为current_gun
         :return:
         """
+        if not self.game_windows_status.get_game_windows_status():
+            return False
         gun_temp, score_temp = self.image_comparator.compare_with_path(self.image_path,
                                                                        self.get_images_from_bbox([self.bbox]), 0.9, 0.7)
         if gun_temp is None:

@@ -57,11 +57,11 @@ class Tools:
     def convert_to_decimal(input_str):
         try:
             # 尝试将输入字符串解析为16进制数字
-            decimal_value = int(input_str, 16)
+            decimal_value = int(input_str, 10)
         except ValueError:
             try:
                 # 如果解析失败，则尝试将输入字符串解析为10进制数字
-                decimal_value = int(input_str, 10)
+                decimal_value = int(input_str, 16)
             except ValueError:
                 # 如果两者都失败，返回一个适当的错误或默认值
                 # print("无法解析输入字符串为数字")

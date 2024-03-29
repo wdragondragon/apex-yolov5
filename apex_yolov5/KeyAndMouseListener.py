@@ -106,6 +106,8 @@ class MouseListener:
 
     def on_click(self, x, y, button, pressed):
         if pressed:
+            if button in self.on_mouse_key_map:
+                return
             self.on_mouse_key_map[button] = Tools.current_milli_time()
             if button.name in self.toggle_mouse_key_map:
                 self.toggle_mouse_key_map.remove(button.name)

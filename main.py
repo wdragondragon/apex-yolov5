@@ -6,13 +6,9 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5_main
 import apex_yolov5_main_asyn
-from apex_recoils.core import SelectGun, ReaSnowSelectGun
-from apex_recoils.core.GameWindowsStatus import GameWindowsStatus
-from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
+from apex_recoils.core import SelectGun, ReaSnowSelectGun, GameWindowsStatus
 from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
-from apex_recoils.core.screentaker.CapScreenTaker import CapScreenTaker
 from apex_recoils.core.screentaker.LocalMssScreenTaker import LocalMssScreenTaker
-from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.job_listener import JoyListener
@@ -34,6 +30,7 @@ if __name__ == "__main__":
     dis = DisclaimerWindow(log_window)
     check_run.check(validate_type='ai', main_windows=log_window)
 
+    GameWindowsStatus.init(logger=LogFactory.logger())
     SelectGun.select_gun = SelectGun.SelectGun(logger=LogFactory.logger(),
                                                bbox=global_config.select_gun_bbox,
                                                image_path=global_config.image_path,
@@ -45,7 +42,8 @@ if __name__ == "__main__":
                                                hop_up_path=global_config.hop_up_path,
                                                image_comparator=NetImageComparator(LogFactory.logger(),
                                                                                    global_config.image_base_path),
-                                               screen_taker=LocalMssScreenTaker(LogFactory.logger()))
+                                               screen_taker=LocalMssScreenTaker(LogFactory.logger()),
+                                               game_windows_status=GameWindowsStatus.get_game_status())
     if global_config.rea_snow_gun_config_name != "":
         rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
                                                                 config_name=global_config.rea_snow_gun_config_name)
@@ -58,9 +56,10 @@ if __name__ == "__main__":
         JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
         JoyListener.joy_listener.start(None)
 
-    listener = pynput.mouse.Listener(
-        on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
-    listener.start()
+    if global_config.mouse_model != 'km_box_net':
+        listener = pynput.mouse.Listener(
+            on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
+        listener.start()
 
     key_listener = pynput.keyboard.Listener(
         on_press=apex_key_listener.on_press, on_release=apex_key_listener.on_release
