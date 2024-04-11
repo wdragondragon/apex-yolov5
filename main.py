@@ -89,4 +89,6 @@ if __name__ == "__main__":
         threading.Thread(target=apex_yolov5_main_asyn.handle, args=(log_window,)).start()
     else:
         threading.Thread(target=apex_yolov5_main.main, args=(log_window,)).start()
+
+    # KMCallBack.connect(KMCallBack('k', 'p', save_screen_to_file))
     sys.exit(app.exec_())

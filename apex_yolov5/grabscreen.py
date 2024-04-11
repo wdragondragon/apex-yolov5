@@ -107,7 +107,7 @@ save_count = 0
 save_manual_operation_path = "{}labels_manual/{}/".format(global_config.auto_save_path, start_save_time_format)
 
 
-def save_screen_to_file():
+def save_screen_to_file(j=None, i=None):
     with mss.mss() as sct:
         screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
     rgb = screenshot.rgb
