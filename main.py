@@ -25,7 +25,7 @@ from apex_yolov5.windows.config_window import ConfigWindow
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
-
+    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
     log_window = ConfigWindow(global_config)
     dis = DisclaimerWindow(log_window)
     check_run.check(validate_type='ai', main_windows=log_window)
@@ -44,7 +44,9 @@ if __name__ == "__main__":
                                                                                    global_config.image_base_path),
                                                screen_taker=LocalMssScreenTaker(LogFactory.logger()),
                                                game_windows_status=GameWindowsStatus.get_game_status())
-    if global_config.rea_snow_gun_config_name != "":
+
+
+    if global_config.rea_snow_gun_config_name != "" or global_config.joy_move:
         rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
                                                                 config_name=global_config.rea_snow_gun_config_name)
         SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
@@ -52,7 +54,6 @@ if __name__ == "__main__":
 
         jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
                        c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
-        JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
         JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
         JoyListener.joy_listener.start(None)
 
@@ -80,7 +81,7 @@ if __name__ == "__main__":
     if global_config.show_aim:
         get_aim_show_window().show()
 
-    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+
     if global_config.joy_move:
         JoyListener.joy_listener.start(log_window)
 

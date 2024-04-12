@@ -79,7 +79,14 @@ def set_click():
     click_sign = True
 
 
+lock_time = None
+move_x_arr = []
+move_y_arr = []
+time_point_arr = []
+
+
 def get_lock_mode():
+    global lock_time
     lock_mode = (("left" in global_config.aim_button and (
             apex_mouse_listener.is_press(Button.left) or get_joy_listener().is_press(4))) or
                  ("right" in global_config.aim_button and (
@@ -93,11 +100,24 @@ def get_lock_mode():
                      4) and not get_joy_listener().is_press(5))))
                  )
     lock_mode = lock_mode or len(global_config.aim_button) == 0
-    return lock_mode and global_config.ai_toggle
+    lock = lock_mode and global_config.ai_toggle
+    if lock:
+        if lock_time is None:
+            lock_time = time.time()
+            move_x_arr.clear()
+            move_y_arr.clear()
+            time_point_arr.clear()
+    else:
+        if lock_time is not None:
+            lock_time = None
+            print(move_x_arr)
+            print(move_y_arr)
+            print(time_point_arr)
+    return lock
 
 
 def start():
-    global intention, change_coordinates_num, last_click_time, click_sign, intention_exec_sign
+    global intention, change_coordinates_num, last_click_time, click_sign, intention_exec_sign, lock_time
     sum_move_x, sum_move_y = 0, 0
     start_time = time.time()
     while_frequency = 0
@@ -162,8 +182,12 @@ def start():
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format(cost_time, change_coordinates_num))
             else:
                 # print("开始移动，移动距离:{}".format((x, y)))
-                MoverFactory.mouse_mover().move(int(x), int(y))
-                incr_executed_intention(int(x), int(y))
+                x, y = int(round(x, 0)), int(round(y, 0))
+                move_x_arr.append(x)
+                move_y_arr.append(y)
+                time_point_arr.append(int((time.time() - lock_time) * 1000))
+                MoverFactory.mouse_mover().move(x, y)
+                incr_executed_intention(x, y)
                 # print(
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             intention = None
