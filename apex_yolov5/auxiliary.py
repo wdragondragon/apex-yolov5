@@ -27,21 +27,25 @@ intention_lock = threading.Lock()
 intention_exec_sign = False
 
 
-def set_intention(x, y, lead_x, lead_y, random_deviation, base_sign=0):
+def set_intention(x, y, lead_x, lead_y, random_deviation, base_sign=0, move_path_n=True):
     global intention, change_coordinates_num, intention_base_sign, executed_intention, real_intention
     intention_lock.acquire()
     try:
         intention_base_sign = base_sign
-        if apex_mouse_listener.get_aim_status():
-            x = x * global_config.aim_move_path_nx
-            y = y * global_config.aim_move_path_ny
-            random_deviation_x = random_deviation * global_config.aim_move_path_nx
-            random_deviation_y = random_deviation * global_config.aim_move_path_ny
+        if move_path_n:
+            if apex_mouse_listener.get_aim_status():
+                x = x * global_config.aim_move_path_nx
+                y = y * global_config.aim_move_path_ny
+                random_deviation_x = random_deviation * global_config.aim_move_path_nx
+                random_deviation_y = random_deviation * global_config.aim_move_path_ny
+            else:
+                x = x * global_config.move_path_nx
+                y = y * global_config.move_path_ny
+                random_deviation_x = random_deviation * global_config.move_path_nx
+                random_deviation_y = random_deviation * global_config.move_path_ny
         else:
-            x = x * global_config.move_path_nx
-            y = y * global_config.move_path_ny
-            random_deviation_x = random_deviation * global_config.move_path_nx
-            random_deviation_y = random_deviation * global_config.move_path_ny
+            random_deviation_x = random_deviation
+            random_deviation_y = random_deviation
         intention = (x + random_deviation_x + lead_x, y + random_deviation_y + lead_y)
         real_intention = (x, y)
         executed_intention = (0, 0)

@@ -11,6 +11,7 @@ from apex_recoils.core.image_comparator.NetImageComparator import NetImageCompar
 from apex_recoils.core.screentaker.LocalMssScreenTaker import LocalMssScreenTaker
 from apex_yolov5 import check_run, auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
+from apex_yolov5.RecoildsCore import RecoilsConfig, RecoilsListener
 from apex_yolov5.job_listener import JoyListener
 from apex_yolov5.job_listener.JoyToKey import JoyToKey
 from apex_yolov5.log import LogFactory
@@ -45,18 +46,17 @@ if __name__ == "__main__":
                                                screen_taker=LocalMssScreenTaker(LogFactory.logger()),
                                                game_windows_status=GameWindowsStatus.get_game_status())
 
-
     if global_config.rea_snow_gun_config_name != "" or global_config.joy_move:
         rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
                                                                 config_name=global_config.rea_snow_gun_config_name)
         SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
-        SelectGun.get_select_gun().test()
+
 
         jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
                        c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
         JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
         JoyListener.joy_listener.start(None)
-
+    SelectGun.get_select_gun().test()
     if global_config.mouse_model != 'km_box_net':
         listener = pynput.mouse.Listener(
             on_click=apex_mouse_listener.on_click, on_move=apex_mouse_listener.on_move)
@@ -72,6 +72,16 @@ if __name__ == "__main__":
     MoverFactory.init_mover(
         mouse_model=global_config.mouse_model,
         mouse_mover_params=global_config.available_mouse_models)
+
+    # 压枪
+    recoils_config = RecoilsConfig(logger=LogFactory.logger())
+    recoils_listener = RecoilsListener(logger=LogFactory.logger(),
+                                       recoils_config=recoils_config,
+                                       mouse_listener=apex_mouse_listener,
+                                       select_gun=SelectGun.select_gun)
+    recoils_listener_thread = threading.Thread(target=recoils_listener.start)
+    recoils_listener_thread.start()
+
     if global_config.show_config:
         log_window.show()
 
@@ -80,7 +90,6 @@ if __name__ == "__main__":
 
     if global_config.show_aim:
         get_aim_show_window().show()
-
 
     if global_config.joy_move:
         JoyListener.joy_listener.start(log_window)
