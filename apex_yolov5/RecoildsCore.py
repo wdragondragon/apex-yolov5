@@ -1,5 +1,6 @@
 import os.path as op
 import json
+import threading
 import time
 
 from pynput.mouse import Button
@@ -9,6 +10,7 @@ from apex_recoils.core.SelectGun import SelectGun
 from apex_yolov5.KeyAndMouseListener import MouseListener
 from apex_yolov5.log.Logger import Logger
 from apex_yolov5.mouse_mover import MoverFactory
+from apex_yolov5.socket.config import Config
 
 
 class RecoilsConfig:
@@ -52,15 +54,23 @@ class RecoilsListener:
 
     def __init__(self,
                  logger: Logger,
-                 recoils_config: RecoilsConfig,
                  mouse_listener: MouseListener,
-                 select_gun: SelectGun):
+                 select_gun: SelectGun, config: Config):
         self.logger = logger
-        self.recoils_config = recoils_config
+        self.recoils_config = RecoilsConfig(logger=logger)
         self.mouse_listener = mouse_listener
         self.select_gun = select_gun
+        self.recoils_listener_thread = None
+        self.config = config
 
     def start(self):
+        """
+            开始监听
+        """
+        self.recoils_listener_thread = threading.Thread(target=self.run)
+        self.recoils_listener_thread.start()
+
+    def run(self):
         """
             开始监听
         """
@@ -68,6 +78,9 @@ class RecoilsListener:
         num = 0
         sleep_time = 0.01
         while True:
+            if not self.config.recoils_toggle:
+                time.sleep(1)
+                continue
             current_gun = self.select_gun.current_gun
             left_press = self.mouse_listener.is_press(Button.left)
             right_press = self.mouse_listener.is_press(Button.right)
@@ -94,8 +107,8 @@ class RecoilsListener:
                                 self.logger.print_log(
                                     f'执行时间：[{time_points[num]}]<[{point}],正在压第{str(num + 1)}步，剩余{str(len(time_points) - (num + 1))}步，鼠标移动轨迹为({x_value},{y_value})')
                                 # self.intent_manager.set_intention(x_value, y_value)
-                                # MoverFactory.mouse_mover().move_rp(x_value, y_value)
-                                set_intention(x_value, y_value, 0, 0, 0, 0, False)
+                                MoverFactory.mouse_mover().move_rp(x_value, y_value)
+                                # set_intention(x_value, y_value, 0, 0, 0, 0, False)
                             else:
                                 self.logger.print_log(
                                     f'缺失第[{num + 1}个轨迹，时间为{time_points[num]}])')

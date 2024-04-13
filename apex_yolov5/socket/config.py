@@ -204,6 +204,7 @@ class Config:
         self.current_model = self.get_config(self.config_data, "current_model", "apex区分敌我")
         self.ai_middle_toggle = self.get_config(self.config_data, "ai_middle_toggle", True)
         self.ai_toggle = self.get_config(self.config_data, "ai_toggle", False)
+        self.recoils_toggle = self.get_config(self.config_data, "recoils_toggle", False)
         self.ai_toggle_type = self.get_config(self.config_data, "ai_toggle_type", 'm')
         self.ai_toggle_key = self.get_config(self.config_data, "ai_toggle_key", 'middle')
 

@@ -21,7 +21,13 @@ class AiToggleLayout:
         self.ai_toggle_switch.setObjectName("ai_toggle")
         self.ai_toggle_switch.toggled.connect(self.handle_ai_toggled)
         self.ai_toggle_switch.setChecked(self.config.ai_toggle)
+
+        self.recoils_toggle_switch = QCheckBox("压枪开关")
+        self.recoils_toggle_switch.setObjectName("recoils_toggle")
+        self.recoils_toggle_switch.toggled.connect(self.handle_recoils_toggle)
+        self.recoils_toggle_switch.setChecked(self.config.ai_toggle)
         toggle_layout.addWidget(self.ai_toggle_switch)
+
 
         self.ai_toggle_type_label = QLabel("开关键配置")
         self.ai_toggle_type_combo_box = QComboBox()
@@ -31,6 +37,8 @@ class AiToggleLayout:
         toggle_layout.addWidget(self.ai_toggle_type_label)
         toggle_layout.addWidget(self.ai_toggle_type_combo_box)
         toggle_layout.addWidget(self.toggle_key_edit)
+
+        toggle_layout.addWidget(self.recoils_toggle_switch)
 
         layout.addWidget(self.label)
         layout.addLayout(toggle_layout)
@@ -51,6 +59,10 @@ class AiToggleLayout:
 
     def handle_ai_toggled(self, checked):
         self.config.set_config("ai_toggle", checked)
+
+    def handle_recoils_toggle(self, checked):
+        self.config.set_config("recoils_toggle", checked)
+        self.config.recoils_toggle = checked
 
     def handle_ai_middle_toggle_switch(self, checked):
         self.config.set_config("ai_middle_toggle", checked)

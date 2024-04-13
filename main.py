@@ -51,7 +51,6 @@ if __name__ == "__main__":
                                                                 config_name=global_config.rea_snow_gun_config_name)
         SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
 
-
         jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
                        c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
         JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
@@ -74,13 +73,10 @@ if __name__ == "__main__":
         mouse_mover_params=global_config.available_mouse_models)
 
     # 压枪
-    recoils_config = RecoilsConfig(logger=LogFactory.logger())
     recoils_listener = RecoilsListener(logger=LogFactory.logger(),
-                                       recoils_config=recoils_config,
                                        mouse_listener=apex_mouse_listener,
-                                       select_gun=SelectGun.select_gun)
-    recoils_listener_thread = threading.Thread(target=recoils_listener.start)
-    recoils_listener_thread.start()
+                                       select_gun=SelectGun.select_gun, config=global_config)
+    recoils_listener.start()
 
     if global_config.show_config:
         log_window.show()
