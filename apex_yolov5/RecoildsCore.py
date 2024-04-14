@@ -1,11 +1,11 @@
-import os.path as op
 import json
+import os.path as op
 import threading
 import time
 
+import requests
 from pynput.mouse import Button
 
-from apex_yolov5.auxiliary import set_intention
 from apex_recoils.core.SelectGun import SelectGun
 from apex_yolov5.KeyAndMouseListener import MouseListener
 from apex_yolov5.log.Logger import Logger
@@ -33,7 +33,9 @@ class RecoilsConfig:
                 self.specs_data = json.load(file)
                 self.logger.print_log("加载配置文件: {}".format(config_file_path))
         else:
-            self.logger.print_log("配置文件不存在: {}".format(config_file_path))
+            config_json_str = RecoilsConfig.read_file_from_url("http://1.15.138.227:9000/apex/specs.json")
+            self.specs_data = json.loads(config_json_str)
+            self.logger.print_log("加载配置文件成功")
 
     def get_config(self, name):
         """
@@ -45,7 +47,29 @@ class RecoilsConfig:
             if spec['name'] == name:
                 return spec
         return None
+    @staticmethod
+    def read_file_from_url(url):
+        """
 
+        :param url:
+        :return:
+        """
+        try:
+            # 发送GET请求获取文件内容
+            # headers = random.choice(headers_list)
+            response = requests.get(url)
+            response.encoding = 'utf-8'
+            # 检查请求是否成功
+            if response.status_code == 200:
+                # 根据换行符切割文件内容并返回列表
+                text = response.text
+                return text
+            else:
+                print(f"Failed to read file from URL. Status code: {response.status_code}")
+                return None
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
 
 class RecoilsListener:
     """
@@ -87,7 +111,6 @@ class RecoilsListener:
             if current_gun is not None and left_press:
                 spec = self.recoils_config.get_config(current_gun)['recoils']
                 if spec is not None:
-                    sleep_time = 0.001
                     if start_time is None:
                         start_time = time.time()
                         self.logger.print_log("开始压枪")
@@ -96,14 +119,18 @@ class RecoilsListener:
                     else:
                         spec = spec['un_aim']
                     time_points = spec['time_points']
-                    # 获取对应下标的x和y
-                    x_values = spec['x']
-                    y_values = spec['y']
+                    if len(time_points) == 0:
+                        time.sleep(0.01)
+                        continue
+                    sleep_time = 0.001
                     point = (time.time() - start_time) * 1000
                     index = len(time_points) - 1 if point > time_points[-1] else next(
                         (i - 1 for i, time_point in enumerate(time_points) if time_point > point),
                         -1)
                     if index is not None and index >= 0 and num <= index:
+                        # 获取对应下标的x和y
+                        x_values = spec['x']
+                        y_values = spec['y']
                         if len(x_values) >= num + 1:
                             x_value = x_values[num]
                             y_value = y_values[num]
