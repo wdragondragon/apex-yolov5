@@ -146,7 +146,7 @@ class MouseConfigLayout:
         self.aim_move_path_ny_label = QLabel("瞄准时移动垂直路径倍率:", self.main_window)
         self.aim_move_path_ny_slider = QSlider(Qt.Horizontal, self.main_window)
         self.aim_move_path_ny_slider.setObjectName("aim_move_path_ny")
-        self.aim_move_path_ny_slider.setMinimum(1)  # 最小值
+        self.aim_move_path_ny_slider.setMinimum(0)  # 最小值
         self.aim_move_path_ny_slider.setMaximum(300)  # 最大值
         self.aim_move_path_ny_slider.valueChanged.connect(self.update_aim_move_path_ny_label)
         aim_move_path_ny_layout.addWidget(self.aim_move_path_ny_label)
