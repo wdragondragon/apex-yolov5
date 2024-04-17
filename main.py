@@ -66,7 +66,7 @@ if __name__ == "__main__":
     )
     key_listener.start()
 
-    threading.Thread(target=auxiliary.start).start()
+    # threading.Thread(target=auxiliary.start).start()
 
     MoverFactory.init_mover(
         mouse_model=global_config.mouse_model,
@@ -90,11 +90,5 @@ if __name__ == "__main__":
     if global_config.joy_move:
         JoyListener.joy_listener.start(log_window)
 
-    if global_config.screenshot_frequency_mode == "asyn":
-        threading.Thread(target=apex_yolov5_main_asyn.main).start()
-        threading.Thread(target=apex_yolov5_main_asyn.handle, args=(log_window,)).start()
-    else:
-        threading.Thread(target=apex_yolov5_main.main, args=(log_window,)).start()
-
-    # KMCallBack.connect(KMCallBack('k', 'p', save_screen_to_file))
+    threading.Thread(target=apex_yolov5_main.main, args=(log_window,)).start()
     sys.exit(app.exec_())
