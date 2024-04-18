@@ -177,7 +177,7 @@ class RecoilsListener:
                 return num + 1, 0.001
             start_time = time.time()
             sub_num = 0
-            while time_points_len > sub_num and self.mouse_listener.is_press(Button.left):
+            while time_points_len > sub_num:
                 if self.move_index_xy(spec=spec, current_index=sub_num, point=(time.time() - start_time) * 1000):
                     sub_num += 1
                 time.sleep(0.001)

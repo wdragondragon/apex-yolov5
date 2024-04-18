@@ -29,9 +29,9 @@ def set_intention(x, y):
     try:
         if get_lock_mode():
             x, y = int(round(x, 0)), int(round(y, 0))
+            time_point_arr.append(int((time.time() - lock_time) * 1000))
             move_x_arr.append(x)
             move_y_arr.append(y)
-            time_point_arr.append(int((time.time() - lock_time) * 1000))
             MoverFactory.mouse_mover().move(x, y)
     finally:
         # 释放锁
@@ -74,7 +74,7 @@ def get_lock_mode():
     else:
         if lock_time is not None:
             lock_time = None
-            print(move_x_arr)
-            print(move_y_arr)
-            print(time_point_arr)
+            print(f'"time_points": {time_point_arr},')
+            print(f'"x": {move_x_arr},')
+            print(f'"y": {move_y_arr}')
     return lock
