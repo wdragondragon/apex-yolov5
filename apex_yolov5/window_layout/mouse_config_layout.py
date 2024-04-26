@@ -349,6 +349,8 @@ class MouseConfigLayout:
         self.re_cut_size_label.setText("单次移动最大像素:" + str(self.config.re_cut_size))
         self.re_cut_size_slider.setValue(int(self.config.re_cut_size))
 
+        self.aim_delay_min_slider.setValue(self.config.aiming_delay_min)
+        self.aim_delay_max_slider.setValue(self.config.aiming_delay_max)
         self.aim_delay_label.setText(
             f"瞄准延迟范围: {self.aim_delay_min_slider.value()}-{self.aim_delay_max_slider.value()}")
 
