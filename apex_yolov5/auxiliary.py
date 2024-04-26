@@ -125,7 +125,11 @@ def get_lock_mode():
             print(move_x_arr)
             print(move_y_arr)
             print(time_point_arr)
-    return lock and lock_delay <= int((time.time() - lock_time) * 1000)
+    return lock
+
+
+def get_lock_mode_shoot():
+    return get_lock_mode() and lock_delay <= int((time.time() - lock_time) * 1000)
 
 
 def start():
@@ -145,14 +149,14 @@ def start():
                 global_config.auto_charged_energy_toggle):
             MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()
-
-        if get_lock_mode() and intention is not None:
+        lock_mode_shoot = get_lock_mode_shoot()
+        if lock_mode_shoot and intention is not None:
             # t0 = time.time()
             (x, y) = intention
             if (global_config.mouse_model in global_config.available_mouse_smoothing
                     and global_config.mouse_smoothing_switch):
                 # print("开始移动，移动距离:{}".format((x, y)))
-                while (x != 0 or y != 0) and get_lock_mode():
+                while (x != 0 or y != 0) and get_lock_mode_shoot():
                     intention_lock.acquire()
                     try:
                         (x, y) = intention
@@ -206,7 +210,7 @@ def start():
                 #     "完成移动时间:{:.2f}ms,坐标变更次数:{}".format((time.time() - t0) * 1000, change_coordinates_num))
             intention = None
             # sleep_time = 0.001
-        elif not get_lock_mode():
+        elif not lock_mode_shoot:
             intention = None
         while_frequency += 1
         if int((time.time() - start_time) * 1000) > 1000:
