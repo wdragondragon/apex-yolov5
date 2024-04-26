@@ -1,4 +1,5 @@
 import math
+import random
 import threading
 import time
 import traceback
@@ -88,9 +89,11 @@ move_x_arr = []
 move_y_arr = []
 time_point_arr = []
 
+lock_delay = 0
+
 
 def get_lock_mode():
-    global lock_time
+    global lock_time, lock_delay
     lock_mode = (("left" in global_config.aim_button and (
             apex_mouse_listener.is_press(Button.left) or get_joy_listener().is_press(4))) or
                  ("right" in global_config.aim_button and (
@@ -108,16 +111,21 @@ def get_lock_mode():
     if lock:
         if lock_time is None:
             lock_time = time.time()
+            if global_config.aiming_delay_min == global_config.aiming_delay_max:
+                lock_delay = global_config.aiming_delay_min
+            else:
+                lock_delay = random.randint(global_config.aiming_delay_min, global_config.aiming_delay_max)
             move_x_arr.clear()
             move_y_arr.clear()
             time_point_arr.clear()
     else:
         if lock_time is not None:
             lock_time = None
+            lock_delay = 0
             print(move_x_arr)
             print(move_y_arr)
             print(time_point_arr)
-    return lock
+    return lock and lock_delay <= int((time.time() - lock_time) * 1000)
 
 
 def start():
@@ -148,10 +156,12 @@ def start():
                     intention_lock.acquire()
                     try:
                         (x, y) = intention
-                        move_step_temp = global_config.aim_move_step if apex_mouse_listener.is_press(
-                            Button.right) else global_config.move_step
-                        move_step_y_temp = global_config.aim_move_step_y if apex_mouse_listener.is_press(
-                            Button.right) else global_config.move_step_y
+                        move_step_temp = random.randint(global_config.aim_move_step,
+                                                        global_config.aim_move_step_max) if apex_mouse_listener.is_press(
+                            Button.right) else random.randint(global_config.move_step, global_config.move_step_max)
+                        move_step_y_temp = random.randint(global_config.aim_move_step_y,
+                                                          global_config.aim_move_step_y_max) if apex_mouse_listener.is_press(
+                            Button.right) else random.randint(global_config.move_step_y, global_config.move_step_y_max)
                         if global_config.dynamic_mouse_move:
                             move_step_temp = max(apex_mouse_listener.move_avg_x, move_step_temp)
                             move_step_y_temp = max(apex_mouse_listener.move_avg_y, move_step_y_temp)

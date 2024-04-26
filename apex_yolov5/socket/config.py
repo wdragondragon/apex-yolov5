@@ -10,7 +10,6 @@ from torch.cuda import is_available
 from apex_yolov5.Counter import sure_no_aim, reset_counter
 from apex_yolov5.Tools import Tools
 
-
 screenshot_resolution = {
     (1920, 1080): (1542, 959, 1695, 996),
     (2560, 1440): (2093, 1281, 2275, 1332),
@@ -39,7 +38,6 @@ hop_up_screenshot_resolution = {
     (1680, 1050): [(1406, 982, 1423, 999), (1430, 982, 1447, 999)],
     (2560, 1600): [(2144, 1495, 2169, 1520), (2181, 1495, 2206, 1520)]
 }
-
 
 (x, y) = Tools.get_resolution()
 
@@ -170,13 +168,17 @@ class Config:
                                                          ["win32api", "wu_ya"])
 
         self.move_step = self.get_config(self.config_data, "move_step")
+        self.move_step_max = self.get_config(self.config_data, "move_step_max", self.move_step)
         self.move_step_y = self.get_config(self.config_data, "move_step_y", self.move_step)
+        self.move_step_y_max = self.get_config(self.config_data, "move_step_y_max", self.move_step_y)
         # 移动路径倍率
         self.move_path_nx = self.get_config(self.config_data, "move_path_nx")  # 锁定模式下鼠标移动速度
         self.move_path_ny = self.get_config(self.config_data, "move_path_ny", self.move_path_nx)  # 锁定模式下鼠标移动速度
 
         self.aim_move_step = self.get_config(self.config_data, "aim_move_step", self.move_step)
+        self.aim_move_step_max = self.get_config(self.config_data, "aim_move_step_max", self.move_step)
         self.aim_move_step_y = self.get_config(self.config_data, "aim_move_step_y", self.move_step_y)
+        self.aim_move_step_y_max = self.get_config(self.config_data, "aim_move_step_y_max", self.move_step_y)
         # 移动路径倍率
         self.aim_move_path_nx = self.get_config(self.config_data, "aim_move_path_nx", self.move_path_nx)  # 锁定模式下鼠标移动速度
         self.aim_move_path_ny = self.get_config(self.config_data, "aim_move_path_ny", self.move_path_ny)  # 锁定模式下鼠标移动速度
@@ -185,6 +187,8 @@ class Config:
         self.mouse_move_frequency_switch = self.get_config(self.config_data, "mouse_move_frequency_switch",
                                                            False)
         self.mouse_smoothing_switch = self.get_config(self.config_data, "mouse_smoothing_switch", True)
+        self.aiming_delay_min = self.get_config(self.config_data, "aiming_delay_min", 100)
+        self.aiming_delay_max = self.get_config(self.config_data, "aiming_delay_max", 200)
 
         self.lock_index = self.get_config(self.config_data, "lock_index")  # 锁定目标的索引
         self.aim_type = self.get_config(self.config_data, "aim_type")  # 锁定目标的索引

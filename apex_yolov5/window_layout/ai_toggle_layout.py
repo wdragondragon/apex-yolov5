@@ -25,7 +25,7 @@ class AiToggleLayout:
         self.recoils_toggle_switch = QCheckBox("压枪开关")
         self.recoils_toggle_switch.setObjectName("recoils_toggle")
         self.recoils_toggle_switch.toggled.connect(self.handle_recoils_toggle)
-        self.recoils_toggle_switch.setChecked(self.config.ai_toggle)
+        self.recoils_toggle_switch.setChecked(self.config.recoils_toggle)
         toggle_layout.addWidget(self.ai_toggle_switch)
 
 
@@ -54,6 +54,7 @@ class AiToggleLayout:
             self.ai_toggle_type_combo_box.addItem(key)
         self.ai_toggle_type_combo_box.setCurrentText(self.config.ai_toggle_type)
         self.toggle_key_edit.setText(self.config.ai_toggle_key)
+        self.recoils_toggle_switch.setChecked(self.config.recoils_toggle)
         KMCallBack.connect(
             KMCallBack(self.config.ai_toggle_type, self.config.ai_toggle_key, self.handle_middle_toggled))
 
