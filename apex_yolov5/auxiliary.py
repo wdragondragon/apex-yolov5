@@ -160,12 +160,19 @@ def start():
                     intention_lock.acquire()
                     try:
                         (x, y) = intention
-                        move_step_temp = random.randint(global_config.aim_move_step,
-                                                        global_config.aim_move_step_max) if apex_mouse_listener.is_press(
-                            Button.right) else random.randint(global_config.move_step, global_config.move_step_max)
-                        move_step_y_temp = random.randint(global_config.aim_move_step_y,
-                                                          global_config.aim_move_step_y_max) if apex_mouse_listener.is_press(
-                            Button.right) else random.randint(global_config.move_step_y, global_config.move_step_y_max)
+                        if apex_mouse_listener.is_press(Button.right):
+                            move_step_temp, move_step_y_temp = random_move(x, y,
+                                                                           (global_config.aim_move_step,
+                                                                            global_config.aim_move_step_y),
+                                                                           (global_config.aim_move_step_max,
+                                                                            global_config.aim_move_step_y_max))
+                        else:
+                            move_step_temp, move_step_y_temp = random_move(x, y,
+                                                                           (global_config.move_step,
+                                                                            global_config.move_step_y),
+                                                                           (global_config.move_step_max,
+                                                                            global_config.move_step_y_max))
+
                         if global_config.dynamic_mouse_move:
                             move_step_temp = max(apex_mouse_listener.move_avg_x, move_step_temp)
                             move_step_y_temp = max(apex_mouse_listener.move_avg_y, move_step_y_temp)
@@ -220,6 +227,39 @@ def start():
         change_coordinates_num = 0
         intention_exec_sign = False
         # time.sleep(sleep_time)
+
+
+def random_move(x, y, move_step, move_step_max, move_optimization=True):
+    """
+        随机移动方法
+    :param x:
+    :param y:
+    :param move_step:
+    :param move_step_max
+    :param move_optimization
+    :return:
+    """
+    move_step_temp, move_step_y_temp = move_step
+    move_step_temp_max, move_step_y_temp_max = move_step_max
+
+    move_step, move_step_y = (random.randint(move_step_temp, move_step_temp_max),
+                              random.randint(move_step_y_temp, move_step_y_temp_max))
+    if move_optimization and x > 0 and y > 0:
+        x_moving_ratio = x / y
+        if x_moving_ratio <= 0.5:
+            random_number = random.random()
+            if x_moving_ratio > random_number:
+                move_step = 1
+            else:
+                move_step = 0
+        elif x_moving_ratio >= 2:
+            y_moving_ratio = y / x
+            random_number = random.random()
+            if y_moving_ratio > random_number:
+                move_step_y = 1
+            else:
+                move_step_y = 0
+    return move_step, move_step_y
 
 
 def split_coordinate(x, y, move_step_temp, move_step_y_temp):

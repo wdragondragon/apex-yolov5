@@ -154,7 +154,7 @@ class NetImageComparator:
         url = url.strip()
         if url in self.image_cache:
             return
-        self.logger.print_log(f"正在下载图片：{url.replace(self.base_path, '')}")
+        self.logger.print_log(f"正在加载图片：{url.replace(self.base_path, '')}")
         # 发送GET请求获取图片的二进制数据
         # 发送GET请求获取文件内容
         # headers = random.choice(headers_list)
