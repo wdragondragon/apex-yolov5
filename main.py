@@ -55,6 +55,13 @@ if __name__ == "__main__":
                        c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
         JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
         JoyListener.joy_listener.start(None)
+    else:
+        # 压枪
+        recoils_listener = RecoilsListener(logger=LogFactory.logger(),
+                                           mouse_listener=apex_mouse_listener,
+                                           select_gun=SelectGun.select_gun, config=global_config)
+        recoils_listener.start()
+
     SelectGun.get_select_gun().test()
     if global_config.mouse_model != 'km_box_net':
         listener = pynput.mouse.Listener(
@@ -71,12 +78,6 @@ if __name__ == "__main__":
     MoverFactory.init_mover(
         mouse_model=global_config.mouse_model,
         mouse_mover_params=global_config.available_mouse_models)
-
-    # 压枪
-    recoils_listener = RecoilsListener(logger=LogFactory.logger(),
-                                       mouse_listener=apex_mouse_listener,
-                                       select_gun=SelectGun.select_gun, config=global_config)
-    recoils_listener.start()
 
     if global_config.show_config:
         log_window.show()
