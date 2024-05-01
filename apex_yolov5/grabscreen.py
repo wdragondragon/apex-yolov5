@@ -97,8 +97,8 @@ def get_img_from_cap(monitor):
     global cap
     if cap is None:
         cap = cv2.VideoCapture(0)  # 视频流
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, global_config.screen_width)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, global_config.screen_height)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     ret, frame = cap.read()
     frame = frame[monitor["top"]:monitor["top"] + monitor["height"],
             monitor["left"]:monitor["left"] + monitor["width"]]

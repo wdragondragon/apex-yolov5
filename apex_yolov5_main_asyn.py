@@ -30,7 +30,9 @@ def handle(log_window):
             data = image_block_queue.get()
             img = data["img"]
             img_origin = data["img_origin"]
-            global_img_info.set_current_img(img_origin, img)
+            height = data["height"]
+            width = data["width"]
+            global_img_info.set_current_img_2(img_origin, img, width, height)
             aims = get_aims(img)
             bboxes = []
             averager = (0, 0, 0, 0)
@@ -85,15 +87,16 @@ def main():
             monitor = global_config.monitor
             if global_config.screen_taker == 'cap':
                 img_origin = get_img_from_cap(monitor=global_config.monitor)
-                img = img_origin.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
-                img = cv2.cvtColor(img, cv2.COLOR_YCR_CB2BGR)
+                img = img_origin.reshape((monitor["height"], monitor["width"], 3))
+                img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             else:
                 img_origin = grab_screen_int_array2(sct, monitor=monitor)
                 img = np.frombuffer(img_origin.rgb, dtype='uint8')
                 img = img.reshape((monitor["height"], monitor["width"], 3))
                 img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             screen_count += 1
-            image_block_queue.put({"img": img, "img_origin": img_origin})
+            image_block_queue.put(
+                {"img": img, "img_origin": img_origin, "height": monitor["height"], "width": monitor["width"]})
         except Exception as e:
             print(e)
             traceback.print_exc()
