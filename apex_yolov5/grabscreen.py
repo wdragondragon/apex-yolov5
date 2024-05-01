@@ -90,6 +90,21 @@ def grab_screen_int_array(region=None):
     return signedIntsArray
 
 
+cap = None
+
+
+def get_img_from_cap(monitor):
+    global cap
+    if cap is None:
+        cap = cv2.VideoCapture(0)  # 视频流
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, global_config.screen_width)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, global_config.screen_height)
+        ret, frame = cap.read()
+        frame = frame[monitor["top"]:monitor["top"] + monitor["height"],
+                monitor["left"]:monitor["left"] + monitor["width"]]
+        return frame
+
+
 def grab_screen_int_array2(sct, monitor=None):
     return sct.grab(monitor)
 
