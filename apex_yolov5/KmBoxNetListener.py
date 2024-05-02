@@ -16,7 +16,7 @@ class KmBoxNetListener:
         self.down_mouse_map = []
         self.connect_func = []
         self.connect_mouse_func = []
-        kmNet.monitor(10000)
+        kmNet.monitor(100)
 
     def km_box_net_start(self):
         self.listener_sign = True
@@ -31,7 +31,6 @@ class KmBoxNetListener:
                 if "left" in self.down_mouse_map:
                     self.down_mouse_map.remove("left")
                     apex_mouse_listener.on_click(*self.km_box_net_mover.get_position(), Button.left, False)
-
             if self.kmNet.isdown_right():
                 if "right" not in self.down_mouse_map:
                     self.down_mouse_map.append("right")
