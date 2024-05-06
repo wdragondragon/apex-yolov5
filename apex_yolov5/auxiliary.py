@@ -58,6 +58,10 @@ def set_intention(x, y, lead_x, lead_y, random_deviation, base_sign=0, move_path
         intention_lock.release()
 
 
+def get_intention():
+    return intention
+
+
 def incr_executed_intention(move_x, move_y):
     global executed_intention
     real_intention_x, real_intention_y = real_intention

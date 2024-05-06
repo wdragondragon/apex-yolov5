@@ -8,7 +8,7 @@ from pynput.mouse import Button
 
 from apex_recoils.core.SelectGun import SelectGun
 from apex_yolov5.KeyAndMouseListener import MouseListener
-from apex_yolov5.auxiliary import set_intention
+from apex_yolov5.auxiliary import set_intention, get_intention
 from apex_yolov5.log.Logger import Logger
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import Config
@@ -203,7 +203,8 @@ class RecoilsListener:
                 self.logger.print_log(
                     f'执行时间：[{time_points[current_index]}]<[{point}],正在压第{str(current_index + 1)}步，剩余{str(len(time_points) - (current_index + 1))}步，鼠标移动轨迹为({x_value},{y_value})')
                 # self.intent_manager.set_intention(x_value, y_value)
-                MoverFactory.mouse_mover().move_rp(x_value, y_value)
+                if get_intention() is None:
+                    MoverFactory.mouse_mover().move_rp(x_value, y_value)
                 # set_intention(x_value, y_value, 0, 0, 0, 0, False)
             else:
                 self.logger.print_log(
