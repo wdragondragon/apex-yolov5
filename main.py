@@ -32,6 +32,9 @@ if __name__ == "__main__":
     check_run.check(validate_type='ai', main_windows=log_window)
 
     GameWindowsStatus.init(logger=LogFactory.logger())
+    MoverFactory.init_mover(
+        mouse_model=global_config.mouse_model,
+        mouse_mover_params=global_config.available_mouse_models)
     SelectGun.select_gun = SelectGun.SelectGun(logger=LogFactory.logger(),
                                                bbox=global_config.select_gun_bbox,
                                                image_path=global_config.image_path,
@@ -74,10 +77,6 @@ if __name__ == "__main__":
     key_listener.start()
 
     threading.Thread(target=auxiliary.start).start()
-
-    MoverFactory.init_mover(
-        mouse_model=global_config.mouse_model,
-        mouse_mover_params=global_config.available_mouse_models)
 
     if global_config.show_config:
         log_window.show()
