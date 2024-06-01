@@ -4,8 +4,9 @@ import time
 
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication, QDialog, \
-    QComboBox, QLineEdit
+    QComboBox, QLineEdit, QFileDialog
 
+import detect
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
@@ -77,6 +78,9 @@ class ConfigWindow(QMainWindow):
         mouse_performance_action = QAction("测试鼠标性能", self)
         mouse_performance_action.triggered.connect(self.mouse_performance_test)
 
+        detect_test = QAction("模拟标记", self)
+        detect_test.triggered.connect(self.showFileDialog)
+
         read_ref_glass_action = QAction("读取配置", self)
         read_ref_glass_action.triggered.connect(self.open_read_ref_glass_window)
 
@@ -87,7 +91,7 @@ class ConfigWindow(QMainWindow):
         file_menu = menu_bar.addMenu("其他功能")
         file_menu.addAction(config_action)
         file_menu.addAction(magnifying_glass_action)
-        file_menu.addAction(mouse_performance_action)
+        file_menu.addAction(detect_test)
 
         config_menu = menu_bar.addMenu("管理配置")
         config_menu.addAction(read_ref_glass_action)
@@ -113,6 +117,25 @@ class ConfigWindow(QMainWindow):
 
     def open_disclaimer_window(self):
         self.disclaimer_window = DisclaimerWindow(self)
+
+    def showFileDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        file_path, file_type = QFileDialog.getOpenFileName(self, "选取文件", "",
+                                                           "All Files (*);;Python Files (*.py)", options=options)
+
+        current_model_info = self.config.available_models.get(self.config.current_model)
+        print_path = os.path.expanduser('~') + "\\" + "apex_gun\\runs\\detect"
+        detect.run(imgsz=(self.config.imgsz, self.config.imgszy),
+                   conf_thres=self.config.conf_thres,
+                   half=self.config.half,
+                   iou_thres=self.config.iou_thres,
+                   weights=current_model_info["weights"],
+                   data=current_model_info["data"],
+                   source=file_path,
+                   project=print_path,
+                   max_det=10)
+        os.system("explorer.exe %s" % print_path)
 
     def open_read_ref_glass_window(self):
         dialog = QDialog(self)
