@@ -4,6 +4,7 @@ from apex_recoils.core.kmnet_listener.ToggleKeyListener import ToggleKeyListener
 from apex_yolov5.KmBoxNetListener import KmBoxNetListener
 from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.FeiMover import FeiMover
+from apex_yolov5.mouse_mover.GhubMover import GhubMover
 from apex_yolov5.mouse_mover.KmBoxMover import KmBoxMover
 from apex_yolov5.mouse_mover.KmBoxNetMover import KmBoxNetMover
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
@@ -30,6 +31,8 @@ def init_mover(mouse_model, mouse_mover_params):
         current_mover = FeiMover(logger, mouse_mover_param)
     elif mouse_model == "wu_ya":
         current_mover = WuYaMover(logger, mouse_mover_param)
+    elif mouse_model == 'logitech':
+        current_mover = GhubMover(logger, mouse_mover_param)
     elif mouse_model == "km_box_net":
         current_mover = KmBoxNetMover(logger, mouse_mover_param)
         current_mover.listener = KmBoxNetListener(current_mover)
