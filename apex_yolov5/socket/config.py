@@ -173,7 +173,10 @@ class Config:
             "fei_yi_lai_single": {
                 "VID/PID": "C2160301"
             },
-            "logitech": {}
+            "logitech": {},
+            "pan_ni": {
+                "VID/PID": "1C1FC18A"
+            }
         })
 
         self.available_mouse_smoothing = self.get_config(self.config_data, "available_mouse_smoothing",

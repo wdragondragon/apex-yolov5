@@ -4,7 +4,7 @@ from apex_yolov5.log.Logger import Logger
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 
-class GhubMover(MouseMover):
+class GHubMover(MouseMover):
     def __init__(self, logger: Logger, mouse_mover_param):
         super().__init__(mouse_mover_param)
         self.logger = logger
