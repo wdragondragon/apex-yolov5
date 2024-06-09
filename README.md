@@ -4,6 +4,8 @@
 
 开源交流群新建于2024-04-25，群号：206666041，加群前请先star。
 
+[![Star History Chart](https://api.star-history.com/svg?repos=wdragondragon/apex-yolov5&type=Date)](https://star-history.com/#wdragondragon/apex-yolov5&Date)
+
 ## 功能清单
 
 - [x] ai自瞄，敌我识别
@@ -43,26 +45,3 @@
 欢迎加入我们，共同完善已有代码，优化模型或提供建议。我们将资源完全共享。因为加我的人员较多，暂只接收提供贡献的好友位，使用分享请加Q群。
 
 ![wechat.png](wechat.png)
-
-
-
-[![Star History Chart](https://api.star-history.com/svg?repos=wdragondragon/apex-yolov5&type=Date)](https://star-history.com/#wdragondragon/apex-yolov5&Date)
-
-<picture>
-  <source
-    media="(prefers-color-scheme: dark)"
-    srcset="
-      https://api.star-history.com/svg?repos=wdragondragon/apex-yolov5&type=Date&theme=dark
-    "
-  />
-  <source
-    media="(prefers-color-scheme: light)"
-    srcset="
-      https://api.star-history.com/svg?repos=wdragondragon/apex-yolov5&type=Date
-    "
-  />
-  <img
-    alt="Star History Chart"
-    src="https://api.star-history.com/svg?repos=wdragondragon/apex-yolov5&type=Date"
-  />
-</picture>
