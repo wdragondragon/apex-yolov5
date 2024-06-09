@@ -98,18 +98,22 @@ lock_delay = 0
 
 def get_lock_mode():
     global lock_time, lock_delay
-    lock_mode = (("left" in global_config.aim_button and (
-            apex_mouse_listener.is_press(Button.left) or get_joy_listener().is_press(4))) or
-                 ("right" in global_config.aim_button and (
-                         apex_mouse_listener.is_press(Button.right) or get_joy_listener().is_press(5))) or
-                 ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)) or
-                 ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)) or
-                 ("x1&!x2" in global_config.aim_button and ((
-                                                                    apex_mouse_listener.is_press(
-                                                                        Button.left) and not apex_mouse_listener.is_press(
-                                                                Button.right)) or (get_joy_listener().is_press(
-                     4) and not get_joy_listener().is_press(5))))
-                 )
+    mouse_fire = apex_mouse_listener.is_press(Button.left)
+    controller_fire = get_joy_listener().is_press(4)
+    mouse_aim = apex_mouse_listener.is_press(Button.right)
+    controller_aim = get_joy_listener().is_press(5)
+    mouse_only_fire = apex_mouse_listener.is_press(Button.left) and not apex_mouse_listener.is_press(Button.right)
+    controller_only_fire = get_joy_listener().is_press(4) and not get_joy_listener().is_press(5)
+    fire, aim, only_fire = (controller_fire, controller_aim, controller_only_fire) \
+        if global_config.joy_move \
+        else (mouse_fire, mouse_aim, mouse_only_fire)
+    lock_mode = (
+            ("left" in global_config.aim_button and fire) or
+            ("right" in global_config.aim_button and aim) or
+            ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)) or
+            ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)) or
+            ("x1&!x2" in global_config.aim_button and only_fire)
+    )
     lock_mode = lock_mode or len(global_config.aim_button) == 0
     lock = lock_mode and global_config.ai_toggle
     if lock:
