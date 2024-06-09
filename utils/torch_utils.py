@@ -17,6 +17,7 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
+import torch_directml
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 from utils.general import LOGGER, check_version, colorstr, file_date, git_describe
@@ -109,16 +110,21 @@ def select_device(device='', batch_size=0, newline=True):
     # device = None or 'cpu' or 0 or '0' or '0,1,2,3'
     s = f'YOLOv5 🚀 {git_describe() or file_date()} Python-{platform.python_version()} torch-{torch.__version__} '
     device = str(device).strip().lower().replace('cuda:', '').replace('none', '')  # to string, 'cuda:0' to '0'
+    dml = device == 'dml'
     cpu = device == 'cpu'
     mps = device == 'mps'  # Apple Metal Performance Shaders (MPS)
-    if cpu or mps:
+    if cpu or mps or dml:
         os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # force torch.cuda.is_available() = False
     elif device:  # non-cpu device requested
         os.environ['CUDA_VISIBLE_DEVICES'] = device  # set environment variable - must be before assert is_available()
         assert torch.cuda.is_available() and torch.cuda.device_count() >= len(device.replace(',', '')), \
             f"Invalid CUDA '--device {device}' requested, use '--device cpu' or pass valid CUDA device(s)"
-
-    if not cpu and not mps and torch.cuda.is_available():  # prefer GPU if available
+    if dml and torch_directml.is_available():
+        devices=torch_directml.device(0)#启用0号dml设备，在这可以更换使用的设备
+        n=0
+        s+=r"dml:"+str(torch_directml.device_name(0))
+        arg=torch_directml.device(0)
+    elif not cpu and not mps and torch.cuda.is_available():  # prefer GPU if available
         devices = device.split(',') if device else '0'  # range(torch.cuda.device_count())  # i.e. 0,1,6,7
         n = len(devices)  # device count
         if n > 1 and batch_size > 0:  # check batch_size is divisible by device_count
@@ -133,12 +139,12 @@ def select_device(device='', batch_size=0, newline=True):
         arg = 'mps'
     else:  # revert to CPU
         s += 'CPU\n'
-        arg = 'cpu'
-
+        arg ="cpu"
     if not newline:
         s = s.rstrip()
     LOGGER.info(s)
     return torch.device(arg)
+
 
 
 def time_sync():
