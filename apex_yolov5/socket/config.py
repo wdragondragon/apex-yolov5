@@ -5,7 +5,6 @@ import shutil
 
 import jsonpath as jsonpath
 import pynput
-from torch.cuda import is_available
 
 from apex_yolov5.Counter import sure_no_aim, reset_counter
 from apex_yolov5.Tools import Tools
@@ -134,7 +133,11 @@ class Config:
         self.buffer_size = self.get_config(self.config_data, 'buffer_size')
         self.device = self.get_config(self.config_data, 'device')
         if self.device == 'cuda':
+            from torch.cuda import is_available
             self.device = 'cuda' if is_available() else 'cpu'
+        elif self.device == 'dml':
+            from torch_directml import is_available
+            self.device = 'dml' if is_available() else 'cpu'
         self.imgsz = self.get_config(self.config_data, 'imgszx')
         self.imgszy = self.get_config(self.config_data, 'imgszy')
         self.conf_thres = self.get_config(self.config_data, 'conf_thres')
