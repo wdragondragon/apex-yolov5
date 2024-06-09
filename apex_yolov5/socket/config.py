@@ -134,7 +134,7 @@ class Config:
         self.buffer_size = self.get_config(self.config_data, 'buffer_size')
         self.device = self.get_config(self.config_data, 'device')
         if self.device == 'cuda':
-            self.device = 'cuda' if is_available() else 'cpu'
+            self.device = 'cuda' if is_available() else 'dml'
         self.imgsz = self.get_config(self.config_data, 'imgszx')
         self.imgszy = self.get_config(self.config_data, 'imgszy')
         self.conf_thres = self.get_config(self.config_data, 'conf_thres')
@@ -222,6 +222,10 @@ class Config:
         self.auto_charged_energy_toggle = self.get_config(self.config_data, "auto_charged_energy_toggle", "shift")
         self.aim_button = self.get_config(self.config_data, "aim_button", ["left", "right", "x2"])
         self.available_models = self.get_config(self.config_data, "available_models", {
+            "apex-dml": {
+                "weights": "./apex_model/best.onnx",
+                "data": "./apex_model/data.yaml"
+            },
             "apex标准": {
                 "weights": "./apex_model/best2.engine",
                 "data": "./apex_model/data2.yaml"
