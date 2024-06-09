@@ -109,16 +109,17 @@ def select_device(device='', batch_size=0, newline=True):
     # device = None or 'cpu' or 0 or '0' or '0,1,2,3'
     s = f'YOLOv5 🚀 {git_describe() or file_date()} Python-{platform.python_version()} torch-{torch.__version__} '
     device = str(device).strip().lower().replace('cuda:', '').replace('none', '')  # to string, 'cuda:0' to '0'
+    dml = device == 'dml'
     cpu = device == 'cpu'
     mps = device == 'mps'  # Apple Metal Performance Shaders (MPS)
-    if cpu or mps:
+    if cpu or mps or dml:
         os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # force torch.cuda.is_available() = False
     elif device:  # non-cpu device requested
         os.environ['CUDA_VISIBLE_DEVICES'] = device  # set environment variable - must be before assert is_available()
         assert torch.cuda.is_available() and torch.cuda.device_count() >= len(device.replace(',', '')), \
             f"Invalid CUDA '--device {device}' requested, use '--device cpu' or pass valid CUDA device(s)"
 
-    if not cpu and not mps and torch.cuda.is_available():  # prefer GPU if available
+    if not dml and not cpu and not mps and torch.cuda.is_available():  # prefer GPU if available
         devices = device.split(',') if device else '0'  # range(torch.cuda.device_count())  # i.e. 0,1,6,7
         n = len(devices)  # device count
         if n > 1 and batch_size > 0:  # check batch_size is divisible by device_count
@@ -131,6 +132,16 @@ def select_device(device='', batch_size=0, newline=True):
     elif mps and getattr(torch, 'has_mps', False) and torch.backends.mps.is_available():  # prefer MPS if available
         s += 'MPS\n'
         arg = 'mps'
+    elif dml:
+        import torch_directml
+        if torch_directml.is_available():
+            devices = torch_directml.device(0)  # 启用0号dml设备，在这可以更换使用的设备
+            n = 0
+            s += r"dml:" + str(torch_directml.device_name(0))
+            arg = torch_directml.device(0)
+        else:
+            s += 'CPU\n'
+            arg = 'cpu'
     else:  # revert to CPU
         s += 'CPU\n'
         arg = 'cpu'
@@ -170,7 +181,7 @@ def profile(input, ops, n=10, device=None):
             m = m.half() if hasattr(m, 'half') and isinstance(x, torch.Tensor) and x.dtype is torch.float16 else m
             tf, tb, t = 0, 0, [0, 0, 0]  # dt forward, backward
             try:
-                flops = thop.profile(m, inputs=(x, ), verbose=False)[0] / 1E9 * 2  # GFLOPs
+                flops = thop.profile(m, inputs=(x,), verbose=False)[0] / 1E9 * 2  # GFLOPs
             except Exception:
                 flops = 0
 
@@ -284,7 +295,7 @@ def model_info(model, verbose=False, imgsz=640):
         p = next(model.parameters())
         stride = max(int(model.stride.max()), 32) if hasattr(model, 'stride') else 32  # max stride
         im = torch.empty((1, p.shape[1], stride, stride), device=p.device)  # input image in BCHW format
-        flops = thop.profile(deepcopy(model), inputs=(im, ), verbose=False)[0] / 1E9 * 2  # stride GFLOPs
+        flops = thop.profile(deepcopy(model), inputs=(im,), verbose=False)[0] / 1E9 * 2  # stride GFLOPs
         imgsz = imgsz if isinstance(imgsz, list) else [imgsz, imgsz]  # expand if int/float
         fs = f', {flops * imgsz[0] / stride * imgsz[1] / stride:.1f} GFLOPs'  # 640x640 GFLOPs
     except Exception:
