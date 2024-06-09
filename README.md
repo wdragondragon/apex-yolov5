@@ -43,3 +43,23 @@
 欢迎加入我们，共同完善已有代码，优化模型或提供建议。我们将资源完全共享。因为加我的人员较多，暂只接收提供贡献的好友位，使用分享请加Q群。
 
 ![wechat.png](wechat.png)
+
+
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="
+      https://api.star-history.com/svg?repos=star-history/star-history&type=Date&theme=dark
+    "
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="
+      https://api.star-history.com/svg?repos=star-history/star-history&type=Date
+    "
+  />
+  <img
+    alt="Star History Chart"
+    src="https://api.star-history.com/svg?repos=star-history/star-history&type=Date"
+  />
+</picture>
