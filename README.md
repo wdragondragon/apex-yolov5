@@ -45,6 +45,9 @@
 ![wechat.png](wechat.png)
 
 
+
+[![Star History Chart](https://api.star-history.com/svg?repos=wdragondragon/apex-yolov5&type=Date)](https://star-history.com/#wdragondragon/apex-yolov5&Date)
+
 <picture>
   <source
     media="(prefers-color-scheme: dark)"
