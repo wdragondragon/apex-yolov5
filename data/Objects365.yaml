@@ -1,4 +1,4 @@
-# YOLOv5 🚀 by Ultralytics, AGPL-3.0 license
+# Ultralytics YOLOv5 🚀, AGPL-3.0 license
 # Objects365 dataset https://www.objects365.org/ by Megvii
 # Example usage: python train.py --data Objects365.yaml
 # parent
@@ -6,12 +6,11 @@
 # └── datasets
 #     └── Objects365  ← downloads here (712 GB = 367G data + 345G zips)
 
-
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-path: ../datasets/Objects365  # dataset root dir
-train: images/train  # train images (relative to 'path') 1742289 images
+path: ../datasets/Objects365 # dataset root dir
+train: images/train # train images (relative to 'path') 1742289 images
 val: images/val # val images (relative to 'path') 80000 images
-test:  # test images (optional)
+test: # test images (optional)
 
 # Classes
 names:
@@ -380,7 +379,6 @@ names:
   362: Cosmetics Mirror
   363: Curling
   364: Table Tennis
-
 
 # Download script/URL (optional) ---------------------------------------------------------------------------------------
 download: |
