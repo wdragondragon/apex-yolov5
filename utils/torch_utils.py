@@ -117,7 +117,7 @@ def select_device(device="", batch_size=0, newline=True):
     dml = device == "dml"
     cpu = device == "cpu"
     mps = device == "mps"  # Apple Metal Performance Shaders (MPS)
-    if cpu or mps:
+    if cpu or mps or dml:
         os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # force torch.cuda.is_available() = False
     elif device:  # non-cpu device requested
         os.environ["CUDA_VISIBLE_DEVICES"] = device  # set environment variable - must be before assert is_available()
