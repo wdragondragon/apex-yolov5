@@ -1076,12 +1076,19 @@ def non_max_suppression(
         mask = x[:, mi:]  # zero columns if no masks
 
         # Detections matrix nx6 (xyxy, conf, cls)
+        # if multi_label:
+        #     i, j = (x[:, 5:mi] > conf_thres).nonzero(as_tuple=False).T
+        #     x = torch.cat((box[i], x[i, 5 + j, None], j[:, None].float(), mask[i]), 1)
+        # else:  # best class only
+        #     conf, j = x[:, 5:mi].max(1, keepdim=True)
+        #     x = torch.cat((box, conf, j.float(), mask), 1)[conf.view(-1) > conf_thres]
+
         if multi_label:
             i, j = (x[:, 5:mi] > conf_thres).nonzero(as_tuple=False).T
-            x = torch.cat((box[i], x[i, 5 + j, None], j[:, None].float(), mask[i]), 1)
+            x = torch.cat((box[i], x[i, 5 + j, None], j[:, None].float()), 1)
         else:  # best class only
             conf, j = x[:, 5:mi].max(1, keepdim=True)
-            x = torch.cat((box, conf, j.float(), mask), 1)[conf.view(-1) > conf_thres]
+            x = torch.cat((box, conf, j.float()), 1)[conf.view(-1) > conf_thres]
 
         # Filter by class
         if classes is not None:
