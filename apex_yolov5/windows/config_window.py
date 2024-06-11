@@ -134,7 +134,8 @@ class ConfigWindow(QMainWindow):
                    data=current_model_info["data"],
                    source=file_path,
                    project=print_path,
-                   max_det=10)
+                   max_det=10,
+                   subsz=(self.config.shot_width, self.config.shot_height))
         os.system("explorer.exe %s" % print_path)
 
     def open_read_ref_glass_window(self):

@@ -26,6 +26,7 @@ from PIL import ExifTags, Image, ImageOps
 from torch.utils.data import DataLoader, Dataset, dataloader, distributed
 from tqdm import tqdm
 
+from utils import image_util
 from utils.augmentations import (
     Albumentations,
     augment_hsv,
@@ -123,7 +124,7 @@ def seed_worker(worker_id):
 
     See https://pytorch.org/docs/stable/notes/randomness.html#dataloader.
     """
-    worker_seed = torch.initial_seed() % 2**32
+    worker_seed = torch.initial_seed() % 2 ** 32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
 
@@ -156,23 +157,23 @@ class SmartDistributedSampler(distributed.DistributedSampler):
 
 
 def create_dataloader(
-    path,
-    imgsz,
-    batch_size,
-    stride,
-    single_cls=False,
-    hyp=None,
-    augment=False,
-    cache=False,
-    pad=0.0,
-    rect=False,
-    rank=-1,
-    workers=8,
-    image_weights=False,
-    quad=False,
-    prefix="",
-    shuffle=False,
-    seed=0,
+        path,
+        imgsz,
+        batch_size,
+        stride,
+        single_cls=False,
+        hyp=None,
+        augment=False,
+        cache=False,
+        pad=0.0,
+        rect=False,
+        rank=-1,
+        workers=8,
+        image_weights=False,
+        quad=False,
+        prefix="",
+        shuffle=False,
+        seed=0,
 ):
     if rect and shuffle:
         LOGGER.warning("WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False")
@@ -317,7 +318,7 @@ class LoadScreenshots:
 class LoadImages:
     """YOLOv5 image/video dataloader, i.e. `python detect.py --source image.jpg/vid.mp4`"""
 
-    def __init__(self, path, img_size=640, stride=32, auto=True, transforms=None, vid_stride=1):
+    def __init__(self, path, img_size=640, stride=32, auto=True, transforms=None, vid_stride=1, sub_size=None):
         """Initializes YOLOv5 loader for images/videos, supporting glob patterns, directories, and lists of paths."""
         if isinstance(path, str) and Path(path).suffix == ".txt":  # *.txt file with img/vid/dir on each line
             path = Path(path).read_text().rsplit()
@@ -346,6 +347,7 @@ class LoadImages:
         self.auto = auto
         self.transforms = transforms  # optional
         self.vid_stride = vid_stride  # video frame-rate stride
+        self.sub_size = sub_size
         if any(videos):
             self._new_video(videos[0])  # new video
         else:
@@ -391,7 +393,8 @@ class LoadImages:
             im0 = cv2.imread(path)  # BGR
             assert im0 is not None, f"Image Not Found {path}"
             s = f"image {self.count}/{self.nf} {path}: "
-
+        if self.sub_size is not None:
+            im0 = image_util.crop_center(im0, *self.sub_size)
         if self.transforms:
             im = self.transforms(im0)  # transforms
         else:
@@ -535,22 +538,22 @@ class LoadImagesAndLabels(Dataset):
     rand_interp_methods = [cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4]
 
     def __init__(
-        self,
-        path,
-        img_size=640,
-        batch_size=16,
-        augment=False,
-        hyp=None,
-        rect=False,
-        image_weights=False,
-        cache_images=False,
-        single_cls=False,
-        stride=32,
-        pad=0.0,
-        min_items=0,
-        prefix="",
-        rank=-1,
-        seed=0,
+            self,
+            path,
+            img_size=640,
+            batch_size=16,
+            augment=False,
+            hyp=None,
+            rect=False,
+            image_weights=False,
+            cache_images=False,
+            single_cls=False,
+            stride=32,
+            pad=0.0,
+            min_items=0,
+            prefix="",
+            rank=-1,
+            seed=0,
     ):
         self.img_size = img_size
         self.augment = augment
@@ -699,7 +702,7 @@ class LoadImagesAndLabels(Dataset):
         for _ in range(n):
             im = cv2.imread(random.choice(self.im_files))  # sample image
             ratio = self.img_size / max(im.shape[0], im.shape[1])  # max(h, w)  # ratio
-            b += im.nbytes * ratio**2
+            b += im.nbytes * ratio ** 2
         mem_required = b * self.n / n  # GB required to cache dataset into RAM
         mem = psutil.virtual_memory()
         cache = mem_required * (1 + safety_margin) < mem.available  # to cache or not to cache, that is the question
@@ -976,12 +979,12 @@ class LoadImagesAndLabels(Dataset):
             segments9.extend(segments)
 
             # Image
-            img9[y1:y2, x1:x2] = img[y1 - pady :, x1 - padx :]  # img9[ymin:ymax, xmin:xmax]
+            img9[y1:y2, x1:x2] = img[y1 - pady:, x1 - padx:]  # img9[ymin:ymax, xmin:xmax]
             hp, wp = h, w  # height, width previous
 
         # Offset
         yc, xc = (int(random.uniform(0, s)) for _ in self.mosaic_border)  # mosaic center x, y
-        img9 = img9[yc : yc + 2 * s, xc : xc + 2 * s]
+        img9 = img9[yc: yc + 2 * s, xc: xc + 2 * s]
 
         # Concat/clip labels
         labels9 = np.concatenate(labels9, 0)
@@ -1096,7 +1099,7 @@ def extract_boxes(path=DATASETS_DIR / "coco128"):
 
                     b[[0, 2]] = np.clip(b[[0, 2]], 0, w)  # clip boxes outside of image
                     b[[1, 3]] = np.clip(b[[1, 3]], 0, h)
-                    assert cv2.imwrite(str(f), im[b[1] : b[3], b[0] : b[2]]), f"box failure in {f}"
+                    assert cv2.imwrite(str(f), im[b[1]: b[3], b[0]: b[2]]), f"box failure in {f}"
 
 
 def autosplit(path=DATASETS_DIR / "coco128/images", weights=(0.9, 0.1, 0.0), annotated_only=False):
@@ -1348,7 +1351,7 @@ class ClassificationDataset(torchvision.datasets.ImageFolder):
 
 
 def create_classification_dataloader(
-    path, imgsz=224, batch_size=16, augment=True, cache=False, rank=-1, workers=8, shuffle=True
+        path, imgsz=224, batch_size=16, augment=True, cache=False, rank=-1, workers=8, shuffle=True
 ):
     # Returns Dataloader object to be used with YOLOv5 Classifier
     with torch_distributed_zero_first(rank):  # init dataset *.cache only once if DDP

@@ -107,8 +107,8 @@ def check_label_image():
 # 删除多余label
 def delete_label():
     # 定义labels和images文件夹路径
-    labels_folder = './apex_model/save/labels/2023-09-19-20-56-54'
-    images_folder = './apex_model/save/images/2023-09-19-20-56-54'
+    labels_folder = 'D:/Desktop/yolo_model/data/已处理/total/labels/'
+    images_folder = 'D:/Desktop/yolo_model/data/已处理/total/images/'
 
     # 获取labels文件夹中所有txt文件的文件名（不带后缀）
     labels_files = [os.path.splitext(filename)[0] for filename in os.listdir(labels_folder) if
@@ -129,8 +129,8 @@ def delete_label():
 # 切分
 def split_label_image():
     # 定义labels和images文件夹路径
-    labels_folder = 'D:/Desktop/yolo_model/data/已处理/靶场烟镜_20230919_658张/labels/'
-    images_folder = 'D:/Desktop/yolo_model/data/已处理/靶场烟镜_20230919_658张/images/'
+    labels_folder = 'D:/Desktop/yolo_model/data/已处理/total/labels/'
+    images_folder = 'D:/Desktop/yolo_model/data/已处理/total/images/'
     # 获取images文件夹中所有png文件的文件名（不带后缀）
     images_files = [os.path.splitext(filename)[0] for filename in os.listdir(images_folder) if
                     filename.endswith('.png')]
