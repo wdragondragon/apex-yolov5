@@ -126,7 +126,7 @@ class Config:
         self.init()
 
     def init(self):
-        self.version = "v3.52"
+        self.version = "v3.53"
         self.listener_ip = self.get_config(self.config_data, 'listener_ip')
         self.listener_port = self.get_config(self.config_data, 'listener_port')
         self.listener_ports = self.get_config(self.config_data, 'listener_ports')
