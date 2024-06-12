@@ -51,3 +51,17 @@ def crop_center(image, target_width, target_height):
     cropped_image = image[y:y + actual_height, x:x + actual_width]
 
     return cropped_image
+
+
+def crop_center_xy(image, target_width, target_height, xyxy):
+    # 获取图片的高度和宽度
+    height, width = image.shape[:2]
+
+    # 计算中心点
+    center_x, center_y = width // 2, height // 2
+
+    # 计算裁剪区域的左上角坐标
+    x = max(0, center_x - target_width // 2)
+    y = max(0, center_y - target_height // 2)
+
+    return xyxy[0] + x, xyxy[1] + y, xyxy[2] + x, xyxy[3] + y

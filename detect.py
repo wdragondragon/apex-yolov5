@@ -37,6 +37,8 @@ from pathlib import Path
 
 import torch
 
+from utils import image_util
+
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -132,7 +134,7 @@ def run(
     # Run inference
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(device=device), Profile(device=device), Profile(device=device))
-    for path, im, im0s, vid_cap, s in dataset:
+    for path, im, im0s, vid_cap, s, sub_im0 in dataset:
         with dt[0]:
             im = torch.from_numpy(im).to(model.device)
             im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
@@ -193,7 +195,11 @@ def run(
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
             if len(det):
                 # Rescale boxes from img_size to im0 size
-                det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+                if sub_im0 is None:
+                    det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+                else:
+                    ims = im.size()
+                    det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], sub_im0.shape).round()
 
                 # Print results
                 for c in det[:, 5].unique():
@@ -219,6 +225,8 @@ def run(
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f"{names[c]} {conf:.2f}")
+                        if subsz is not None:
+                            xyxy = image_util.crop_center_xy(im0, *subsz, xyxy)
                         annotator.box_label(xyxy, label, color=colors(c, True))
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
@@ -249,8 +257,8 @@ def run(
                         else:  # stream
                             fps, w, h = 30, im0.shape[1], im0.shape[0]
                         save_path = str(Path(save_path).with_suffix(".mp4"))  # force *.mp4 suffix on results videos
-                        if subsz is not None:
-                            w, h = subsz
+                        # if subsz is not None:
+                        #     w, h = subsz
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
                     vid_writer[i].write(im0)
 

@@ -312,7 +312,7 @@ class LoadScreenshots:
             im = im.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
             im = np.ascontiguousarray(im)  # contiguous
         self.frame += 1
-        return str(self.screen), im, im0, None, s  # screen, img, original img, im0s, s
+        return str(self.screen), im, im0, None, s, None  # screen, img, original img, im0s, s
 
 
 class LoadImages:
@@ -393,6 +393,7 @@ class LoadImages:
             im0 = cv2.imread(path)  # BGR
             assert im0 is not None, f"Image Not Found {path}"
             s = f"image {self.count}/{self.nf} {path}: "
+        ori_im0 = im0.copy()
         if self.sub_size is not None:
             im0 = image_util.crop_center(im0, *self.sub_size)
         if self.transforms:
@@ -402,7 +403,7 @@ class LoadImages:
             im = im.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
             im = np.ascontiguousarray(im)  # contiguous
 
-        return path, im, im0, self.cap, s
+        return path, im, ori_im0, self.cap, s, im0
 
     def _new_video(self, path):
         """Initializes a new video capture object with path, frame count adjusted by stride, and orientation
@@ -517,7 +518,7 @@ class LoadStreams:
             im = im[..., ::-1].transpose((0, 3, 1, 2))  # BGR to RGB, BHWC to BCHW
             im = np.ascontiguousarray(im)  # contiguous
 
-        return self.sources, im, im0, None, ""
+        return self.sources, im, im0, None, "", None
 
     def __len__(self):
         """Returns the number of sources in the dataset, supporting up to 32 streams at 30 FPS over 30 years."""
