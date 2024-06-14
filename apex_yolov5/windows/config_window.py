@@ -79,6 +79,7 @@ class ConfigWindow(QMainWindow):
         mouse_performance_action.triggered.connect(self.mouse_performance_test)
 
         detect_test = QAction("模拟标记", self)
+
         detect_test.triggered.connect(self.showFileDialog)
 
         read_ref_glass_action = QAction("读取配置", self)
@@ -123,9 +124,12 @@ class ConfigWindow(QMainWindow):
         options |= QFileDialog.ReadOnly
         file_path, file_type = QFileDialog.getOpenFileName(self, "选取文件", "",
                                                            "All Files (*);;Python Files (*.py)", options=options)
+        threading.Thread(target=self.detect_threading, args=(file_path,)).start()
 
+    def detect_threading(self, file_path):
         current_model_info = self.config.available_models.get(self.config.current_model)
         print_path = os.path.expanduser('~') + "\\" + "apex_gun\\runs\\detect"
+        start = time.time()
         detect.run(imgsz=(self.config.imgsz, self.config.imgszy),
                    conf_thres=self.config.conf_thres,
                    half=self.config.half,
@@ -135,7 +139,10 @@ class ConfigWindow(QMainWindow):
                    source=file_path,
                    project=print_path,
                    max_det=10,
+                   hide_conf=True,
+                   hide_labels=True,
                    subsz=(self.config.shot_width, self.config.shot_height))
+        print(f"检测标记使用时间：{(int((time.time() - start) * 1000)) / 1000.0}s")
         os.system("explorer.exe %s" % print_path)
 
     def open_read_ref_glass_window(self):

@@ -309,6 +309,8 @@ class Config:
         self.delayed_aiming_factor_y = self.get_config(self.config_data, "delayed_aiming_factor_y", 0.4)
         self.re_cut_size = self.get_config(self.config_data, "re_cut_size", 0)
 
+        self.base_scope_no_aim = self.get_config(self.config_data, "base_scope_no_aim", False)
+
         # 自动识别
         self.comparator_mode = self.get_config(self.config_data, 'comparator_mode', "local")
         self.read_image_mode = self.get_config(self.config_data, 'read_image_mode', "local")

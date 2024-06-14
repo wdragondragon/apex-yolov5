@@ -30,6 +30,7 @@ class SelectGun:
         self.current_gun = None
         self.current_scope = None
         self.current_hot_pop = None
+        self.real_current_scope = None
         self.refresh_buttons = refresh_buttons
         self.has_turbocharger = has_turbocharger
         self.hop_up_bbox = hop_up_bbox
@@ -123,6 +124,7 @@ class SelectGun:
                                                                                self.get_images_from_bbox(
                                                                                    self.scope_bbox), 0.9,
                                                                                0.4)
+        self.real_current_scope = scope_temp
         if scope_temp is None:
             self.logger.print_log("未找到配件，默认为1倍")
             scope_temp = '1x'

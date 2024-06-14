@@ -6,6 +6,7 @@ import traceback
 
 from pynput.mouse import Button
 
+from apex_recoils.core import SelectGun
 from apex_yolov5.job_listener.JoyListener import get_joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_recoils.core.SelectGun import get_select_gun
@@ -104,6 +105,7 @@ def get_lock_mode():
     controller_aim = get_joy_listener().is_press(5)
     mouse_only_fire = apex_mouse_listener.is_press(Button.left) and not apex_mouse_listener.is_press(Button.right)
     controller_only_fire = get_joy_listener().is_press(4) and not get_joy_listener().is_press(5)
+    no_lock = global_config.base_scope_no_aim and SelectGun.get_select_gun().real_current_scope is None
     fire, aim, only_fire = (controller_fire, controller_aim, controller_only_fire) \
         if global_config.joy_move \
         else (mouse_fire, mouse_aim, mouse_only_fire)
@@ -115,7 +117,7 @@ def get_lock_mode():
             ("x1&!x2" in global_config.aim_button and only_fire)
     )
     lock_mode = lock_mode or len(global_config.aim_button) == 0
-    lock = lock_mode and global_config.ai_toggle
+    lock = lock_mode and global_config.ai_toggle and not (no_lock and aim)
     if lock:
         if lock_time is None:
             lock_time = time.time()

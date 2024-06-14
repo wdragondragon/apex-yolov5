@@ -38,6 +38,10 @@ class MouseConfigLayout:
         self.joy_move.setObjectName("joy_move")
         self.joy_move.toggled.connect(self.joy_move_toggled)
 
+        self.base_scope_no_aim_switch = QCheckBox("基础瞄准镜不触发自瞄")
+        self.base_scope_no_aim_switch.setObjectName("base_scope_no_aim")
+        self.base_scope_no_aim_switch.toggled.connect(self.main_window.handle_toggled)
+
         self.mouse_smoothing_switch = QCheckBox("鼠标平滑（勾选后单词移动像素才生效）")
         self.mouse_smoothing_switch.setObjectName("mouse_smoothing_switch")
         self.mouse_smoothing_switch.toggled.connect(self.disable_silder_toggled)
@@ -250,6 +254,7 @@ class MouseConfigLayout:
         self.parent_layout.addLayout(mouse_model_layout)
         self.parent_layout.addWidget(self.joy_move)
         self.parent_layout.addWidget(self.dynamic_mouse_move)
+        self.parent_layout.addWidget(self.base_scope_no_aim_switch)
         self.parent_layout.addWidget(self.mouse_smoothing_switch)
         self.parent_layout.addLayout(move_step_layout)
         self.parent_layout.addLayout(move_step_y_layout)
@@ -290,6 +295,8 @@ class MouseConfigLayout:
         self.dynamic_mouse_move.setChecked(self.config.dynamic_mouse_move)  # 初始化开关的值
 
         self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
+
+        self.base_scope_no_aim_switch.setChecked(self.config.mouse_smoothing_switch)
 
         self.left_aim.setChecked("left" in self.config.aim_button)  # 初始化开关的值
 
