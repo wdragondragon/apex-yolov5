@@ -12,7 +12,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 
 from apex_recoils.core import SelectGun, ReaSnowSelectGun
-from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
 from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
 from apex_recoils.core.screentaker.SocketScreenTaker import SocketScreenTaker
 from apex_yolov5 import LogUtil, global_img_info

@@ -1,4 +1,3 @@
-import concurrent.futures
 import re
 import traceback
 from io import BytesIO
@@ -8,6 +7,7 @@ import numpy as np
 import requests
 from skimage.metrics import structural_similarity
 
+from apex_recoils.core.image_comparator.ImageComparator import ImageComparator
 from apex_yolov5.log.Logger import Logger
 
 headers_list = [
@@ -91,66 +91,44 @@ headers_list = [
 net_file_cache = {}
 
 
-def read_file_from_url(url):
-    """
-
-    :param url:
-    :return:
-    """
-    try:
-        if url in net_file_cache:
-            return net_file_cache[url]
-        # 发送GET请求获取文件内容
-        # headers = random.choice(headers_list)
-        response = requests.get(url)
-        response.encoding = 'utf-8'
-        # 检查请求是否成功
-        if response.status_code == 200:
-            # 根据换行符切割文件内容并返回列表
-            text = response.text
-            lines = re.split(r'\r\n|\r|\n', text)
-            net_file_cache[url] = lines
-            return lines
-        else:
-            print(f"Failed to read file from URL. Status code: {response.status_code}")
-            return None
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
-
-
-class NetImageComparator:
+class NetImageComparator(ImageComparator):
     def __init__(self, logger: Logger, base_path):
+        super().__init__(logger, base_path)
         # 用于缓存已下载图像的字典
         self.image_cache = {}
         self.logger = logger
         self.base_path = base_path
 
-    def read_file_from_url_and_download(self, base_path, file_name):
-        """
-            从文件中读取并下载图片
-        """
-        images_path = read_file_from_url(base_path + file_name)
-        if images_path is None:
-            return None
-
-        # 使用线程池
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            # 提交每个下载任务给线程池
-            futures = [executor.submit(self.download_image, base_path + image_path) for image_path in images_path]
-
-            # 等待所有任务完成
-            concurrent.futures.wait(futures)
-
-        return images_path
-
-    def download_image(self, url):
+    def read_file_from_url(self, url):
         """
 
         :param url:
         :return:
         """
+        try:
+            if url in net_file_cache:
+                return net_file_cache[url]
+            # 发送GET请求获取文件内容
+            # headers = random.choice(headers_list)
+            response = requests.get(url)
+            response.encoding = 'utf-8'
+            # 检查请求是否成功
+            if response.status_code == 200:
+                # 根据换行符切割文件内容并返回列表
+                text = response.text
+                lines = re.split(r'\r\n|\r|\n', text)
+                net_file_cache[url] = lines
+                return lines
+            else:
+                print(f"Failed to read file from URL. Status code: {response.status_code}")
+                return None
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
+    def cache_image(self, base_path, url):
         # 如果图像已经在缓存中，直接返回缓存的图像
+        url = base_path + url
         url = url.strip()
         if url in self.image_cache:
             return
@@ -177,7 +155,7 @@ class NetImageComparator:
         # 如果图像已经在缓存中，直接返回缓存的图像
         url = url.strip()
         if url not in self.image_cache:
-            self.download_image(url)
+            self.cache_image("", url)
         return BytesIO(self.image_cache[url])
 
     def compare_image(self, img, path_image):
@@ -202,27 +180,3 @@ class NetImageComparator:
             traceback.print_exc()
             self.logger.print_log(f"对比图片错误：{path_image}")
             return 0
-
-    def compare_with_path(self, path, images, lock_score, discard_score):
-        """
-            截图范围与文件路径内的所有图片对比
-        :param path:
-        :param images:
-        :param lock_score:
-        :param discard_score:
-        :return:
-        """
-        path = self.base_path + path
-        select_name = ''
-        score_temp = 0.00000000000000000000
-        for img in images:
-            for fileName in self.read_file_from_url_and_download(path, "list.txt"):
-                score = self.compare_image(img, path + fileName)
-                if score > score_temp:
-                    score_temp = score
-                    select_name = fileName.split('.')[0]
-                if score_temp > lock_score:
-                    break
-        if score_temp < discard_score:
-            select_name = None
-        return select_name, score_temp

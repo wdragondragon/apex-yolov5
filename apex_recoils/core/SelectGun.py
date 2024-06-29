@@ -2,13 +2,9 @@ import threading
 import time
 import traceback
 
-from apex_recoils.core.ReaSnowSelectGun import ReaSnowSelectGun
-from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5.KeyAndMouseListener import KMCallBack
-from apex_yolov5.log import LogFactory
 from apex_yolov5.log.Logger import Logger
-from apex_yolov5.socket.config import global_config
 
 
 class SelectGun:

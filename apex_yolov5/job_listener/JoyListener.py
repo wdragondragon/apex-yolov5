@@ -68,7 +68,7 @@ class JoyListener:
                 if event.type in self.call_back_joystick:
                     for func in self.call_back_joystick[event.type]:
                         try:
-                            func(joystick)
+                            func(joystick, event)
                         except:
                             traceback.print_exc()
             clock.tick(20)

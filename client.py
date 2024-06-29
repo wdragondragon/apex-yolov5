@@ -10,7 +10,6 @@ from PyQt5.QtWidgets import QApplication
 
 import apex_yolov5.socket.socket_util as socket_util
 from apex_recoils.core.GameWindowsStatus import GameWindowsStatus
-from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_recoils.net.socket.Server import Server
 from apex_yolov5 import global_img_info

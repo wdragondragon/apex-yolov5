@@ -9,6 +9,7 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import MultipleLocator
 
 from apex_yolov5.Tools import Tools
+from apex_yolov5.log import LogFactory
 
 
 class FrameRateMonitor(QMainWindow):
@@ -83,7 +84,7 @@ class FrameRateMonitor(QMainWindow):
             # 刷新图表
             self.canvas.draw()
         else:
-            print(f"截图频率：[{screenshot}]，推理频率：[{reasoning}]")
+            LogFactory.logger().print_log(f"截图频率：[{screenshot}]，推理频率：[{reasoning}]")
 
 
 class FrameRateMonitorThread(QThread):

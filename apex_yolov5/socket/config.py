@@ -324,6 +324,13 @@ class Config:
         self.delayed_activation_key_list = self.get_config(self.config_data, "delayed_activation_key_list", {})
         self.toggle_hold_key = {}
         self.joy_to_key_map = self.get_config(self.config_data, "joy_to_key_map", {})
+        self.s1_switch_hold_map = self.get_config(self.config_data, "s1_switch_hold_map",
+                                                  {
+                                                      "key": {},
+                                                      "toggle_key": ""
+                                                  })
+
+
         self.distributed_param = self.get_config(self.config_data, "distributed_param", {
             "ip": "127.0.0.1",
             "port": 12345
@@ -373,6 +380,7 @@ class Config:
         self.image_path = '{}x{}/'.format(*self.game_solution)  # 枪械图片路径
         self.scope_path = 'scope/{}x{}/'.format(*self.game_solution)  # 镜子图片路径
         self.hop_up_path = 'hop_up/{}x{}/'.format(*self.game_solution)  # 镜子图片路径
+        self.licking_state_path = 'licking/{}x{}/'.format(*self.game_solution)
 
         self.mouse = pynput.mouse.Controller()  # 鼠标对象
 

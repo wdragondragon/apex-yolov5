@@ -104,11 +104,12 @@ def check_label_image():
         # 在这里可以进行进一步的处理，例如将txt和png文件进行匹配操作
         print(f"Matched: {txt_file_path} - {png_file_path}")
 
+
 # 删除多余label
 def delete_label():
     # 定义labels和images文件夹路径
-    labels_folder = 'D:/Desktop/yolo_model/data/已处理/total/labels/'
-    images_folder = 'D:/Desktop/yolo_model/data/已处理/total/images/'
+    labels_folder = 'C:/Users/Administrator/Desktop/ow/labels/'
+    images_folder = 'C:/Users/Administrator/Desktop/ow/images/'
 
     # 获取labels文件夹中所有txt文件的文件名（不带后缀）
     labels_files = [os.path.splitext(filename)[0] for filename in os.listdir(labels_folder) if
@@ -129,11 +130,15 @@ def delete_label():
 # 切分
 def split_label_image():
     # 定义labels和images文件夹路径
-    labels_folder = 'D:/Desktop/yolo_model/data/已处理/total/labels/'
-    images_folder = 'D:/Desktop/yolo_model/data/已处理/total/images/'
+    folder = 'C:/Users/Administrator/Desktop/ow/5'
+    labels_folder = folder + '/labels/'
+    images_folder = folder + '/images/'
+
+    new_folder = folder + '/all/'
+    images_suffix = ".png"
     # 获取images文件夹中所有png文件的文件名（不带后缀）
     images_files = [os.path.splitext(filename)[0] for filename in os.listdir(images_folder) if
-                    filename.endswith('.png')]
+                    filename.endswith(images_suffix)]
     labels_files = [os.path.splitext(filename)[0] for filename in os.listdir(labels_folder) if
                     filename.endswith('.txt')]
 
@@ -141,27 +146,70 @@ def split_label_image():
     # 删除images文件夹中不在交集中的png文件
     for filename in images_files:
         count += 1
-        png_file_path = os.path.join(images_folder, filename + '.png')
+        png_file_path = os.path.join(images_folder, filename + images_suffix)
         labels_file_path = os.path.join(labels_folder, filename + ".txt")
         if count == 9:
-            images_folder_new = images_folder + "test"
-            labels_folder_new = labels_folder + "test"
+            images_folder_new = new_folder + "images/test"
+            labels_folder_new = new_folder + "labels/test"
         elif count == 10:
-            images_folder_new = images_folder + "val"
-            labels_folder_new = labels_folder + "val"
+            images_folder_new = new_folder + "images/val"
+            labels_folder_new = new_folder + "labels/val"
             count = 0
         else:
-            images_folder_new = images_folder + "train"
-            labels_folder_new = labels_folder + "train"
+            images_folder_new = new_folder + "images/train"
+            labels_folder_new = new_folder + "labels/train"
 
         os.makedirs(images_folder_new, exist_ok=True)
         os.makedirs(labels_folder_new, exist_ok=True)
-        png_file_new_path = os.path.join(images_folder_new, filename + '.png')
+        png_file_new_path = os.path.join(images_folder_new, filename + images_suffix)
         labels_file_new_path = os.path.join(labels_folder_new, filename + '.txt')
         shutil.copy(png_file_path, png_file_new_path)
         print(f"image path：{filename}")
         if filename in labels_files:
             shutil.copy(labels_file_path, labels_file_new_path)
             print(f"labels path：{filename}")
+
+
+def class_change_1():
+    # 源目录和目标目录
+    src_dir = 'D:/dev/PycharmProjects/yolov5/apex_model/APEX/Data1/apex20000-单敌人/AL-YOLO-dataset-master/AL-YOLO-dataset-master/labels'
+    # 遍历源目录中的所有文件
+    src_folder = src_dir
+    # for folder in ['test', 'train', 'val']:
+    #     src_folder = os.path.join(src_dir, folder)
+    max_label = 0
+    for filename in os.listdir(src_folder):
+        if filename.endswith('.txt'):
+            src_file = os.path.join(src_folder, filename)
+            # 读取源文件内容
+            with open(src_file, 'r') as f_src:
+                lines = f_src.readlines()
+
+            for line in lines:
+                line = line[:1]
+                max_label = max(int(line), max_label)
+    print(max_label)
+
+
+def classification():
+    folder = 'D:/dev/PycharmProjects/yolov5/apex_model/APEX/Data1/apex20000-单敌人/AL-YOLO-dataset-master/AL-YOLO-dataset-master'
+    labels_folder = folder + '/labels/'
+    images_folder = folder + '/images/'
+    # 获取images文件夹中所有png文件的文件名（不带后缀）
+    images_files = [filename for filename in os.listdir(folder) if
+                    filename.endswith('.jpg')]
+    labels_files = [filename for filename in os.listdir(folder) if
+                    filename.endswith('.txt')]
+    os.makedirs(labels_folder, exist_ok=True)
+    os.makedirs(images_folder, exist_ok=True)
+    for filename in images_files:
+        file_path = os.path.join(folder, filename)
+        file_new_path = os.path.join(images_folder, filename)
+        shutil.move(file_path, file_new_path)
+    for filename in labels_files:
+        file_path = os.path.join(folder, filename)
+        file_new_path = os.path.join(labels_folder, filename)
+        shutil.move(file_path, file_new_path)
+
 
 split_label_image()

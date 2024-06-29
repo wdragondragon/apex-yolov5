@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QApplication
 import apex_yolov5_main
 import apex_yolov5_main_asyn
 from apex_recoils.core import SelectGun, ReaSnowSelectGun, GameWindowsStatus
+from apex_recoils.core.image_comparator.DynamicSizeImageComparator import DynamicSizeImageComparator
 from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
 from apex_recoils.core.screentaker.LocalMssScreenTaker import LocalMssScreenTaker
 from apex_yolov5 import check_run, auxiliary
@@ -14,6 +15,7 @@ from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listen
 from apex_yolov5.RecoildsCore import RecoilsConfig, RecoilsListener
 from apex_yolov5.job_listener import JoyListener
 from apex_yolov5.job_listener.JoyToKey import JoyToKey
+from apex_yolov5.job_listener.S1SwitchMonitor import S1SwitchMonitor
 from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.mouse_mover.Win32ApiMover import Win32ApiMover
@@ -35,6 +37,7 @@ if __name__ == "__main__":
     MoverFactory.init_mover(
         mouse_model=global_config.mouse_model,
         mouse_mover_params=global_config.available_mouse_models)
+    screen_taker = LocalMssScreenTaker(LogFactory.logger())
     SelectGun.select_gun = SelectGun.SelectGun(logger=LogFactory.logger(),
                                                bbox=global_config.select_gun_bbox,
                                                image_path=global_config.image_path,
@@ -46,14 +49,21 @@ if __name__ == "__main__":
                                                hop_up_path=global_config.hop_up_path,
                                                image_comparator=NetImageComparator(LogFactory.logger(),
                                                                                    global_config.image_base_path),
-                                               screen_taker=LocalMssScreenTaker(LogFactory.logger()),
+                                               screen_taker=screen_taker,
                                                game_windows_status=GameWindowsStatus.get_game_status())
 
     if global_config.rea_snow_gun_config_name != "" or global_config.joy_move:
         rea_snow_select_gun = ReaSnowSelectGun.ReaSnowSelectGun(logger=LogFactory.logger(),
                                                                 config_name=global_config.rea_snow_gun_config_name)
         SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
-
+        dynamic_size_image_comparator = DynamicSizeImageComparator(logger=LogFactory.logger(),
+                                                                   base_path=global_config.image_base_path,
+                                                                   screen_taker=screen_taker)
+        s1_switch_monitor = S1SwitchMonitor(logger=LogFactory.logger(),
+                                            joy_listener=JoyListener.joy_listener,
+                                            licking_state_path=global_config.licking_state_path,
+                                            dynamic_size_image_comparator=dynamic_size_image_comparator,
+                                            s1_switch_hold_map=global_config.s1_switch_hold_map)
         jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
                        c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}))
         JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
