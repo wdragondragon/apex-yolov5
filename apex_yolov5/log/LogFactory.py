@@ -53,8 +53,8 @@ class MultipleLogger(Logger):
         if current_logger is None:
             init_logger()
 
-        length, log_type = prefix_search(self.full_path)
+        length, search_log_type = prefix_search(self.full_path)
         if length != 0:
-            current_logger.print_log(text, log_type)
+            current_logger.print_log(text, search_log_type)
         else:
             current_logger.print_log(text, log_type)
