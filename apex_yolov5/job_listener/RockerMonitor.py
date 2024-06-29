@@ -3,7 +3,7 @@ import time
 import pygame
 
 from apex_yolov5.job_listener.JoyListener import JoyListener
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 
 
 class RockerMonitor:
@@ -11,8 +11,8 @@ class RockerMonitor:
         监听摇杆
     """
 
-    def __init__(self, logger: Logger, joy_listener: JoyListener):
-        self.logger = logger
+    def __init__(self, joy_listener: JoyListener):
+        self.logger = LogFactory.getLogger(self.__class__)
         self.rocker_cache = []
         self.exist_rocket_time = []
         self.hold_time = None

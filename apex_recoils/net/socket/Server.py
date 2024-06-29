@@ -4,7 +4,7 @@ import threading
 import traceback
 
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.socket import socket_util
 
 
@@ -13,8 +13,8 @@ class Server:
         识别服务端
     """
 
-    def __init__(self, logger: Logger, server_address, screen_taker: LocalScreenTaker):
-        self.logger = logger
+    def __init__(self, server_address, screen_taker: LocalScreenTaker):
+        self.logger = LogFactory.getLogger(self.__class__)
         self.server_address = server_address
         self.screen_taker = screen_taker
         self.server_socket = None

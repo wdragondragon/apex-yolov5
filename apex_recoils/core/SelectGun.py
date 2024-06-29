@@ -4,7 +4,7 @@ import traceback
 
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5.KeyAndMouseListener import KMCallBack
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 
 
 class SelectGun:
@@ -12,11 +12,11 @@ class SelectGun:
         枪械识别
     """
 
-    def __init__(self, logger: Logger, bbox, image_path, scope_bbox, scope_path, hop_up_bbox, hop_up_path,
+    def __init__(self, bbox, image_path, scope_bbox, scope_path, hop_up_bbox, hop_up_path,
                  refresh_buttons, has_turbocharger, image_comparator, screen_taker: LocalScreenTaker,
                  game_windows_status):
         super().__init__()
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.on_key_map = dict()
         self.bbox = bbox
         self.image_path = image_path

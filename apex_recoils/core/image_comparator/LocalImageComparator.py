@@ -5,7 +5,7 @@ import numpy as np
 from skimage.metrics import structural_similarity
 
 from apex_recoils.core.image_comparator.ImageComparator import ImageComparator
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 
 net_file_cache = {}
 
@@ -15,10 +15,10 @@ class LocalImageComparator(ImageComparator):
         本地图片对比
     """
 
-    def __init__(self, logger: Logger, base_path):
-        super().__init__(logger, base_path)
+    def __init__(self, base_path):
+        super().__init__(base_path)
         self.image_cache = {}
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.base_path = base_path
 
     def read_file_from_url(self, path):

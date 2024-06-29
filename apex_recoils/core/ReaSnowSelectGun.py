@@ -2,7 +2,7 @@ import json
 import os.path as op
 
 from apex_yolov5.Tools import Tools
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
 
 
@@ -11,8 +11,8 @@ class ReaSnowSelectGun:
         转换器自动识别按键宏触发
     """
 
-    def __init__(self, logger: Logger, config_name='ReaSnowGun'):
-        self.logger = logger
+    def __init__(self, config_name='ReaSnowGun'):
+        self.logger = LogFactory.getLogger(self.__class__)
         self.config_path = f".\\config\\{config_name}.json"
 
         if op.exists(self.config_path):

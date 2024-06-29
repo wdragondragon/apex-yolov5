@@ -1,6 +1,6 @@
 import cv2
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 
 
 class CapScreenTaker:
@@ -8,8 +8,8 @@ class CapScreenTaker:
         本地截图
     """
 
-    def __init__(self, logger: Logger):
-        self.logger = logger
+    def __init__(self):
+        self.logger = LogFactory.getLogger(self.__class__)
         self.cap = cv2.VideoCapture(0)  # 视频流
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)

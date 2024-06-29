@@ -1,6 +1,6 @@
 from PIL import ImageGrab
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 
 
 class LocalScreenTaker:
@@ -8,8 +8,8 @@ class LocalScreenTaker:
         本地截图
     """
 
-    def __init__(self, logger: Logger):
-        self.logger = logger
+    def __init__(self):
+        self.logger = LogFactory.getLogger(self.__class__)
 
     def get_images_from_bbox(self, bbox_list):
         """

@@ -2,11 +2,13 @@ from log.Logger import Logger
 from mouse_mover.MouseMover import MouseMover
 from net.socket.Client import Client
 
+from apex_yolov5.log import LogFactory
+
 
 class SocketMouseMover(MouseMover):
-    def __init__(self, logger: Logger, mouse_mover_param):
+    def __init__(self, mouse_mover_param):
         super().__init__(mouse_mover_param)
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.client = Client((mouse_mover_param["ip"], mouse_mover_param["port"]), "mouse_mover")
         self.listener = None
         self.toggle_key_listener = None

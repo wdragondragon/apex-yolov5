@@ -3,14 +3,14 @@ import random
 import sys
 import time
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 
 class PanNiMover(MouseMover):
-    def __init__(self, logger: Logger, mouse_mover_param):
+    def __init__(self, mouse_mover_param):
         super().__init__(mouse_mover_param)
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.dev = None
         self.version = 0
         self.model = 0

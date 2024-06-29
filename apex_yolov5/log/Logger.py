@@ -9,10 +9,11 @@ class Logger:
         日志抽象
     """
 
-    def print_log(self, text):
+    def print_log(self, text, log_type="default"):
         """
             打印日志
         :param text:
+        :param log_type:
         """
         global max_length
         # 获取被调用函数所在模块文件名

@@ -1,18 +1,18 @@
 import traceback
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 
 class KmBoxNetMover(MouseMover):
 
-    def __init__(self, logger: Logger, mouse_mover_param):
+    def __init__(self, mouse_mover_param):
         import kmNet
         try:
             self.kmNet = kmNet
             # 初始化
             super().__init__(mouse_mover_param)
-            self.logger = logger
+            self.logger = LogFactory.getLogger(self.__class__)
             ip = mouse_mover_param["ip"]
             port = mouse_mover_param["port"]
             uuid = mouse_mover_param["uuid"]

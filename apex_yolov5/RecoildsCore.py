@@ -8,8 +8,8 @@ from pynput.mouse import Button
 
 from apex_recoils.core.SelectGun import SelectGun
 from apex_yolov5.KeyAndMouseListener import MouseListener
-from apex_yolov5.auxiliary import set_intention, get_intention
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.auxiliary import get_intention
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import Config
 
@@ -19,8 +19,8 @@ class RecoilsConfig:
         枪械配置后座力配置
     """
 
-    def __init__(self, logger: Logger):
-        self.logger = logger
+    def __init__(self):
+        self.logger = LogFactory.getLogger(self.__class__)
         self.specs_data = None
         self.load()
 
@@ -80,11 +80,10 @@ class RecoilsListener:
     """
 
     def __init__(self,
-                 logger: Logger,
                  mouse_listener: MouseListener,
                  select_gun: SelectGun, config: Config):
-        self.logger = logger
-        self.recoils_config = RecoilsConfig(logger=logger)
+        self.logger = LogFactory.getLogger(self.__class__)
+        self.recoils_config = RecoilsConfig()
         self.mouse_listener = mouse_listener
         self.select_gun = select_gun
         self.recoils_listener_thread = None

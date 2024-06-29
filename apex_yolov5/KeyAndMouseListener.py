@@ -1,10 +1,8 @@
-import threading
 import time
 
 from pynput.mouse import Button
 
 from apex_yolov5.Tools import Tools
-from apex_yolov5.grabscreen import save_screen_to_file
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
 

@@ -1,6 +1,6 @@
 from ctypes import windll
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 MOUSE_EVEN_TF_LEFT_DOWN = 0x2
@@ -14,10 +14,10 @@ MOUSE_EVEN_TF_MOVE = 0x1
 
 class Win32ApiMover(MouseMover):
 
-    def __init__(self, logger: Logger, mouse_mover_param):
+    def __init__(self, mouse_mover_param):
         super().__init__(mouse_mover_param)
         self.user32 = windll.user32
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
 
     def move_rp(self, x: int, y: int, re_cut_size=0):
         if re_cut_size == 0:

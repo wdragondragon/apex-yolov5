@@ -6,7 +6,7 @@ import pygame
 from apex_recoils.core.image_comparator.DynamicSizeImageComparator import DynamicSizeImageComparator
 from apex_yolov5.Tools import Tools
 from apex_yolov5.job_listener.JoyListener import JoyListener
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
 
 
@@ -15,10 +15,10 @@ class S1SwitchMonitor:
         监听s1切层
     """
 
-    def __init__(self, logger: Logger, joy_listener: JoyListener,
+    def __init__(self, joy_listener: JoyListener,
                  licking_state_path,
                  dynamic_size_image_comparator: DynamicSizeImageComparator, s1_switch_hold_map, retry=5):
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.dynamic_size_image_comparator = dynamic_size_image_comparator
         self.licking_state_path = licking_state_path
         # self.click_state = False
@@ -41,10 +41,10 @@ class S1SwitchMonitor:
     def monitor(self, joystick, event):
         if event.type in self.dict:
             if event.type == pygame.JOYBUTTONDOWN:
-                # self.logger.print_log(f"检测到按下手柄按键:{event.button}")
+                self.logger.print_log(f"检测到按下手柄按键:{event.button}")
                 self.hole_key_status_map[event.button] = time.time()
             elif event.type == pygame.JOYBUTTONUP and event.button in self.hole_key_status_map:
-                # self.logger.print_log(f"检测到松开手柄按键:{event.button}")
+                self.logger.print_log(f"检测到松开手柄按键:{event.button}")
                 self.hole_key_status_map.pop(event.button)
 
             for (scene, key_map) in self.s1_switch_hold_map.items():

@@ -2,7 +2,7 @@ import threading
 import time
 
 from apex_yolov5.Tools import Tools
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 
 
 class GameWindowsStatus:
@@ -10,9 +10,9 @@ class GameWindowsStatus:
         游戏窗口状态检测
     """
 
-    def __init__(self, logger: Logger):
+    def __init__(self):
         self.status = False
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.timing_get_status_thread()
 
     def timing_get_status_thread(self):
@@ -42,9 +42,9 @@ class GameWindowsStatus:
 game_status = None
 
 
-def init(logger):
+def init():
     global game_status
-    game_status = GameWindowsStatus(logger)
+    game_status = GameWindowsStatus()
 
 
 def get_game_status():

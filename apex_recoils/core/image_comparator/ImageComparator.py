@@ -1,6 +1,6 @@
 import concurrent.futures
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 
 
 class ImageComparator:
@@ -8,10 +8,10 @@ class ImageComparator:
         图片对比
     """
 
-    def __init__(self, logger: Logger, base_path):
+    def __init__(self, base_path):
         # 用于缓存图片
         self.image_cache = {}
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.base_path = base_path
 
     def compare_image(self, img, path_image):

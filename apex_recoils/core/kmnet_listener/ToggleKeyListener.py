@@ -3,7 +3,7 @@ import time
 from apex_recoils.core import GameWindowsStatus
 from apex_yolov5.KmBoxNetListener import KmBoxNetListener
 from apex_yolov5.Tools import Tools
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
 
 
@@ -12,11 +12,11 @@ class ToggleKeyListener:
         监听kmnet 关于辅助开关键的实现
     """
 
-    def __init__(self, logger: Logger, km_box_net_listener: KmBoxNetListener, delayed_activation_key_list,
+    def __init__(self, km_box_net_listener: KmBoxNetListener, delayed_activation_key_list,
                  toggle_hold_key):
         import kmNet
         self.kmNet = kmNet
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         self.km_box_net_listener = km_box_net_listener
         # 自定义按住延迟转换
         self.delayed_activation_key_status_map = {}

@@ -1,16 +1,16 @@
 import ctypes
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 
 class KmBoxMover(MouseMover):
 
-    def __init__(self, logger: Logger, mouse_mover_param):
+    def __init__(self, mouse_mover_param):
         # 初始化
         # dll地址
         super().__init__(mouse_mover_param)
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         vid_pid = mouse_mover_param["VID/PID"]
         self.km_box_A = ctypes.cdll.LoadLibrary(r".\kmbox_dll_64bit.dll")
         self.km_box_A.KM_init.argtypes = [ctypes.c_ushort, ctypes.c_ushort]

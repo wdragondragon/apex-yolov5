@@ -25,24 +25,23 @@ def init_mover(mouse_model, mouse_mover_params):
     else:
         logger.print_log(f"初始化鼠标模式：[{mouse_model}]")
     if mouse_model == 'win32api':
-        current_mover = Win32ApiMover(logger, mouse_mover_param)
+        current_mover = Win32ApiMover(mouse_mover_param)
     elif mouse_model == "km_box":
-        current_mover = KmBoxMover(logger, mouse_mover_param)
+        current_mover = KmBoxMover(mouse_mover_param)
     elif mouse_model == "fei_yi_lai" or mouse_model == 'fei_yi_lai_single':
-        current_mover = FeiMover(logger, mouse_mover_param)
+        current_mover = FeiMover(mouse_mover_param)
     elif mouse_model == "wu_ya":
-        current_mover = WuYaMover(logger, mouse_mover_param)
+        current_mover = WuYaMover(mouse_mover_param)
     elif mouse_model == 'logitech':
-        current_mover = GHubMover(logger, mouse_mover_param)
+        current_mover = GHubMover(mouse_mover_param)
     elif mouse_model == "pan_ni":
-        current_mover = PanNiMover(logger, mouse_mover_param)
+        current_mover = PanNiMover(mouse_mover_param)
     elif mouse_model == "km_box_net":
-        current_mover = KmBoxNetMover(logger, mouse_mover_param)
+        current_mover = KmBoxNetMover(mouse_mover_param)
         current_mover.listener = KmBoxNetListener(current_mover)
         threading.Thread(target=current_mover.listener.km_box_net_start).start()
         if global_config.rea_snow_gun_config_name != "":
-            current_mover.toggle_key_listener = ToggleKeyListener(logger=logger,
-                                                                  km_box_net_listener=current_mover.listener,
+            current_mover.toggle_key_listener = ToggleKeyListener(km_box_net_listener=current_mover.listener,
                                                                   delayed_activation_key_list=global_config.delayed_activation_key_list,
                                                                   toggle_hold_key=global_config.toggle_hold_key)
 

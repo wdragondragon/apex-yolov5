@@ -74,15 +74,14 @@ def main():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
-    server = Server(logger=LogFactory.logger(),
-                    server_address=(global_config.distributed_param["ip"], global_config.distributed_param["port"]),
-                    screen_taker=LocalScreenTaker(LogFactory.logger()))
+    server = Server(server_address=(global_config.distributed_param["ip"], global_config.distributed_param["port"]),
+                    screen_taker=LocalScreenTaker())
     threading.Thread(target=server.wait_client).start()
 
-    game_windows_status = GameWindowsStatus(logger=LogFactory.logger())
-    jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
-                   c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}), game_windows_status=game_windows_status)
-    JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
+    game_windows_status = GameWindowsStatus()
+    jtk = JoyToKey(joy_to_key_map=global_config.joy_to_key_map,
+                   c1_mouse_mover=Win32ApiMover({}), game_windows_status=game_windows_status)
+    JoyListener.joy_listener = JoyListener.JoyListener()
     JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
     JoyListener.joy_listener.start(None)
 

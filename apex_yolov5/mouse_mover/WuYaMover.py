@@ -2,15 +2,15 @@ from ctypes import *
 
 import win32com.client
 
-from apex_yolov5.log.Logger import Logger
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 
 class WuYaMover(MouseMover):
-    def __init__(self, logger: Logger, mouse_mover_param):
+    def __init__(self, mouse_mover_param):
         # 进程内注册插件,模块所在的路径按照实际位置修改
         super().__init__(mouse_mover_param)
-        self.logger = logger
+        self.logger = LogFactory.getLogger(self.__class__)
         vid_pid = mouse_mover_param["VID/PID"]
         hkm_dll = windll.LoadLibrary(".\wy_hkm.dll")
         hkm_dll.DllInstall.argtypes = (c_long, c_longlong)

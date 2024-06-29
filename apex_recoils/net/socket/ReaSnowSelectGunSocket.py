@@ -1,8 +1,8 @@
 import time
 
-from core.SelectGun import SelectGun
-from log.Logger import Logger
-from net.socket.Client import Client
+from apex_recoils.core.SelectGun import SelectGun
+from apex_recoils.net.socket.Client import Client
+from apex_yolov5.log import LogFactory
 
 
 class ReaSnowSelectGunSocket:
@@ -10,8 +10,8 @@ class ReaSnowSelectGunSocket:
         通过网络socket触发按键
     """
 
-    def __init__(self, logger: Logger, select_gun: SelectGun, socket_address=("127.0.0.1", 12345)):
-        self.logger = logger
+    def __init__(self, select_gun: SelectGun, socket_address=("127.0.0.1", 12345)):
+        self.logger = LogFactory.getLogger(self.__class__)
         self.client = Client(socket_address, "key_trigger")
         select_gun.connect(self.trigger_button)
 
