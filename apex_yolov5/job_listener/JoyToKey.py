@@ -47,13 +47,13 @@ class JoyToKey:
         if not toggle_key_status and hold_status:
             # self.logger.print_log(f"joy to key [{joy_to_key['key_type']}.{joy_to_key['key']}] down")
             if self.all_hold(key) and joy_to_key['key_type'] == "mouse":
-                self.logger.print_log(f"joy to key all down")
+                # self.logger.print_log(f"joy to key all down")
                 for values in axis_joy_to_key_map.values():
                     self.c1_mouse_mover.mouse_click(values['key'], True)
         if toggle_key_status and not hold_status:
             # self.logger.print_log(f"joy to key [{joy_to_key['key_type']}.{joy_to_key['key']}] up")
             if joy_to_key['key_type'] == "mouse":
-                self.logger.print_log(f"joy to key all up")
+                # self.logger.print_log(f"joy to key all up")
                 for values in axis_joy_to_key_map.values():
                     self.c1_mouse_mover.mouse_click(values['key'], False)
 

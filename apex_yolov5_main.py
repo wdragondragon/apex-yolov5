@@ -6,6 +6,7 @@ import mss
 import numpy as np
 
 from apex_yolov5 import global_img_info
+from apex_yolov5.auxiliary import get_lock_mode
 from apex_yolov5.grabscreen import grab_screen_int_array2, save_rescreen_and_aims_to_file_with_thread
 from apex_yolov5.mouse_lock import lock
 from apex_yolov5.socket.config import global_config
@@ -18,12 +19,23 @@ def main(log_window):
     sct = mss.mss()
     print_count = 0
     compute_time = time.time()
+    last_status = False
     while True:
         try:
-            if not global_config.ai_toggle:
-                time.sleep(6)
+            if not global_config.ai_toggle or not get_lock_mode():
+                time.sleep(0.006)
+                run_time = time.time() - compute_time
+                if last_status and run_time < 1:
+                    log_window.add_frame_rate_plot((int(print_count / run_time), int(screen_count / run_time)))
+                last_status = False
                 continue
-            start = time.time()
+            else:
+                if not last_status:
+                    compute_time = time.time()
+                    print_count = 0
+                    screen_count = 0
+                last_status = True
+
             img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
             img = np.frombuffer(img_origin.rgb, dtype='uint8')
             img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
@@ -34,9 +46,10 @@ def main(log_window):
             averager = (0, 0, 0, 0)
             if len(aims):
                 if not global_config.only_save:
-                    averager = lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
-                         shot_width=global_img_info.get_current_img().shot_width,
-                         shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
+                    averager = lock(aims, global_config.mouse, global_config.desktop_width,
+                                    global_config.desktop_height,
+                                    shot_width=global_img_info.get_current_img().shot_width,
+                                    shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
                 if global_config.is_show_debug_window:
                     for i, det in enumerate(aims):
                         tag, x_center, y_center, width, height = det

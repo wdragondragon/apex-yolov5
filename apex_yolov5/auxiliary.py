@@ -11,6 +11,7 @@ from apex_yolov5.job_listener.JoyListener import get_joy_listener
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_recoils.core.SelectGun import get_select_gun
 from apex_yolov5.Tools import Tools
+from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
 
@@ -132,9 +133,10 @@ def get_lock_mode():
         if lock_time is not None:
             lock_time = None
             lock_delay = 0
-            print(move_x_arr)
-            print(move_y_arr)
-            print(time_point_arr)
+            if len(time_point_arr) > 0:
+                LogFactory.logger().print_log(move_x_arr)
+                LogFactory.logger().print_log(move_y_arr)
+                LogFactory.logger().print_log(time_point_arr)
     return lock
 
 
@@ -231,7 +233,7 @@ def start():
             intention = None
         while_frequency += 1
         if int((time.time() - start_time) * 1000) > 1000:
-            print(f"鼠标移动频率为：{while_frequency}")
+            LogFactory.logger().print_log(f"鼠标移动频率为：{while_frequency}")
             while_frequency = 0
             start_time = time.time()
         change_coordinates_num = 0

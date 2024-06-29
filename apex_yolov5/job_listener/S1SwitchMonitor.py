@@ -41,10 +41,10 @@ class S1SwitchMonitor:
     def monitor(self, joystick, event):
         if event.type in self.dict:
             if event.type == pygame.JOYBUTTONDOWN:
-                self.logger.print_log(f"检测到按下手柄按键:{event.button}")
+                # self.logger.print_log(f"检测到按下手柄按键:{event.button}")
                 self.hole_key_status_map[event.button] = time.time()
             elif event.type == pygame.JOYBUTTONUP and event.button in self.hole_key_status_map:
-                self.logger.print_log(f"检测到松开手柄按键:{event.button}")
+                # self.logger.print_log(f"检测到松开手柄按键:{event.button}")
                 self.hole_key_status_map.pop(event.button)
 
             for (scene, key_map) in self.s1_switch_hold_map.items():
