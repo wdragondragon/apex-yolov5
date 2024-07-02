@@ -79,6 +79,7 @@ class LogWindow(QMainWindow, Logger):
         if log_type not in self.log_texts:
             self.add_log_tab(log_type)
         log_text = self.log_texts[log_type]
+        log = f"{log}"
         log_text.append(log)
         log_text.moveCursor(log_text.textCursor().End)
         super().print_log(text=log)
