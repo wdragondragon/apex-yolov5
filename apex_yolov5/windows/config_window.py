@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBo
     QComboBox, QLineEdit, QFileDialog
 
 import detect
+from apex_yolov5 import check_run
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
 from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
@@ -64,6 +65,11 @@ class ConfigWindow(QMainWindow):
                 self.setWindowTitle("Apex Gun " + self.config.version)
             else:
                 self.setWindowTitle(title)
+            if check_run.expiration_time is None:
+                self.setWindowTitle(self.windowTitle() + " 永久授权")
+            else:
+                self.setWindowTitle(
+                    self.windowTitle() + " 授权过期时间：" + check_run.expiration_time)
 
     def create_menus(self):
         config_action = QAction("实时锁定人物展示", self)
