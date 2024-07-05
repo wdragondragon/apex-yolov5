@@ -26,12 +26,12 @@ from apex_yolov5.windows.circle_window import get_circle_window
 from apex_yolov5.windows.config_window import ConfigWindow
 
 if __name__ == "__main__":
+    check_run.check(validate_type='ai')
     app = QApplication(sys.argv)
     LogFactory.init_logger()
     JoyListener.joy_listener = JoyListener.JoyListener()
     log_window = ConfigWindow(global_config)
     dis = DisclaimerWindow(log_window)
-    check_run.check(validate_type='ai', main_windows=log_window)
 
     GameWindowsStatus.init()
     MoverFactory.init_mover(
