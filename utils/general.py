@@ -34,6 +34,8 @@ import torch
 import torchvision
 import yaml
 
+from apex_yolov5.check_run import auth
+
 # Import 'ultralytics' package or install if missing
 try:
     import ultralytics
@@ -1006,6 +1008,7 @@ def clip_segments(segments, shape):
         segments[:, 1] = segments[:, 1].clip(0, shape[0])  # y
 
 
+@auth
 def non_max_suppression(
         prediction,
         conf_thres=0.25,

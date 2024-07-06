@@ -3,14 +3,14 @@ import threading
 
 import pynput
 from PyQt5.QtWidgets import QApplication
-
+from apex_yolov5.socket.config import global_config
 import apex_yolov5_main
 import apex_yolov5_main_asyn
 from apex_recoils.core import SelectGun, ReaSnowSelectGun, GameWindowsStatus
 from apex_recoils.core.image_comparator.DynamicSizeImageComparator import DynamicSizeImageComparator
 from apex_recoils.core.image_comparator.NetImageComparator import NetImageComparator
 from apex_recoils.core.screentaker.LocalMssScreenTaker import LocalMssScreenTaker
-from apex_yolov5 import check_run, auxiliary
+from apex_yolov5 import auxiliary
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_yolov5.RecoildsCore import RecoilsListener
 from apex_yolov5.job_listener import JoyListener
@@ -19,19 +19,22 @@ from apex_yolov5.job_listener.S1SwitchMonitor import S1SwitchMonitor
 from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.mouse_mover.Win32ApiMover import Win32ApiMover
-from apex_yolov5.socket.config import global_config
+
 from apex_yolov5.windows.DisclaimerWindow import DisclaimerWindow
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
 from apex_yolov5.windows.circle_window import get_circle_window
 from apex_yolov5.windows.config_window import ConfigWindow
 
-if __name__ == "__main__":
-    check_run.check(validate_type='ai')
+
+def main():
+    """
+        main
+    """
     app = QApplication(sys.argv)
     LogFactory.init_logger()
     JoyListener.joy_listener = JoyListener.JoyListener()
     log_window = ConfigWindow(global_config)
-    dis = DisclaimerWindow(log_window)
+    DisclaimerWindow(log_window)
 
     GameWindowsStatus.init()
     MoverFactory.init_mover(
@@ -55,10 +58,10 @@ if __name__ == "__main__":
         SelectGun.get_select_gun().connect(rea_snow_select_gun.trigger_button)
         dynamic_size_image_comparator = DynamicSizeImageComparator(base_path=global_config.image_base_path,
                                                                    screen_taker=screen_taker)
-        s1_switch_monitor = S1SwitchMonitor(joy_listener=JoyListener.joy_listener,
-                                            licking_state_path=global_config.licking_state_path,
-                                            dynamic_size_image_comparator=dynamic_size_image_comparator,
-                                            s1_switch_hold_map=global_config.s1_switch_hold_map)
+        S1SwitchMonitor(joy_listener=JoyListener.joy_listener,
+                        licking_state_path=global_config.licking_state_path,
+                        dynamic_size_image_comparator=dynamic_size_image_comparator,
+                        s1_switch_hold_map=global_config.s1_switch_hold_map)
         jtk = JoyToKey(joy_to_key_map=global_config.joy_to_key_map,
                        c1_mouse_mover=Win32ApiMover({}))
         JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
@@ -99,6 +102,8 @@ if __name__ == "__main__":
         threading.Thread(target=apex_yolov5_main_asyn.handle, args=(log_window,)).start()
     else:
         threading.Thread(target=apex_yolov5_main.main, args=(log_window,)).start()
-
-    # KMCallBack.connect(KMCallBack('k', 'p', save_screen_to_file))
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    main()
