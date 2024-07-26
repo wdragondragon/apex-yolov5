@@ -296,7 +296,7 @@ class MouseConfigLayout:
 
         self.mouse_smoothing_switch.setChecked(self.config.mouse_smoothing_switch)  # 初始化开关的值
 
-        self.base_scope_no_aim_switch.setChecked(self.config.mouse_smoothing_switch)
+        self.base_scope_no_aim_switch.setChecked(self.config.base_scope_no_aim)
 
         self.left_aim.setChecked("left" in self.config.aim_button)  # 初始化开关的值
 
