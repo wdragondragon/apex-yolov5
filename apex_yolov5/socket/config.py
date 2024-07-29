@@ -153,8 +153,8 @@ class Config:
         self.desktop_height = self.get_config(self.config_data, 'desktop_height', y)
         print(f"识别到桌面分辨率为:{self.desktop_width}x{self.desktop_height}")
 
-        self.game_width = self.get_config(self.config_data, 'screen_width')
-        self.game_height = self.get_config(self.config_data, 'screen_height')
+        self.game_width = self.get_config(self.config_data, 'screen_width', self.desktop_width)
+        self.game_height = self.get_config(self.config_data, 'screen_height', self.desktop_height)
         # 截屏区域
         self.offset_shot_screen_x = self.get_config(self.config_data, 'offset_shot_screen_x')
         self.offset_shot_screen_y = self.get_config(self.config_data, 'offset_shot_screen_y')
