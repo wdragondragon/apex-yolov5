@@ -23,6 +23,7 @@ class Logger:
         (file_name, extension) = os.path.splitext(file_name)
         func_name = inspect.stack()[1][3]
         line_num = inspect.stack()[1][2]
+        text = f"{text}"
         text_split = text.split("\n")
         log_text = f'[{file_name}:{func_name}][{line_num}]'
         max_length = max(max_length, len(log_text))
