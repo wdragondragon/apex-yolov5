@@ -98,6 +98,7 @@ class ConfigWindow(QMainWindow):
         file_menu = menu_bar.addMenu("其他功能")
         file_menu.addAction(config_action)
         file_menu.addAction(magnifying_glass_action)
+        file_menu.addAction(mouse_performance_action)
         file_menu.addAction(detect_test)
 
         config_menu = menu_bar.addMenu("管理配置")
