@@ -122,7 +122,7 @@ class Config:
         配置类
     """
 
-    @open_check(val_type="ai")
+    # @open_check(val_type="ai")
     def __init__(self):
         self.config_data = read_config()
         self.init()

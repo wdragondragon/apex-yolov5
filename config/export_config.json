@@ -3,8 +3,8 @@
     320,
     320
   ],
-  "weights": ".\\apex_model\\5w.pt",
-  "data": ".\\apex_model\\APEX\\all_one\\data.yaml",
+  "weights": ".\\apex_model\\best.pt",
+  "data": ".\\apex_model\\data.yaml",
   "half": true,
   "device": 0,
   "include": ["engine"],

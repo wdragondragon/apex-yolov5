@@ -3,6 +3,8 @@ import threading
 
 import pynput
 from PyQt5.QtWidgets import QApplication
+
+from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
 from apex_yolov5.socket.config import global_config
 import apex_yolov5_main
 import apex_yolov5_main_asyn
@@ -49,7 +51,7 @@ def main():
                                                has_turbocharger=global_config.has_turbocharger,
                                                hop_up_bbox=global_config.select_hop_up_bbox,
                                                hop_up_path=global_config.hop_up_path,
-                                               image_comparator=NetImageComparator(global_config.image_base_path),
+                                               image_comparator=LocalImageComparator(global_config.image_base_path),
                                                screen_taker=screen_taker,
                                                game_windows_status=GameWindowsStatus.get_game_status())
 

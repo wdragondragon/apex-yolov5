@@ -1,7 +1,13 @@
 import concurrent.futures
 
 from apex_yolov5.log import LogFactory
+import concurrent.futures
+import traceback
+from io import BytesIO
 
+import cv2
+import numpy as np
+from skimage.metrics import structural_similarity
 
 class ImageComparator:
     """
@@ -21,7 +27,37 @@ class ImageComparator:
         :param path_image:
         :return:
         """
-        return 0
+        # 下载图片到内存
+        try:
+            downloaded_image = self.get_image_from_cache(path_image)
+
+            if downloaded_image:
+                downloaded_image.seek(0)
+                image_a = cv2.imdecode(np.frombuffer(downloaded_image.getvalue(), dtype=np.uint8), cv2.IMREAD_COLOR)
+                downloaded_image.close()
+                image_b = np.array(img)
+                gray_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
+                gray_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
+                (score, diff) = structural_similarity(gray_a, gray_b, full=True)
+                return score
+            else:
+                # 图片下载失败时的处理
+                return 0
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            self.logger.print_log(f"对比图片错误：{path_image}")
+            return 0
+    def get_image_from_cache(self, url):
+        """
+            缓存获取图片
+        """
+        # 如果图像已经在缓存中，直接返回缓存的图像
+        url = url.strip()
+        if url not in self.image_cache:
+            self.cache_image("", url)
+        return BytesIO(self.image_cache[url])
+
 
     def compare_with_path(self, path, images, lock_score, discard_score):
         """

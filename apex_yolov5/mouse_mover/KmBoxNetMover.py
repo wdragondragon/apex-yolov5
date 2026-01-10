@@ -1,5 +1,4 @@
 import traceback
-
 from apex_yolov5.log import LogFactory
 from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
